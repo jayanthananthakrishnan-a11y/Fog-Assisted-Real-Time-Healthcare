@@ -1,0 +1,3 @@
+architecture,outage_duration_s,ward_a_gateway_status,total_readings,critical_readings,ward_a_critical_latency_ms,ward_b_critical_latency_ms,system_avg_critical_latency_ms,critical_sla_compliance_pct,failover_success_rate_pct,cloud_bw_saving_pct
+Arch D (Single-Gateway No Failover),20s,OFFLINE (40s-60s),4000,216,108.450,7.129,57.789,89.35,0.00%,66.62%
+Arch E (Multi-Ward Two-Gateway Failover),20s,FAILOVER_TO_WARD_B (40s-60s),4000,216,8.129,7.129,7.629,100.00,100.00%,66.62%

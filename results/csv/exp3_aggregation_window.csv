@@ -1,0 +1,10 @@
+architecture,window_size,num_patients,total_sensors,total_generated,filtered_count,delivered_count,critical_generated,critical_delivered,critical_reliability_pct,avg_latency_ms,normal_latency_ms,abnormal_latency_ms,critical_latency_ms,p95_latency_ms,cloud_traffic_kb,total_traffic_kb,cloud_bw_saving_pct,total_bw_saving_pct,critical_sla_delivered,critical_sla_reliability_pct
+Architecture A (Cloud-Only Baseline),1,20,80,8000,0,8000,433,433,100.00,209.747,209.744,209.692,209.899,217.057,3906.25,10937.50,0.00,0.00,433,100.00
+Architecture C (Fog Filtering & Aggregation),2,20,80,8000,1168,6832,433,433,100.00,792.297,801.980,752.832,740.349,2207.981,2182.32,7431.54,44.13,32.05,201,46.42
+Architecture D (Priority-Aware Fog Processing),2,20,80,8000,1394,6606,433,433,100.00,799.766,952.062,208.714,7.129,2209.445,2318.02,7677.59,40.66,29.80,433,100.00
+Architecture C (Fog Filtering & Aggregation),5,20,80,8000,1168,6832,433,433,100.00,2536.424,2572.502,2406.190,2311.691,5207.916,888.04,5340.77,77.27,51.17,99,22.86
+Architecture D (Priority-Aware Fog Processing),5,20,80,8000,1394,6606,433,433,100.00,2590.063,3154.482,208.344,7.129,7207.955,1305.57,6042.09,66.58,44.76,433,100.00
+Architecture C (Fog Filtering & Aggregation),10,20,80,8000,1168,6832,433,433,100.00,5377.618,5391.465,5427.256,5106.601,11207.396,460.84,4650.68,88.20,57.48,51,11.78
+Architecture D (Priority-Aware Fog Processing),10,20,80,8000,1394,6606,433,433,100.00,5539.021,6782.217,208.193,7.129,14207.990,966.60,5494.53,75.26,49.76,433,100.00
+Architecture C (Fog Filtering & Aggregation),20,20,80,8000,1168,6832,433,433,100.00,10879.521,10890.657,10978.964,10551.186,22207.381,240.58,4294.87,93.84,60.73,20,4.62
+Architecture D (Priority-Aware Fog Processing),20,20,80,8000,1394,6606,433,433,100.00,11178.319,13719.517,208.077,7.129,28207.710,795.21,5217.68,79.64,52.30,433,100.00

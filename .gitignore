@@ -1,0 +1,8 @@
+out/
+simulator/iFogSim/out/
+__pycache__/
+*.class
+*.pyc
+.vscode/
+.DS_Store
+Thumbs.db

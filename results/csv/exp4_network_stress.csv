@@ -1,0 +1,13 @@
+network_profile,architecture,wan_bandwidth_kbps,wan_latency_ms,num_patients,total_sensors,total_generated,filtered_count,delivered_count,critical_generated,critical_delivered,critical_reliability_pct,avg_latency_ms,normal_latency_ms,abnormal_latency_ms,critical_latency_ms,p95_latency_ms,cloud_traffic_kb,total_traffic_kb,cloud_bw_saving_pct,total_bw_saving_pct,critical_sla_delivered,critical_sla_reliability_pct
+Fiber_Normal,Architecture A (Cloud-Only Baseline),100000,100,20,80,8000,0,8000,433,433,100.00,209.747,209.744,209.692,209.899,217.057,3906.25,10937.50,0.00,0.00,433,100.00
+Fiber_Normal,Architecture C (Fog Filtering & Aggregation),100000,100,20,80,8000,1168,6832,433,433,100.00,2536.424,2572.502,2406.190,2311.691,5207.916,888.04,5340.77,77.27,51.17,99,22.86
+Fiber_Normal,Architecture D (Priority-Aware Fog Processing),100000,100,20,80,8000,1394,6606,433,433,100.00,2590.063,3154.482,208.344,7.129,7207.955,1305.57,6042.09,66.58,44.76,433,100.00
+WAN_Congested,Architecture A (Cloud-Only Baseline),1000,200,20,80,8000,0,8000,433,433,100.00,418.932,418.922,418.802,419.337,430.178,3906.25,10937.50,0.00,0.00,433,100.00
+WAN_Congested,Architecture C (Fog Filtering & Aggregation),1000,200,20,80,8000,1168,6832,433,433,100.00,2784.159,2820.075,2654.484,2560.482,5471.116,888.04,5340.77,77.27,51.17,93,21.48
+WAN_Congested,Architecture D (Priority-Aware Fog Processing),1000,200,20,80,8000,1394,6606,433,433,100.00,2833.101,3415.289,463.610,7.129,7463.916,1305.57,6042.09,66.58,44.76,433,100.00
+WAN_Severe_Bottleneck,Architecture A (Cloud-Only Baseline),250,400,20,80,8000,0,8000,433,433,100.00,854.068,854.034,853.687,855.311,878.178,3906.25,10937.50,0.00,0.00,0,0.00
+WAN_Severe_Bottleneck,Architecture C (Fog Filtering & Aggregation),250,400,20,80,8000,1168,6832,433,433,100.00,3329.177,3364.600,3201.199,3108.709,6083.916,888.04,5340.77,77.27,51.17,0,0.00
+WAN_Severe_Bottleneck,Architecture D (Priority-Aware Fog Processing),250,400,20,80,8000,1394,6606,433,433,100.00,3379.659,4002.484,1033.125,7.129,8034.316,1305.57,6042.09,66.58,44.76,433,100.00
+WAN_Rural_Degraded,Architecture A (Cloud-Only Baseline),100,600,20,80,8000,0,8000,433,433,100.00,1314.068,1313.984,1313.104,1317.167,1374.178,3906.25,10937.50,0.00,0.00,0,0.00
+WAN_Rural_Degraded,Architecture C (Fog Filtering & Aggregation),100,600,20,80,8000,1168,6832,433,433,100.00,4059.776,4094.062,3934.613,3848.779,7055.116,888.04,5340.77,77.27,51.17,0,0.00
+WAN_Rural_Degraded,Architecture D (Priority-Aware Fog Processing),100,600,20,80,8000,1394,6606,433,433,100.00,7651.278,8608.276,5373.371,7.129,13339.116,1305.57,6042.09,66.58,44.76,433,100.00

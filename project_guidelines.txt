@@ -1,0 +1,28 @@
+TOPIC 19
+Title: Fog-Assisted Real-Time Healthcare / Smart-City Monitoring System (iFogSim)
+Research Problem: Continuous health or city-sensor streams cannot tolerate high cloud latency and consume
+excessive bandwidth if sent raw.
+Research Gap: End-to-end design that combines filtering at fog with cloud analytics is a realistic 2025–27 use
+case.
+Proposed Solution: Model sensors, fog nodes and cloud. Place filtering/aggregation modules at fog and heavy
+analytics at cloud. Measure latency, bandwidth saving and reliability in iFogSim.
+Tools Required: iFogSim
+
+
+2. Evaluation Criteria (15 Marks)
+
+Criterion Marks Description
+Literature &amp; Problem Formulation 3 Quality of related work + clarity of
+
+problem &amp; gap
+
+Technical Depth / Design 4 Correctness, novelty, proper use of tools
+Implementation &amp; Experiments 4 Working code, graphs, baseline
+
+comparison
+
+Report (5–7 pages) 2 Structure, clarity, figures, references
+Presentation + Viva 2 Clarity and individual understanding
+
+
+

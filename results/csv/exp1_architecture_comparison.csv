@@ -1,0 +1,5 @@
+architecture,num_patients,total_sensors,total_generated,filtered_count,delivered_count,critical_generated,critical_delivered,critical_reliability_pct,avg_latency_ms,normal_latency_ms,abnormal_latency_ms,critical_latency_ms,p95_latency_ms,cloud_traffic_kb,total_traffic_kb,cloud_bw_saving_pct,total_bw_saving_pct,critical_sla_delivered,critical_sla_reliability_pct
+Architecture A (Cloud-Only Baseline),10,40,4000,0,4000,226,226,100.00,207.711,207.704,207.633,207.954,215.111,1953.13,5468.75,0.00,0.00,226,100.00
+Architecture B (Fog Forwarding),10,40,4000,0,4000,226,226,100.00,211.432,211.424,211.366,211.673,218.685,1953.13,5468.75,0.00,0.00,226,100.00
+Architecture C (Fog Filtering & Aggregation),10,40,4000,593,3407,226,226,100.00,2528.443,2565.268,2404.344,2293.515,5207.611,444.97,2671.92,77.22,51.14,63,27.88
+Architecture D (Priority-Aware Fog Processing),10,40,4000,712,3288,226,226,100.00,2604.071,3182.284,208.468,7.129,7207.817,651.90,3018.31,66.62,44.81,226,100.00

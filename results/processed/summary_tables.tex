@@ -1,0 +1,96 @@
+% ========================================================================
+% IEEE Publication Tables: Fog-Assisted Real-Time Healthcare System (Topic 19)
+% ========================================================================
+
+% Table I: Architecture Comparison
+\begin{table*}[t]
+\centering
+\caption{Cross-Architecture Performance Comparison ($N=10$ Patients, $40$ Sensors, Window Size $W=5$)}
+\label{tab:arch_comparison}
+\begin{tabular}{lrrrrrrr}
+\toprule
+\textbf{Architecture} & \textbf{Filtered} & \textbf{Delivered} & \textbf{Critical Lat. (ms)} & \textbf{Avg Lat. (ms)} & \textbf{Cloud KB} & \textbf{Cloud Saving} & \textbf{SLA Rel. (\%)} \\
+\midrule
+Arch A (Cloud-Only) & 0 & 4000 & 207.95 & 207.71 & 1953.1 & 0.0\% & 100.0\% \\
+Arch B (Fog Forward) & 0 & 4000 & 211.67 & 211.43 & 1953.1 & 0.0\% & 100.0\% \\
+Arch C (Filter \& Agg) & 593 & 3407 & 2293.51 & 2528.44 & 445.0 & 77.2\% & 27.9\% \\
+Arch D (Priority Fog) & 712 & 3288 & 7.13 & 2604.07 & 651.9 & 66.6\% & 100.0\% \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% Table II: Scalability Sweep
+\begin{table*}[t]
+\centering
+\caption{Patient and Sensor Scalability Analysis ($N \in \{10, 20, 30, 50\}$)}
+\label{tab:scalability}
+\begin{tabular}{lrrrrrrr}
+\toprule
+\textbf{Architecture} & \textbf{Patients ($N$)} & \textbf{Sensors} & \textbf{Critical Lat. (ms)} & \textbf{Avg Lat. (ms)} & \textbf{Cloud KB} & \textbf{Cloud Saving} & \textbf{SLA Rel. (\%)} \\
+\midrule
+Arch A & 10 & 40 & 207.95 & 207.71 & 1953.1 & 0.0\% & 100.0\% \\
+Arch B & 10 & 40 & 211.67 & 211.43 & 1953.1 & 0.0\% & 100.0\% \\
+Arch C & 10 & 40 & 2293.51 & 2528.44 & 445.0 & 77.2\% & 27.9\% \\
+Arch D & 10 & 40 & 7.13 & 2604.07 & 651.9 & 66.6\% & 100.0\% \\
+Arch A & 20 & 80 & 209.90 & 209.75 & 3906.2 & 0.0\% & 100.0\% \\
+Arch B & 20 & 80 & 213.24 & 213.06 & 3906.2 & 0.0\% & 100.0\% \\
+Arch C & 20 & 80 & 2311.69 & 2536.42 & 888.0 & 77.3\% & 22.9\% \\
+Arch D & 20 & 80 & 7.13 & 2590.06 & 1305.6 & 66.6\% & 100.0\% \\
+Arch A & 30 & 120 & 211.77 & 211.78 & 5859.4 & 0.0\% & 100.0\% \\
+Arch B & 30 & 120 & 214.68 & 214.68 & 5859.4 & 0.0\% & 100.0\% \\
+Arch C & 30 & 120 & 2378.27 & 2556.24 & 1319.0 & 77.5\% & 20.6\% \\
+Arch D & 30 & 120 & 7.13 & 2602.48 & 1939.1 & 66.9\% & 100.0\% \\
+Arch A & 50 & 200 & 215.80 & 215.85 & 9765.6 & 0.0\% & 100.0\% \\
+Arch B & 50 & 200 & 217.91 & 217.93 & 9765.6 & 0.0\% & 100.0\% \\
+Arch C & 50 & 200 & 2419.80 & 2567.77 & 2195.7 & 77.5\% & 19.9\% \\
+Arch D & 50 & 200 & 7.12 & 2619.27 & 3221.5 & 67.0\% & 100.0\% \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% Table III: Aggregation Window Sensitivity
+\begin{table*}[t]
+\centering
+\caption{Aggregation Window ($W$) Sensitivity and Pareto Trade-Off ($N=20$, $80$ Sensors)}
+\label{tab:window_sensitivity}
+\begin{tabular}{lrrrrrrr}
+\toprule
+\textbf{Architecture} & \textbf{Window Size ($W$)} & \textbf{Critical Lat. (ms)} & \textbf{Abnormal Lat. (ms)} & \textbf{Normal Lat. (ms)} & \textbf{Cloud KB} & \textbf{Cloud Saving} & \textbf{SLA Rel. (\%)} \\
+\midrule
+Arch A & 1 & 209.90 & 209.69 & 209.74 & 3906.2 & 0.0\% & 100.0\% \\
+Arch C & 2 & 740.35 & 752.83 & 801.98 & 2182.3 & 44.1\% & 46.4\% \\
+Arch D & 2 & 7.13 & 208.71 & 952.06 & 2318.0 & 40.7\% & 100.0\% \\
+Arch C & 5 & 2311.69 & 2406.19 & 2572.50 & 888.0 & 77.3\% & 22.9\% \\
+Arch D & 5 & 7.13 & 208.34 & 3154.48 & 1305.6 & 66.6\% & 100.0\% \\
+Arch C & 10 & 5106.60 & 5427.26 & 5391.47 & 460.8 & 88.2\% & 11.8\% \\
+Arch D & 10 & 7.13 & 208.19 & 6782.22 & 966.6 & 75.3\% & 100.0\% \\
+Arch C & 20 & 10551.19 & 10978.96 & 10890.66 & 240.6 & 93.8\% & 4.6\% \\
+Arch D & 20 & 7.13 & 208.08 & 13719.52 & 795.2 & 79.6\% & 100.0\% \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% Table IV: WAN Network Stress
+\begin{table*}[t]
+\centering
+\caption{WAN Network Stress Profiles and Clinical Emergency SLA Compliance ($N=20$, SLA $\leq 500$ ms)}
+\label{tab:network_stress}
+\begin{tabular}{llrrrrr}
+\toprule
+\textbf{Profile} & \textbf{Architecture} & \textbf{WAN Latency (ms)} & \textbf{WAN Bw (Kbps)} & \textbf{Critical Lat. (ms)} & \textbf{Cloud Saving} & \textbf{SLA Rel. (\%)} \\
+\midrule
+Fiber\_Normal & Arch A & 100 & 100000 & 209.90 & 0.0\% & 100.0\% \\
+Fiber\_Normal & Arch C & 100 & 100000 & 2311.69 & 77.3\% & 22.9\% \\
+Fiber\_Normal & Arch D & 100 & 100000 & 7.13 & 66.6\% & 100.0\% \\
+WAN\_Congested & Arch A & 200 & 1000 & 419.34 & 0.0\% & 100.0\% \\
+WAN\_Congested & Arch C & 200 & 1000 & 2560.48 & 77.3\% & 21.5\% \\
+WAN\_Congested & Arch D & 200 & 1000 & 7.13 & 66.6\% & 100.0\% \\
+WAN\_Severe\_Bottleneck & Arch A & 400 & 250 & 855.31 & 0.0\% & 0.0\% \\
+WAN\_Severe\_Bottleneck & Arch C & 400 & 250 & 3108.71 & 77.3\% & 0.0\% \\
+WAN\_Severe\_Bottleneck & Arch D & 400 & 250 & 7.13 & 66.6\% & 100.0\% \\
+WAN\_Rural\_Degraded & Arch A & 600 & 100 & 1317.17 & 0.0\% & 0.0\% \\
+WAN\_Rural\_Degraded & Arch C & 600 & 100 & 3848.78 & 77.3\% & 0.0\% \\
+WAN\_Rural\_Degraded & Arch D & 600 & 100 & 7.13 & 66.6\% & 100.0\% \\
+\bottomrule
+\end{tabular}
+\end{table*}

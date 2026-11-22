@@ -1,0 +1,2286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iFogSim2 Healthcare Fog Computing — 3D Ward Simulator & Architecture Explorer</title>
+  <!-- Three.js and OrbitControls via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-hover: #e2e8f0;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --blue: #2563eb;
+      --blue-subtle: #eff6ff;
+      --blue-border: #bfdbfe;
+      --green: #059669;
+      --green-subtle: #ecfdf5;
+      --green-border: #a7f3d0;
+      --amber: #d97706;
+      --amber-subtle: #fffbeb;
+      --amber-border: #fde68a;
+      --red: #dc2626;
+      --red-subtle: #fef2f2;
+      --red-border: #fecaca;
+      --purple: #7c3aed;
+      --purple-subtle: #f5f3ff;
+      --purple-border: #ddd6fe;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    header {
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-badge {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 6px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+    .header-title h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+    .header-title p {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* Top Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease-in-out;
+    }
+    .nav-tab-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+    .nav-tab-btn.active {
+      background: var(--bg-card);
+      color: var(--blue);
+      box-shadow: var(--shadow-sm);
+      font-weight: 700;
+    }
+    .nav-tab-btn.tab-e.active {
+      color: var(--purple);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .engine-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-subtle);
+      border: 1px solid var(--green-border);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--green);
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px rgba(5, 150, 105, 0.6);
+      animation: pulseAnim 2s infinite;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    /* Main Container */
+    .main-container {
+      flex: 1;
+      padding: 16px 24px;
+      max-width: 1680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Views */
+    .view-panel {
+      display: none;
+    }
+    .view-panel.active {
+      display: block;
+    }
+
+    /* ====================================================================
+       PAGE 1: 3D WARD SIMULATOR VIEW
+       ==================================================================== */
+    .sim-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 18px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .arch-pills-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .arch-pill-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease-in-out;
+    }
+    .arch-pill-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+    .arch-pill-btn.active {
+      background: var(--blue-subtle);
+      border-color: var(--blue);
+      color: var(--blue);
+      font-weight: 700;
+    }
+    .arch-pill-btn.active.pill-d {
+      background: var(--green-subtle);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .arch-pill-btn.active.pill-e {
+      background: var(--purple-subtle);
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .sim-controls-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .control-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+    .control-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+    .btn-alert-pulse {
+      background: var(--red-subtle);
+      border-color: var(--red-border);
+      color: var(--red);
+      font-weight: 700;
+    }
+    .btn-alert-pulse:hover {
+      background: #fee2e2;
+    }
+    .btn-outage-toggle {
+      background: var(--amber-subtle);
+      border-color: var(--amber-border);
+      color: var(--amber);
+      font-weight: 700;
+    }
+    .btn-outage-toggle.active {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    .param-select-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+    .param-select-pill label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .param-select-pill select {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* 3D Stage & Inspector Layout */
+    .stage-inspector-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 14px;
+      height: 520px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 1100px) {
+      .stage-inspector-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+    }
+
+    .stage-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+    }
+    .stage-hud-bar {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .stage-hud-bar * {
+      pointer-events: auto;
+    }
+    .hud-badge {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(8px);
+    }
+    .hud-stage-tools {
+      display: flex;
+      gap: 6px;
+    }
+
+    #three-viewport {
+      width: 100%;
+      height: 100%;
+      min-height: 440px;
+      position: relative;
+      background: #f1f5f9;
+      cursor: grab;
+    }
+    #three-viewport:active {
+      cursor: grabbing;
+    }
+    #three-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .stage-bottom-hud {
+      position: absolute;
+      bottom: 10px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .stage-legend {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.72rem;
+      display: flex;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      pointer-events: auto;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Inspector Card */
+    .inspector-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .inspector-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .inspector-header h2 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .node-type-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: var(--blue-subtle);
+      border: 1px solid var(--blue-border);
+      color: var(--blue);
+    }
+    .inspector-body {
+      padding: 14px 16px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .node-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .node-icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .node-title-box h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .node-title-box p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .node-desc-box {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      background: var(--bg-subtle);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    /* Buffer Slots Visualizer in Inspector */
+    .buffer-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .buffer-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+    .buffer-slots-track {
+      display: flex;
+      gap: 6px;
+    }
+    .buffer-slot {
+      flex: 1;
+      height: 16px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      transition: all 0.2s;
+    }
+    .buffer-slot.filled {
+      background: var(--green);
+      border-color: var(--green);
+      box-shadow: 0 0 6px rgba(5, 150, 105, 0.4);
+    }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+    .spec-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-table tr:last-child {
+      border-bottom: none;
+    }
+    .spec-table td {
+      padding: 6px 0;
+    }
+    .spec-table td:first-child {
+      color: var(--text-muted);
+      font-weight: 500;
+      width: 48%;
+    }
+    .spec-table td:last-child {
+      color: var(--text-main);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* Simulation Live Metrics KPI Bar */
+    .kpi-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 900px) {
+      .kpi-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .kpi-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .kpi-value {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+    .kpi-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: inline-block;
+      width: fit-content;
+    }
+    .badge-success { background: var(--green-subtle); color: var(--green); border: 1px solid var(--green-border); }
+    .badge-warn { background: var(--amber-subtle); color: var(--amber); border: 1px solid var(--amber-border); }
+    .badge-danger { background: var(--red-subtle); color: var(--red); border: 1px solid var(--red-border); }
+    .badge-info { background: var(--blue-subtle); color: var(--blue); border: 1px solid var(--blue-border); }
+    .badge-purple { background: var(--purple-subtle); color: var(--purple); border: 1px solid var(--purple-border); }
+
+    /* Live Java Runner & Terminal Box */
+    .live-runner-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .runner-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .runner-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .btn-run-sim {
+      background: var(--blue);
+      border: none;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+      transition: all 0.15s;
+    }
+    .btn-run-sim:hover {
+      background: #1d4ed8;
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.35);
+    }
+    .btn-run-sim:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .terminal-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+    }
+    .terminal-header {
+      background: #1e293b;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .terminal-header span {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-weight: 600;
+      font-family: monospace;
+    }
+    .terminal-body {
+      padding: 12px 16px;
+      color: #38bdf8;
+      font-family: "Cascadia Code", "Courier New", monospace;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* ====================================================================
+       PAGES 2-6: LAYMAN DEEP-DIVE GUIDES (ARCH A, B, C, D, E)
+       ==================================================================== */
+    .guide-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .guide-hero {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .guide-hero-text h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      letter-spacing: -0.3px;
+    }
+    .guide-hero-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .guide-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-jump-3d {
+      background: var(--blue-subtle);
+      border: 1px solid var(--blue-border);
+      color: var(--blue);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-jump-3d:hover {
+      background: #dbeafe;
+    }
+
+    .guide-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .guide-section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .guide-section-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .guide-section-header .section-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .analogy-callout {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #16a34a;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+    .analogy-callout.warn {
+      background: #fffbeb;
+      border-color: #fde68a;
+      border-left-color: #d97706;
+    }
+    .analogy-callout.danger {
+      background: #fef2f2;
+      border-color: #fecaca;
+      border-left-color: #dc2626;
+    }
+    .analogy-callout.purple {
+      background: #f5f3ff;
+      border-color: #ddd6fe;
+      border-left-color: #7c3aed;
+    }
+    .analogy-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .analogy-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .flow-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 900px) {
+      .flow-steps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .flow-step-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .flow-step-num {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .flow-step-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+    .flow-step-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .math-formula-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #0f172a;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+    .math-formula-box strong {
+      color: var(--blue);
+    }
+
+    .results-comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 12px;
+    }
+    .results-comparison-table th {
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-strong);
+    }
+    .results-comparison-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .results-comparison-table tr:hover td {
+      background: #f8fafc;
+    }
+    .results-comparison-table td strong {
+      color: var(--text-main);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      background: #fff;
+      padding: 14px 24px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="header-left">
+      <div class="logo-badge">iFogSim2</div>
+      <div class="header-title">
+        <h1>Healthcare Fog Computing Studio</h1>
+        <p>Interactive 3D Ward Visualizer & Layman Architecture Deep Dive</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab-btn active" id="tab-btn-sim" onclick="switchMainTab('sim')">
+        🏢 3D Ward Simulator
+      </button>
+      <button class="nav-tab-btn" id="tab-btn-arch-a" onclick="switchMainTab('arch-a')">
+        Arch A: Cloud-Only
+      </button>
+      <button class="nav-tab-btn" id="tab-btn-arch-b" onclick="switchMainTab('arch-b')">
+        Arch B: Forwarding
+      </button>
+      <button class="nav-tab-btn" id="tab-btn-arch-c" onclick="switchMainTab('arch-c')">
+        Arch C: Naive Filter
+      </button>
+      <button class="nav-tab-btn" id="tab-btn-arch-d" onclick="switchMainTab('arch-d')">
+        Arch D: Priority Fog
+      </button>
+      <button class="nav-tab-btn tab-e" id="tab-btn-arch-e" onclick="switchMainTab('arch-e')">
+        Arch E: Multi-Ward Failover
+      </button>
+    </nav>
+
+    <div class="header-right">
+      <div class="engine-status">
+        <div class="pulse-dot"></div>
+        <span>Discrete Engine Active</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- ====================================================================
+         VIEW 1: 3D WARD SIMULATOR
+         ==================================================================== -->
+    <div class="view-panel active" id="view-sim">
+      
+      <!-- Simulator Top Architecture Bar & Controls -->
+      <div class="sim-top-bar">
+        <div class="arch-pills-group">
+          <span style="font-size:0.75rem; font-weight:700; color:var(--text-dim); text-transform:uppercase; margin-right:4px;">Architecture:</span>
+          <button class="arch-pill-btn" id="pill-arch-a" onclick="selectSimArch('A')">A: Cloud</button>
+          <button class="arch-pill-btn" id="pill-arch-b" onclick="selectSimArch('B')">B: Forward</button>
+          <button class="arch-pill-btn" id="pill-arch-c" onclick="selectSimArch('C')">C: Naive</button>
+          <button class="arch-pill-btn active pill-d" id="pill-arch-d" onclick="selectSimArch('D')">D: Priority</button>
+          <button class="arch-pill-btn pill-e" id="pill-arch-e" onclick="selectSimArch('E')">E: Multi-Ward</button>
+        </div>
+
+        <div class="sim-controls-group">
+          <!-- Playback controls -->
+          <button class="control-btn" id="btn-play-pause" onclick="togglePlayPause()">
+            <span id="play-pause-icon">⏸️</span> <span id="play-pause-text">Pause</span>
+          </button>
+          <button class="control-btn" onclick="stepTick()">
+            ⏭️ Step (1 Tick)
+          </button>
+          <div class="param-select-pill">
+            <label>Speed:</label>
+            <select id="sim-speed-select" onchange="changeSimSpeed(this.value)">
+              <option value="0.25">0.25x (Slow-Mo)</option>
+              <option value="1.0" selected>1.0x (Normal)</option>
+              <option value="2.0">2.0x (Fast)</option>
+            </select>
+          </div>
+
+          <!-- Interactive Event Triggers -->
+          <button class="control-btn btn-alert-pulse" onclick="triggerEmergencyPulse()">
+            ⚡ Inject Cardiac Alert (Bed A1)
+          </button>
+          <button class="control-btn btn-outage-toggle" id="btn-toggle-outage" onclick="toggleGatewayOutage()">
+            ⚠️ Simulate Gateway A Outage
+          </button>
+        </div>
+      </div>
+
+      <!-- 3D Stage & Node Inspector Grid -->
+      <div class="stage-inspector-grid">
+        
+        <!-- 3D Viewport Card -->
+        <div class="stage-card">
+          <div class="stage-hud-bar">
+            <div class="hud-badge" id="hud-arch-mode">
+              Topology: Arch D (Priority-Aware Fog)
+            </div>
+            <div class="hud-stage-tools">
+              <button class="control-btn" onclick="resetCamera()">🔄 Reset Camera</button>
+              <button class="control-btn" id="btn-autorotate" onclick="toggleAutoRotate()">Auto-Rotate: ON</button>
+            </div>
+          </div>
+
+          <div id="three-viewport">
+            <canvas id="three-canvas"></canvas>
+          </div>
+
+          <div class="stage-bottom-hud">
+            <div class="stage-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div> Normal Routine (Batching)</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div> Abnormal Expedited</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#dc2626;"></div> Critical Alert (&lt; 10 ms)</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#7c3aed;"></div> Inter-Ward LAN (1.0 ms)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node Inspector Card -->
+        <div class="inspector-card">
+          <div class="inspector-header">
+            <h2>🔍 Node Inspector</h2>
+            <span class="node-type-badge" id="inspector-node-type">Edge Computing Tier</span>
+          </div>
+          <div class="inspector-body">
+            <div class="node-title-box">
+              <div class="node-icon-box" id="inspector-icon">🏢</div>
+              <div>
+                <h3 id="inspector-title">Fog Gateway A (ICU Ward A)</h3>
+                <p id="inspector-subtitle">Local Ward Edge Server (Level 1)</p>
+              </div>
+            </div>
+
+            <!-- Buffer Slots Box -->
+            <div class="buffer-box" id="inspector-buffer-box">
+              <div class="buffer-header">
+                <span>Aggregation Window Buffer (W = 5)</span>
+                <span id="buffer-status-text">3 / 5 Slots Queued</span>
+              </div>
+              <div class="buffer-slots-track">
+                <div class="buffer-slot filled" id="bs-0"></div>
+                <div class="buffer-slot filled" id="bs-1"></div>
+                <div class="buffer-slot filled" id="bs-2"></div>
+                <div class="buffer-slot" id="bs-3"></div>
+                <div class="buffer-slot" id="bs-4"></div>
+              </div>
+            </div>
+
+            <div class="node-desc-box" id="inspector-desc">
+              Ward-level edge server installed inside ICU Ward A. Performs instantaneous priority classification, cross-sensor motion artifact suppression, and routes emergency alerts directly to the bedside monitor in &lt; 10 ms.
+            </div>
+
+            <table class="spec-table" id="inspector-specs-table">
+              <tr><td>Compute Capacity</td><td>8,000 MIPS (Xeon Core)</td></tr>
+              <tr><td>Memory (RAM)</td><td>8,192 MB (ECC RAM)</td></tr>
+              <tr><td>Local LAN Latency</td><td>2.0 ms to Patient Beds</td></tr>
+              <tr><td>Inter-Ward LAN</td><td>1.0 ms to Gateway B</td></tr>
+              <tr><td>WAN Uplink Latency</td><td>100.0 ms to Remote Cloud</td></tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Simulation KPI Metrics Bar -->
+      <div class="kpi-bar">
+        <div class="kpi-card">
+          <div class="kpi-title">Critical Emergency Latency</div>
+          <div class="kpi-value" id="kpi-latency" style="color:var(--green);">7.13 ms</div>
+          <span class="kpi-badge badge-success" id="kpi-latency-badge">96.6% Faster (Local Bypass)</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Cloud WAN Bandwidth Saving</div>
+          <div class="kpi-value" id="kpi-bw" style="color:var(--blue);">66.62%</div>
+          <span class="kpi-badge badge-info" id="kpi-bw-badge">651.9 KB vs 1,953 KB</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Filtered / Suppressed</div>
+          <div class="kpi-value" id="kpi-filt">712 / 4,000</div>
+          <span class="kpi-badge badge-warn" id="kpi-filt-badge">17.8% Filtered at Edge</span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Emergency SLA Reliability</div>
+          <div class="kpi-value" id="kpi-sla" style="color:var(--green);">100.0%</div>
+          <span class="kpi-badge badge-success" id="kpi-sla-badge">100% Within 500 ms SLA</span>
+        </div>
+      </div>
+
+      <!-- Live Simulation Runner Bar -->
+      <div class="live-runner-bar">
+        <div class="runner-left">
+          <span class="runner-title">Execute Real Java iFogSim Simulation:</span>
+          <div class="param-select-pill">
+            <label>Arch:</label>
+            <select id="run-arch-select">
+              <option value="A">Arch A (Cloud)</option>
+              <option value="B">Arch B (Forward)</option>
+              <option value="C">Arch C (Naive)</option>
+              <option value="D" selected>Arch D (Priority)</option>
+              <option value="E">Arch E (Multi-Ward)</option>
+              <option value="ALL">ALL (Full Suite)</option>
+            </select>
+          </div>
+          <div class="param-select-pill">
+            <label>Patients:</label>
+            <select id="run-patients-select">
+              <option value="10" selected>10 Patients (40 Sensors)</option>
+              <option value="20">20 Patients (80 Sensors)</option>
+              <option value="30">30 Patients (120 Sensors)</option>
+              <option value="50">50 Patients (200 Sensors)</option>
+            </select>
+          </div>
+          <div class="param-select-pill">
+            <label>Window W:</label>
+            <select id="run-window-select">
+              <option value="1">W = 1 (No Aggregation)</option>
+              <option value="2">W = 2</option>
+              <option value="5" selected>W = 5 (Standard)</option>
+              <option value="10">W = 10</option>
+              <option value="20">W = 20</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-run-sim" id="btn-trigger-sim" onclick="executeJavaSim()">
+          ▶ Run Live iFogSim Simulation
+        </button>
+      </div>
+
+      <!-- Terminal Output Box -->
+      <div class="terminal-container">
+        <div class="terminal-header" onclick="toggleTerminal()">
+          <span>Java iFogSim Simulation Console Output (Click to toggle expand)</span>
+          <span id="term-status-pill">Ready</span>
+        </div>
+        <div class="terminal-body" id="sim-terminal-body">Click "Run Live iFogSim Simulation" to execute the discrete-event simulator engine with verified parameters.</div>
+      </div>
+
+    </div>
+
+    <!-- ====================================================================
+         VIEW 2: ARCH A DEEP DIVE (CLOUD-ONLY BASELINE)
+         ==================================================================== -->
+    <div class="view-panel" id="view-arch-a">
+      <div class="guide-container">
+        <div class="guide-hero">
+          <div class="guide-hero-text">
+            <h2>Architecture A: Cloud-Only Monitoring Baseline</h2>
+            <p>Direct IoT-to-Cloud Telemetry — Every single heartbeat crosses the 100 ms WAN.</p>
+          </div>
+          <div class="guide-actions">
+            <button class="btn-jump-3d" onclick="jumpTo3D('A')">🏢 Open in 3D Ward Simulator</button>
+            <button class="btn-run-sim" onclick="runFromGuide('A')">▶ Run Arch A Live</button>
+          </div>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>1. What Happens in Plain English</h3>
+            <span class="section-tag">Everyday Analogy & Flow</span>
+          </div>
+          <div class="analogy-callout warn">
+            <div class="analogy-title">📮 Everyday Analogy: The Distant Postal Mailbox</div>
+            <div class="analogy-text">
+              Imagine every patient heartbeat or breath is written on a postcard and sent via postal mail to a central government office 500 miles away. If a patient suddenly enters cardiac arrest, the alarm cannot sound until the postcard arrives in the distant city, gets opened by a clerk, and a return telegram is sent back. By the time the reply arrives (~208 ms later), critical response time has elapsed.
+            </div>
+          </div>
+          <div class="flow-steps-grid">
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 1</div>
+              <div class="flow-step-title">Sensors Capture Vitals</div>
+              <div class="flow-step-desc">4 sensors per patient sample Heart Rate, SpO2, Temperature, and Blood Pressure every 1,000 ms.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 2</div>
+              <div class="flow-step-title">Immediate WAN Dispatch</div>
+              <div class="flow-step-desc">Without any local edge filtering or inspection, all 4,000 raw readings are pushed directly across the 100 ms WAN link.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 3</div>
+              <div class="flow-step-title">Cloud Datacenter Processing</div>
+              <div class="flow-step-desc">The remote cloud cluster processes the readings (44,800 MIPS) and determines whether an emergency alert is warranted.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 4</div>
+              <div class="flow-step-title">Return Downlink to Actuator</div>
+              <div class="flow-step-desc">The alert traverses the 100 ms WAN downlink back to the hospital bedside monitor (Total Round-Trip: 207.95 ms).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>2. How We Generated & Processed the Healthcare Data</h3>
+            <span class="section-tag">Workload Specifications</span>
+          </div>
+          <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.5; margin-bottom:12px;">
+            The simulation workload generates realistic medical vital signs using calibrated clinical bounds:
+          </p>
+          <ul style="font-size:0.8rem; color:var(--text-muted); line-height:1.6; padding-left:20px;">
+            <li><strong>Heart Rate (ECG):</strong> Normal 60–100 bpm, Abnormal 100–130 bpm, Critical &gt; 130 bpm (Ventricular Tachycardia).</li>
+            <li><strong>Pulse Oximetry (SpO2):</strong> Normal 95–100%, Abnormal 90–94%, Critical &lt; 90% (Acute Hypoxemia).</li>
+            <li><strong>Body Temperature:</strong> Normal 36.5–37.5 °C, Abnormal 37.6–38.5 °C, Critical &gt; 38.5 °C (High Fever).</li>
+            <li><strong>Blood Pressure:</strong> Normal 110–130 mmHg, Abnormal 130–150 mmHg, Critical &gt; 160 mmHg (Hypertensive Crisis).</li>
+            <li><strong>Distribution:</strong> 85% Normal readings, 10% Abnormal readings, 5% Critical emergencies (Random Seed 42L).</li>
+          </ul>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>3. The Math Intuition Behind the Numbers</h3>
+            <span class="section-tag">Formulas & Breakdown</span>
+          </div>
+          <div class="math-formula-box">
+            <strong>End-to-End Latency Formula:</strong><br>
+            T_total = T_sensor_uplink + T_patient_gw + T_wan_uplink + T_cloud_compute + T_wan_downlink + T_actuator_downlink<br>
+            T_total = 2.0 ms + 2.0 ms + 100.0 ms + 1.95 ms + 100.0 ms + 2.0 ms = <strong>207.95 ms</strong><br><br>
+            <strong>Total Network Traffic (10 Patients, 100 readings/sensor):</strong><br>
+            Total Packets = 10 patients × 4 sensors × 100 readings = 4,000 readings<br>
+            Total Cloud Ingest = 4,000 × 500 Bytes = <strong>2,000,000 Bytes (1,953.1 KB)</strong><br>
+            Bandwidth Saving = <strong>0.00% (Baseline Reference)</strong>
+          </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>4. Verified Simulation Results & Live Test</h3>
+            <span class="section-tag">Empirical Data</span>
+          </div>
+          <table class="results-comparison-table">
+            <thead>
+              <tr><th>Metric</th><th>Arch A Result</th><th>Clinical Target / SLA</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Critical Alert Latency</td><td><strong>207.95 ms</strong></td><td>&le; 500.0 ms</td><td>Passed (Nominal WAN)</td></tr>
+              <tr><td>Cloud WAN Bandwidth Saving</td><td><strong>0.00%</strong></td><td>Maximize (&gt; 50%)</td><td>High Bandwidth Waste</td></tr>
+              <tr><td>Filtered at Edge</td><td><strong>0 / 4,000 (0%)</strong></td><td>Noise Reduction</td><td>No Edge Intelligence</td></tr>
+              <tr><td>SLA Compliance under Stress</td><td><strong>Degrades to &gt; 600 ms</strong></td><td>100.0%</td><td>Vulnerable to WAN Jitter</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         VIEW 3: ARCH B DEEP DIVE (FOG FORWARDING OVERHEAD)
+         ==================================================================== -->
+    <div class="view-panel" id="view-arch-b">
+      <div class="guide-container">
+        <div class="guide-hero">
+          <div class="guide-hero-text">
+            <h2>Architecture B: Fog Forwarding</h2>
+            <p>Edge Gateway Acts as a Transparent Relaying Proxy without Data Reduction.</p>
+          </div>
+          <div class="guide-actions">
+            <button class="btn-jump-3d" onclick="jumpTo3D('B')">🏢 Open in 3D Ward Simulator</button>
+            <button class="btn-run-sim" onclick="runFromGuide('B')">▶ Run Arch B Live</button>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>1. What Happens in Plain English</h3>
+            <span class="section-tag">Everyday Analogy & Flow</span>
+          </div>
+          <div class="analogy-callout warn">
+            <div class="analogy-title">🏢 Everyday Analogy: The Unnecessary Security Checkpoint</div>
+            <div class="analogy-text">
+              Imagine placing a security desk in the hospital lobby that inspects every single letter passing through, stamps "Received", and forwards it right along to the post office without filtering junk mail or prioritizing emergencies. It consumes server energy and adds a +3.72 ms inspection delay, but provides zero bandwidth savings.
+            </div>
+          </div>
+          <div class="flow-steps-grid">
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 1</div>
+              <div class="flow-step-title">Sensors Transmit to Fog</div>
+              <div class="flow-step-desc">All vital sign readings enter the Hospital Fog Gateway over the 2.0 ms hospital LAN.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 2</div>
+              <div class="flow-step-title">Gateway Inspection Delay</div>
+              <div class="flow-step-desc">The gateway executes a forwarding module (200 MIPS) on every tuple, adding queueing and execution overhead.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 3</div>
+              <div class="flow-step-title">WAN Traversal to Cloud</div>
+              <div class="flow-step-desc">All 4,000 raw packets are forwarded across the 100 ms WAN link with zero compression.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 4</div>
+              <div class="flow-step-title">Downlink via Gateway</div>
+              <div class="flow-step-desc">Alerts return from the cloud through the gateway to the bedside monitor (211.67 ms).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>2. The Math Intuition: Why Pure Forwarding Adds Overhead</h3>
+            <span class="section-tag">Formula Comparison</span>
+          </div>
+          <div class="math-formula-box">
+            <strong>Latency Breakdown:</strong><br>
+            T_arch_B = T_arch_A + T_fog_inspect + T_fog_queue<br>
+            T_arch_B = 207.95 ms + 3.72 ms = <strong>211.67 ms</strong><br>
+            Forwarding Penalty = <strong>+1.79% higher latency than Arch A</strong> with <strong>0.00% bandwidth savings</strong>!
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>3. Verified Simulation Results</h3>
+            <span class="section-tag">Empirical Data</span>
+          </div>
+          <table class="results-comparison-table">
+            <thead>
+              <tr><th>Metric</th><th>Arch B Result</th><th>Comparison to Arch A</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Critical Alert Latency</td><td><strong>211.67 ms</strong></td><td>+3.72 ms slower (Overhead)</td></tr>
+              <tr><td>Cloud WAN Bandwidth Saving</td><td><strong>0.00%</strong></td><td>Identical (1,953.1 KB transferred)</td></tr>
+              <tr><td>Edge Filtering</td><td><strong>0 / 4,000</strong></td><td>No data reduction</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         VIEW 4: ARCH C DEEP DIVE (NAIVE FILTERING & HAZARDOUS AGGREGATION)
+         ==================================================================== -->
+    <div class="view-panel" id="view-arch-c">
+      <div class="guide-container">
+        <div class="guide-hero">
+          <div class="guide-hero-text">
+            <h2>Architecture C: Naive Filtering & Aggregation</h2>
+            <p>Bandwidth Saved at the Expense of Human Life — The Aggregation Window Trap.</p>
+          </div>
+          <div class="guide-actions">
+            <button class="btn-jump-3d" onclick="jumpTo3D('C')">🏢 Open in 3D Ward Simulator</button>
+            <button class="btn-run-sim" onclick="runFromGuide('C')">▶ Run Arch C Live</button>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>1. What Happens in Plain English</h3>
+            <span class="section-tag">Everyday Analogy & Flow</span>
+          </div>
+          <div class="analogy-callout danger">
+            <div class="analogy-title">📦 Everyday Analogy: The 5-Letter Shipping Box Trap</div>
+            <div class="analogy-text">
+              To save postage costs, the hospital manager orders that no mail leaves the building until a shipping box fills up with exactly 5 letters. If a doctor writes a critical red alert saying <em>"Patient is suffocating!"</em>, the clerk puts the emergency letter into the box and waits until 4 more routine routine letters arrive over the next 4 seconds. By the time the box fills and ships, the patient has suffered irreversible brain damage.
+            </div>
+          </div>
+          <div class="flow-steps-grid">
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 1</div>
+              <div class="flow-step-title">Noise Filtering</div>
+              <div class="flow-step-desc">Normal readings with delta &lt; threshold are dropped (saving 14.8% traffic).</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 2</div>
+              <div class="flow-step-title">Window Buffering (W = 5)</div>
+              <div class="flow-step-desc">Readings enter a sliding FIFO buffer. They MUST wait until 5 readings accumulate before emitting.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 3</div>
+              <div class="flow-step-title">Emergency Trapped in Queue</div>
+              <div class="flow-step-desc">Critical alerts have NO priority bypass. They sit trapped in the buffer waiting for normal vitals to fill slot 5!</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 4</div>
+              <div class="flow-step-title">Lethal Delay & SLA Failure</div>
+              <div class="flow-step-desc">Average emergency response takes <strong>2,293.52 ms</strong> (violating the 500 ms SLA by 358%).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>2. The Math of the Aggregation Window Hazard</h3>
+            <span class="section-tag">Queueing Formula</span>
+          </div>
+          <div class="math-formula-box">
+            <strong>Buffering Delay Formula:</strong><br>
+            T_buffer_wait = (W - k) &times; T_sampling_interval<br>
+            For W = 5 and an alarm arriving at position k = 2: T_wait = (5 - 2) &times; 1,000 ms = <strong>3,000 ms delay</strong>!<br><br>
+            <strong>Critical SLA Compliance:</strong><br>
+            SLA Compliance = (Alarms &lt; 500 ms) / Total Alarms = 63 / 226 = <strong>27.88% (72.12% Failure Rate!)</strong>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>3. Verified Simulation Results</h3>
+            <span class="section-tag">Empirical Data</span>
+          </div>
+          <table class="results-comparison-table">
+            <thead>
+              <tr><th>Metric</th><th>Arch C Result</th><th>Clinical Safety Evaluation</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Critical Alert Latency</td><td><strong>2,293.52 ms</strong></td><td><span class="kpi-badge badge-danger">Lethal (Violated by 4.5x)</span></td></tr>
+              <tr><td>Cloud WAN Bandwidth Saving</td><td><strong>77.22%</strong></td><td><span class="kpi-badge badge-success">Excellent (445 KB transferred)</span></td></tr>
+              <tr><td>Critical SLA Compliance</td><td><strong>27.88%</strong></td><td><span class="kpi-badge badge-danger">Hazardous Failure</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         VIEW 5: ARCH D DEEP DIVE (PRIORITY-AWARE FOG PROCESSING)
+         ==================================================================== -->
+    <div class="view-panel" id="view-arch-d">
+      <div class="guide-container">
+        <div class="guide-hero">
+          <div class="guide-hero-text">
+            <h2>Architecture D: Priority-Aware Fog Computing</h2>
+            <p>Our Core Novel Contribution — Dual-Path Routing & Cross-Sensor Artifact Suppression.</p>
+          </div>
+          <div class="guide-actions">
+            <button class="btn-jump-3d" onclick="jumpTo3D('D')">🏢 Open in 3D Ward Simulator</button>
+            <button class="btn-run-sim" onclick="runFromGuide('D')">▶ Run Arch D Live</button>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>1. What Happens in Plain English</h3>
+            <span class="section-tag">Everyday Analogy & Flow</span>
+          </div>
+          <div class="analogy-callout">
+            <div class="analogy-title">🚨 Everyday Analogy: The Paramedic at the Bedside</div>
+            <div class="analogy-text">
+              Instead of waiting for mailboxes or shipping boxes, a trained paramedic sits at the ward edge server. When routine paperwork arrives, they bundle it into neat batches for the archive. But the instant a red emergency vital appears, the paramedic rings the emergency bell right above the patient's bed immediately (7.13 ms) while simultaneously dispatching an audit copy to the central hospital records.
+            </div>
+          </div>
+          <div class="flow-steps-grid">
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 1</div>
+              <div class="flow-step-title">Priority Classification</div>
+              <div class="flow-step-desc">The fog engine evaluates vitals in 50 MIPS: Normal (~85%), Abnormal (~10%), Critical (~5%).</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 2</div>
+              <div class="flow-step-title">Cross-Sensor Artifact Suppression</div>
+              <div class="flow-step-desc">Isolated single-sample spikes (patient tossing in bed) are held for 1 sample, suppressing 128 false alarms!</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 3</div>
+              <div class="flow-step-title">Dual-Path Dispatch</div>
+              <div class="flow-step-desc">Critical alerts bypass the aggregation buffer completely. Local alert travels directly to bedside monitor over LAN.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Step 4</div>
+              <div class="flow-step-title">Sub-10 ms Response & 100% SLA</div>
+              <div class="flow-step-desc">Critical alert rings bedside in <strong>7.13 ms</strong> (96.6% faster than Arch A) while saving 66.62% cloud bandwidth!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>2. Cross-Sensor Artifact Suppression (False Alarm Prevention)</h3>
+            <span class="section-tag">Edge Intelligence</span>
+          </div>
+          <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.5; margin-bottom:12px;">
+            In intensive care units, <strong>ICU alarm fatigue</strong> causes clinical staff to become desensitized to alarms due to high rates of false positives (e.g. ECG electrode peel or patient arm movement).
+          </p>
+          <div class="math-formula-box">
+            <strong>Cross-Sensor Correlation Logic:</strong><br>
+            if (vital.isCritical()) {<br>
+            &nbsp;&nbsp;boolean correlated = (otherVitals.hasAbnormalOrCritical() || consecutiveCriticalSamples &ge; 2);<br>
+            &nbsp;&nbsp;if (correlated) { triggerLocalEmergencyBypass(); }<br>
+            &nbsp;&nbsp;else { suppressMotionArtifact(); /* False alarm eliminated! */ }<br>
+            }
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>3. Verified Simulation Results</h3>
+            <span class="section-tag">Empirical Data</span>
+          </div>
+          <table class="results-comparison-table">
+            <thead>
+              <tr><th>Metric</th><th>Arch A (Cloud)</th><th>Arch D (Priority Fog)</th><th>Improvement</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Critical Alert Latency</td><td>207.95 ms</td><td><strong>7.13 ms</strong></td><td><span class="kpi-badge badge-success">96.6% Faster</span></td></tr>
+              <tr><td>Cloud WAN Traffic</td><td>1,953.1 KB</td><td><strong>651.9 KB</strong></td><td><span class="kpi-badge badge-info">66.62% Bandwidth Saved</span></td></tr>
+              <tr><td>Critical SLA Compliance</td><td>100.0% (Nominal)</td><td><strong>100.0% (Zero WAN Risk)</strong></td><td><span class="kpi-badge badge-success">Immune to WAN Outages</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         VIEW 6: ARCH E DEEP DIVE (MULTI-WARD FAILOVER)
+         ==================================================================== -->
+    <div class="view-panel" id="view-arch-e">
+      <div class="guide-container">
+        <div class="guide-hero">
+          <div class="guide-hero-text">
+            <h2>Architecture E: Multi-Ward Two-Gateway Failover</h2>
+            <p>High-Availability Edge Mesh — Inter-Ward 1.0 ms LAN Coordination & Outage Resilience.</p>
+          </div>
+          <div class="guide-actions">
+            <button class="btn-jump-3d" onclick="jumpTo3D('E')">🏢 Open in 3D Ward Simulator</button>
+            <button class="btn-run-sim" onclick="runFromGuide('E')">▶ Run Arch E Live</button>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>1. What Happens in Plain English</h3>
+            <span class="section-tag">Everyday Analogy & Flow</span>
+          </div>
+          <div class="analogy-callout purple">
+            <div class="analogy-title">🤝 Everyday Analogy: The Neighboring Ward Sister</div>
+            <div class="analogy-text">
+              ICU Ward A and ICU Ward B are connected by a short corridor door (a 1.0 ms high-speed fiber link). If the server in Ward A suddenly crashes or reboots for a software upgrade, Ward A doesn't abandon its patients or revert to waiting for postal mail from 500 miles away. Instead, Ward A's sensors immediately hand the telemetry across the corridor door to Gateway B, which continues ringing the bedside emergency alarms in under 8 ms!
+            </div>
+          </div>
+          <div class="flow-steps-grid">
+            <div class="flow-step-card">
+              <div class="flow-step-num">Normal State</div>
+              <div class="flow-step-title">Dual Ward Balance</div>
+              <div class="flow-step-desc">Gateway A serves Ward A (Patients 1–5); Gateway B serves Ward B (Patients 6–10). Both run priority engines.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Load Balancing</div>
+              <div class="flow-step-desc">When Gateway A CPU exceeds 80%, normal batching tasks are offloaded across the 1.0 ms LAN to Gateway B's spare capacity.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Outage Injected</div>
+              <div class="flow-step-title">Gateway A Offline (40s–60s)</div>
+              <div class="flow-step-desc">Gateway A experiences a 20-second simulated hardware reboot. Telemetry automatically pivots to Gateway B.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">Seamless Failover</div>
+              <div class="flow-step-title">100% SLA Maintained</div>
+              <div class="flow-step-desc">Emergency alerts during the outage are processed by Gateway B in <strong>8.13 ms</strong> (retaining 100% SLA compliance).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-header">
+            <h3>2. The Experiment 5 Failover Resilience Benchmark</h3>
+            <span class="section-tag">Outage Comparison (t = 40s to 60s)</span>
+          </div>
+          <table class="results-comparison-table">
+            <thead>
+              <tr><th>Architecture</th><th>Ward A Status</th><th>Ward A Critical Latency</th><th>SLA Compliance</th><th>Failover Success</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Single-Gateway Arch D (No Failover)</strong></td>
+                <td>OFFLINE (Fallback to WAN)</td>
+                <td><strong>108.45 ms</strong></td>
+                <td>89.35% (Degraded)</td>
+                <td>0.00% (Manual Interruption)</td>
+              </tr>
+              <tr>
+                <td><strong>Multi-Ward Arch E (With Inter-Ward Failover)</strong></td>
+                <td>FAILOVER TO WARD B</td>
+                <td><strong>8.13 ms</strong></td>
+                <td><strong>100.00% (Sub-10ms)</strong></td>
+                <td><strong>100.00% (Zero Downtime)</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <strong>iFogSim2 Healthcare Fog Computing Project</strong> — Academic Demonstration & Research Console
+  </footer>
+
+  <!-- ====================================================================
+       JAVASCRIPT APPLICATION CORE
+       ==================================================================== -->
+  <script>
+    // Global Application State
+    let currentSimArch = 'D';
+    let isPlaying = true;
+    let simSpeed = 1.0;
+    let isOutageActive = false;
+    let autoRotate = true;
+
+    // Simulation Metrics Mapping
+    const ARCH_KPI_DATA = {
+      'A': { lat: '207.95 ms', lat_badge: 'Standard Cloud RTT', lat_class: 'badge-warn', bw: '0.00%', bw_badge: '1,953.1 KB Raw', bw_class: 'badge-warn', filt: '0 / 4,000', filt_badge: '0% Filtered', sla: '100.0%', sla_class: 'badge-success', hud: 'Topology: Arch A (Cloud-Only Baseline)' },
+      'B': { lat: '211.67 ms', lat_badge: '+3.72 ms Overhead', lat_class: 'badge-warn', bw: '0.00%', bw_badge: 'No Reduction', bw_class: 'badge-danger', filt: '0 / 4,000', filt_badge: '0% Filtered', sla: '100.0%', sla_class: 'badge-success', hud: 'Topology: Arch B (Fog Forwarding)' },
+      'C': { lat: '2,293.52 ms', lat_badge: 'Lethal Delay (Violated)', lat_class: 'badge-danger', bw: '77.22%', bw_badge: '445.0 KB vs 1,953 KB', bw_class: 'badge-success', filt: '593 / 4,000', filt_badge: '14.8% Filtered', sla: '27.88%', sla_class: 'badge-danger', hud: 'Topology: Arch C (Naive Aggregation Window Trap)' },
+      'D': { lat: '7.13 ms', lat_badge: '96.6% Faster (Local Bypass)', lat_class: 'badge-success', bw: '66.62%', bw_badge: '651.9 KB vs 1,953 KB', bw_class: 'badge-info', filt: '712 / 4,000', filt_badge: '17.8% Filtered', sla: '100.0%', sla_class: 'badge-success', hud: 'Topology: Arch D (Priority-Aware Fog)' },
+      'E': { lat: '7.31 ms', lat_badge: '100% Failover Resilient', lat_class: 'badge-purple', bw: '69.87%', bw_badge: 'Multi-Ward Optimized', bw_class: 'badge-purple', filt: '837 / 4,000', filt_badge: '709 Filt + 128 Suppr', sla: '100.0%', sla_class: 'badge-success', hud: 'Topology: Arch E (Multi-Ward Two-Gateway Failover)' }
+    };
+
+    // Node Information Directory for Raycasting
+    const NODE_DIRECTORY = {
+      'bed_a1': {
+        title: 'Patient Bed A1 (Cardiac ICU)',
+        type: 'Medical IoT Tier',
+        icon: '🛏️',
+        desc: 'Bedside monitoring unit in ICU Ward A. Equipped with 4 real-time vitals sensors (ECG, SpO2, Temperature, Blood Pressure) transmitting at 1 Hz.',
+        specs: [
+          ['Patient Ward', 'ICU Ward A (Left Wing)'],
+          ['Active Sensors', '4 continuous streams'],
+          ['Sampling Rate', '1 reading/sec per sensor'],
+          ['Local Link Latency', '2.0 ms to Gateway A']
+        ]
+      },
+      'gateway_a': {
+        title: 'Fog Gateway A (ICU Ward A)',
+        type: 'Edge Computing Tier',
+        icon: '🏢',
+        desc: 'Dedicated ward edge server for ICU Ward A. Performs priority classification, cross-sensor motion artifact suppression, and aggregation buffering.',
+        specs: [
+          ['Compute Capacity', '8,000 MIPS (Xeon Server)'],
+          ['Memory (RAM)', '8,192 MB ECC RAM'],
+          ['Inter-Ward LAN', '1.0 ms link to Gateway B'],
+          ['WAN Link to Cloud', '100.0 ms propagation latency'],
+          ['Active State', isOutageActive ? 'OFFLINE (Outage Active)' : 'ONLINE (Normal Operation)']
+        ]
+      },
+      'gateway_b': {
+        title: 'Fog Gateway B (ICU Ward B)',
+        type: 'Edge Computing Tier',
+        icon: '🏢',
+        desc: 'Ward edge server for ICU Ward B. Acts as the automatic failover peer for Gateway A during outages across the 1.0 ms inter-ward LAN link.',
+        specs: [
+          ['Compute Capacity', '8,000 MIPS (Xeon Server)'],
+          ['Memory (RAM)', '8,192 MB ECC RAM'],
+          ['Inter-Ward LAN', '1.0 ms link to Gateway A'],
+          ['Failover Status', isOutageActive ? 'ACTIVE (Serving Ward A Traffic)' : 'STANDBY LOAD BALANCE']
+        ]
+      },
+      'nurse_console': {
+        title: 'Nurse Station Emergency Console',
+        type: 'Clinical Actuation Tier',
+        icon: '🚨',
+        desc: 'Central bedside alarm and paging console located at the nursing hub. Flashes bright red whenever a critical cardiac alert arrives in < 10 ms.',
+        specs: [
+          ['Response Target SLA', '&le; 500 ms for life-critical vitals'],
+          ['Arch D Response Time', '7.13 ms (100% SLA Reliability)'],
+          ['Arch E Response Time', '7.31 ms (Normal) / 8.13 ms (Failover)'],
+          ['Network Link', '1.0 ms switched hospital LAN']
+        ]
+      },
+      'cloud_node': {
+        title: 'Remote Cloud Datacenter',
+        type: 'Cloud Infrastructure Tier',
+        icon: '☁️',
+        desc: 'Centralized cloud cluster for longitudinal EHR storage, hospital analytics, and population health trends. Connected via 100 ms WAN.',
+        specs: [
+          ['Compute Capacity', '44,800 MIPS'],
+          ['Storage Capacity', 'Unlimited Petabyte Archive'],
+          ['Round-Trip Latency', '200.0 ms WAN RTT + Processing'],
+          ['Ingest In Arch D', '66.62% less bandwidth than baseline']
+        ]
+      }
+    };
+
+    // ====================================================================
+    // TAB NAVIGATION
+    // ====================================================================
+    function switchMainTab(tabId) {
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const activePanel = document.getElementById(`view-${tabId}`);
+      if (activePanel) activePanel.classList.add('active');
+
+      // If switching back to simulator, trigger a resize to ensure Three.js canvas matches container
+      if (tabId === 'sim') {
+        setTimeout(onWindowResize, 50);
+      }
+    }
+
+    function jumpTo3D(arch) {
+      switchMainTab('sim');
+      selectSimArch(arch);
+    }
+
+    function selectSimArch(arch) {
+      currentSimArch = arch;
+      document.querySelectorAll('.arch-pill-btn').forEach(btn => btn.classList.remove('active'));
+      const activePill = document.getElementById(`pill-arch-${arch.toLowerCase()}`);
+      if (activePill) activePill.classList.add('active');
+
+      const kpi = ARCH_KPI_DATA[arch];
+      if (kpi) {
+        document.getElementById('kpi-latency').innerText = kpi.lat;
+        const bLat = document.getElementById('kpi-latency-badge');
+        bLat.innerText = kpi.lat_badge;
+        bLat.className = `kpi-badge ${kpi.lat_class}`;
+
+        document.getElementById('kpi-bw').innerText = kpi.bw;
+        const bBw = document.getElementById('kpi-bw-badge');
+        bBw.innerText = kpi.bw_badge;
+        bBw.className = `kpi-badge ${kpi.bw_class}`;
+
+        document.getElementById('kpi-filt').innerText = kpi.filt;
+        document.getElementById('kpi-filt-badge').innerText = kpi.filt_badge;
+
+        document.getElementById('kpi-sla').innerText = kpi.sla;
+        const bSla = document.getElementById('kpi-sla-badge');
+        bSla.className = `kpi-badge ${kpi.sla_class}`;
+
+        document.getElementById('hud-arch-mode').innerText = kpi.hud;
+      }
+
+      // Rebuild 3D animation packets for the selected architecture
+      rebuildPackets();
+    }
+
+    // ====================================================================
+    // THREE.JS 3D SCENE & WARD VISUALIZER
+    // ====================================================================
+    let scene, camera, renderer, controls;
+    let nodes = {};
+    let packets = [];
+    let raycaster, mouse;
+    let bufferFillCounter = 0;
+    let emergencyRing = null;
+    let outageMarker = null;
+
+    function init3D() {
+      const container = document.getElementById('three-viewport');
+      const canvas = document.getElementById('three-canvas');
+      if (!container || !canvas) return;
+
+      // 1. Scene & Bright Light Theme Studio Background
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xf1f5f9);
+
+      // 2. Camera Setup
+      camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+      camera.position.set(0, 26, 42);
+
+      // 3. WebGL Renderer
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+
+      // 4. OrbitControls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.maxPolarAngle = Math.PI / 2.1;
+      controls.target.set(0, 0, 0);
+
+      // 5. Lighting: Soft Ambient + Directional Light
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.65);
+      dirLight.position.set(20, 40, 25);
+      dirLight.castShadow = true;
+      scene.add(dirLight);
+
+      // 6. Subtle Floor Grid
+      const gridHelper = new THREE.GridHelper(60, 30, 0xcbd5e1, 0xe2e8f0);
+      gridHelper.position.y = -0.05;
+      scene.add(gridHelper);
+
+      // 7. Raycasting for Node Inspection
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+      canvas.addEventListener('click', onCanvasClick, false);
+
+      // 8. Build Hospital 3D Geometry
+      buildHospitalFloorplan();
+
+      // 9. Window Resize Handling
+      window.addEventListener('resize', onWindowResize, false);
+
+      // 10. Start Animation Loop
+      animate();
+    }
+
+    function buildHospitalFloorplan() {
+      // Materials
+      const bedMat = new THREE.MeshLambertMaterial({ color: 0x3b82f6 });
+      const mattressMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+      const pillowMat = new THREE.MeshLambertMaterial({ color: 0xe2e8f0 });
+      const monitorScreenMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
+      const gatewayMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
+      const consoleMat = new THREE.MeshLambertMaterial({ color: 0x0f172a });
+      const cloudMat = new THREE.MeshLambertMaterial({ color: 0x2563eb });
+
+      // Helper function to create a realistic 3D Hospital Bed
+      function createBed(x, z, labelKey) {
+        const bedGroup = new THREE.Group();
+        bedGroup.position.set(x, 0, z);
+
+        // Bed Frame
+        const frameGeo = new THREE.BoxGeometry(3.6, 0.8, 6.0);
+        const frameMesh = new THREE.Mesh(frameGeo, bedMat);
+        frameMesh.position.y = 0.4;
+        bedGroup.add(frameMesh);
+
+        // Mattress
+        const matGeo = new THREE.BoxGeometry(3.2, 0.6, 5.6);
+        const matMesh = new THREE.Mesh(matGeo, mattressMat);
+        matMesh.position.y = 1.0;
+        bedGroup.add(matMesh);
+
+        // Pillow
+        const pillowGeo = new THREE.BoxGeometry(2.4, 0.3, 1.2);
+        const pillowMesh = new THREE.Mesh(pillowGeo, pillowMat);
+        pillowMesh.position.set(0, 1.4, -2.0);
+        bedGroup.add(pillowMesh);
+
+        // Vital Monitor on Stand
+        const poleGeo = new THREE.CylinderGeometry(0.08, 0.08, 3.2);
+        const poleMesh = new THREE.Mesh(poleGeo, new THREE.MeshLambertMaterial({ color: 0x64748b }));
+        poleMesh.position.set(-2.2, 1.6, -1.8);
+        bedGroup.add(poleMesh);
+
+        const screenGeo = new THREE.BoxGeometry(1.2, 0.9, 0.3);
+        const screenMesh = new THREE.Mesh(screenGeo, monitorScreenMat);
+        screenMesh.position.set(-2.2, 3.2, -1.8);
+        bedGroup.add(screenMesh);
+
+        bedGroup.userData = { nodeKey: labelKey };
+        scene.add(bedGroup);
+        return bedGroup;
+      }
+
+      // 1. ICU Ward A Beds (Left Wing)
+      nodes.bedA1 = createBed(-18, -7, 'bed_a1');
+      nodes.bedA2 = createBed(-18, 0, 'bed_a1');
+      nodes.bedA3 = createBed(-18, 7, 'bed_a1');
+
+      // 2. ICU Ward B Beds (Right Wing)
+      nodes.bedB1 = createBed(18, -7, 'bed_a1');
+      nodes.bedB2 = createBed(18, 0, 'bed_a1');
+      nodes.bedB3 = createBed(18, 7, 'bed_a1');
+
+      // 3. Fog Gateway A (Server Rack with 5 buffer slots)
+      const gwAGroup = new THREE.Group();
+      gwAGroup.position.set(-8, 0, 0);
+      const rackGeo = new THREE.BoxGeometry(3.2, 6.0, 3.2);
+      const rackAMesh = new THREE.Mesh(rackGeo, gatewayMat);
+      rackAMesh.position.y = 3.0;
+      gwAGroup.add(rackAMesh);
+
+      // 5 Buffer Slots on Gateway A
+      gwAGroup.bufferSlots = [];
+      for (let i = 0; i < 5; i++) {
+        const slotGeo = new THREE.BoxGeometry(2.2, 0.45, 0.15);
+        const slotMat = new THREE.MeshBasicMaterial({ color: i < 3 ? 0x10b981 : 0x94a3b8 });
+        const slotMesh = new THREE.Mesh(slotGeo, slotMat);
+        slotMesh.position.set(0, 1.5 + (i * 0.8), 1.62);
+        gwAGroup.add(slotMesh);
+        gwAGroup.bufferSlots.push(slotMesh);
+      }
+
+      // Outage Marker (Red Cross / X above Gateway A)
+      const xBar1 = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.4, 0.4), new THREE.MeshBasicMaterial({ color: 0xdc2626 }));
+      xBar1.rotation.z = Math.PI / 4;
+      const xBar2 = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.4, 0.4), new THREE.MeshBasicMaterial({ color: 0xdc2626 }));
+      xBar2.rotation.z = -Math.PI / 4;
+      outageMarker = new THREE.Group();
+      outageMarker.add(xBar1);
+      outageMarker.add(xBar2);
+      outageMarker.position.set(0, 7.2, 0);
+      outageMarker.visible = false;
+      gwAGroup.add(outageMarker);
+
+      gwAGroup.userData = { nodeKey: 'gateway_a' };
+      scene.add(gwAGroup);
+      nodes.gatewayA = gwAGroup;
+
+      // 4. Fog Gateway B (Server Rack with buffer slots)
+      const gwBGroup = new THREE.Group();
+      gwBGroup.position.set(8, 0, 0);
+      const rackBMesh = new THREE.Mesh(rackGeo, gatewayMat);
+      rackBMesh.position.y = 3.0;
+      gwBGroup.add(rackBMesh);
+
+      gwBGroup.bufferSlots = [];
+      for (let i = 0; i < 5; i++) {
+        const slotGeo = new THREE.BoxGeometry(2.2, 0.45, 0.15);
+        const slotMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8 });
+        const slotMesh = new THREE.Mesh(slotGeo, slotMat);
+        slotMesh.position.set(0, 1.5 + (i * 0.8), 1.62);
+        gwBGroup.add(slotMesh);
+        gwBGroup.bufferSlots.push(slotMesh);
+      }
+
+      gwBGroup.userData = { nodeKey: 'gateway_b' };
+      scene.add(gwBGroup);
+      nodes.gatewayB = gwBGroup;
+
+      // 5. Nurse Station Emergency Console (Center Front)
+      const consoleGroup = new THREE.Group();
+      consoleGroup.position.set(0, 0, 11);
+      const deskGeo = new THREE.BoxGeometry(6.0, 1.8, 3.0);
+      const deskMesh = new THREE.Mesh(deskGeo, consoleMat);
+      deskMesh.position.y = 0.9;
+      consoleGroup.add(deskMesh);
+
+      // Emergency Pulsing Ring on Nurse Console
+      const ringGeo = new THREE.RingGeometry(1.6, 2.2, 32);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xdc2626, side: THREE.DoubleSide, transparent: true, opacity: 0.0 });
+      emergencyRing = new THREE.Mesh(ringGeo, ringMat);
+      emergencyRing.rotation.x = -Math.PI / 2;
+      emergencyRing.position.y = 1.85;
+      consoleGroup.add(emergencyRing);
+
+      consoleGroup.userData = { nodeKey: 'nurse_console' };
+      scene.add(consoleGroup);
+      nodes.nurseConsole = consoleGroup;
+
+      // 6. Remote Cloud Datacenter (Top Center Rear)
+      const cloudGroup = new THREE.Group();
+      cloudGroup.position.set(0, 0, -18);
+      const cloudTowerGeo = new THREE.BoxGeometry(6.5, 9.0, 4.5);
+      const cloudTowerMesh = new THREE.Mesh(cloudTowerGeo, cloudMat);
+      cloudTowerMesh.position.y = 4.5;
+      cloudGroup.add(cloudTowerMesh);
+
+      cloudGroup.userData = { nodeKey: 'cloud_node' };
+      scene.add(cloudGroup);
+      nodes.cloudNode = cloudGroup;
+
+      // Build Dynamic Link Cables
+      buildConnectingLinks();
+
+      // Initialize Animated Packets
+      rebuildPackets();
+    }
+
+    function buildConnectingLinks() {
+      // Material lines
+      const lanMat = new THREE.LineBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.6 });
+      const interWardMat = new THREE.LineBasicMaterial({ color: 0x7c3aed, linewidth: 2 });
+      const wanMat = new THREE.LineDashedMaterial({ color: 0x2563eb, dashSize: 1, gapSize: 0.5 });
+
+      function addLine(p1, p2, mat) {
+        const geo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+        const line = new THREE.Line(geo, mat);
+        if (mat.isLineDashedMaterial) line.computeLineDistances();
+        scene.add(line);
+      }
+
+      // Ward A Beds -> Gateway A
+      addLine(new THREE.Vector3(-18, 1, -7), new THREE.Vector3(-8, 3, 0), lanMat);
+      addLine(new THREE.Vector3(-18, 1, 0), new THREE.Vector3(-8, 3, 0), lanMat);
+      addLine(new THREE.Vector3(-18, 1, 7), new THREE.Vector3(-8, 3, 0), lanMat);
+
+      // Ward B Beds -> Gateway B
+      addLine(new THREE.Vector3(18, 1, -7), new THREE.Vector3(8, 3, 0), lanMat);
+      addLine(new THREE.Vector3(18, 1, 0), new THREE.Vector3(8, 3, 0), lanMat);
+      addLine(new THREE.Vector3(18, 1, 7), new THREE.Vector3(8, 3, 0), lanMat);
+
+      // Gateway A & B -> Nurse Console
+      addLine(new THREE.Vector3(-8, 3, 0), new THREE.Vector3(0, 1.8, 11), lanMat);
+      addLine(new THREE.Vector3(8, 3, 0), new THREE.Vector3(0, 1.8, 11), lanMat);
+
+      // Inter-Ward 1.0 ms LAN Bridge: Gateway A <-> Gateway B
+      addLine(new THREE.Vector3(-8, 3, 0), new THREE.Vector3(8, 3, 0), interWardMat);
+
+      // Gateway A & B -> Cloud WAN
+      addLine(new THREE.Vector3(-8, 3, 0), new THREE.Vector3(0, 5, -18), wanMat);
+      addLine(new THREE.Vector3(8, 3, 0), new THREE.Vector3(0, 5, -18), wanMat);
+    }
+
+    function rebuildPackets() {
+      // Clear old packets
+      packets.forEach(p => scene.remove(p.mesh));
+      packets = [];
+
+      const packetGeo = new THREE.SphereGeometry(0.35, 16, 16);
+      const greenMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+      const amberMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+      const redMat = new THREE.MeshBasicMaterial({ color: 0xdc2626 });
+      const purpleMat = new THREE.MeshBasicMaterial({ color: 0x7c3aed });
+
+      // Add packets based on currentSimArch
+      if (currentSimArch === 'A') {
+        // Arch A: All packets travel all the way from Bed to Cloud
+        for (let i = 0; i < 4; i++) {
+          const mesh = new THREE.Mesh(packetGeo, i === 0 ? redMat : greenMat);
+          scene.add(mesh);
+          packets.push({
+            mesh: mesh,
+            type: i === 0 ? 'critical' : 'normal',
+            p1: new THREE.Vector3(-18, 1.5, 0),
+            p2: new THREE.Vector3(0, 5, -18),
+            t: i * 0.25,
+            speed: 0.008
+          });
+        }
+      } else if (currentSimArch === 'D') {
+        // Arch D: Priority Dual-Path Routing
+        // Normal batching packet: Bed -> Gateway A
+        const pNorm = new THREE.Mesh(packetGeo, greenMat);
+        scene.add(pNorm);
+        packets.push({
+          mesh: pNorm,
+          type: 'normal',
+          p1: new THREE.Vector3(-18, 1.5, 0),
+          p2: new THREE.Vector3(-8, 3, 0),
+          t: 0.1,
+          speed: 0.012
+        });
+
+        // Aggregated batch: Gateway A -> Cloud
+        const pBatch = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 16), greenMat);
+        scene.add(pBatch);
+        packets.push({
+          mesh: pBatch,
+          type: 'batch',
+          p1: new THREE.Vector3(-8, 3, 0),
+          p2: new THREE.Vector3(0, 5, -18),
+          t: 0.5,
+          speed: 0.009
+        });
+
+        // Immediate Local Emergency Packet: Gateway A -> Nurse Console
+        const pEmerg = new THREE.Mesh(packetGeo, redMat);
+        scene.add(pEmerg);
+        packets.push({
+          mesh: pEmerg,
+          type: 'critical',
+          p1: new THREE.Vector3(-8, 3, 0),
+          p2: new THREE.Vector3(0, 1.8, 11),
+          t: 0.0,
+          speed: 0.02
+        });
+      } else if (currentSimArch === 'E') {
+        // Arch E: Multi-Ward with Failover
+        if (isOutageActive) {
+          // Outage active: Ward A packets reroute across 1.0 ms LAN to Gateway B!
+          const pReroute = new THREE.Mesh(packetGeo, purpleMat);
+          scene.add(pReroute);
+          packets.push({
+            mesh: pReroute,
+            type: 'failover',
+            p1: new THREE.Vector3(-18, 1.5, 0),
+            p2: new THREE.Vector3(8, 3, 0),
+            t: 0.2,
+            speed: 0.015
+          });
+
+          // Gateway B triggers Nurse Console
+          const pEmergB = new THREE.Mesh(packetGeo, redMat);
+          scene.add(pEmergB);
+          packets.push({
+            mesh: pEmergB,
+            type: 'critical',
+            p1: new THREE.Vector3(8, 3, 0),
+            p2: new THREE.Vector3(0, 1.8, 11),
+            t: 0.6,
+            speed: 0.02
+          });
+        } else {
+          // Normal dual ward operation
+          const pA = new THREE.Mesh(packetGeo, greenMat);
+          const pB = new THREE.Mesh(packetGeo, greenMat);
+          scene.add(pA);
+          scene.add(pB);
+          packets.push({ mesh: pA, type: 'normal', p1: new THREE.Vector3(-18, 1.5, -7), p2: new THREE.Vector3(-8, 3, 0), t: 0.1, speed: 0.012 });
+          packets.push({ mesh: pB, type: 'normal', p1: new THREE.Vector3(18, 1.5, 7), p2: new THREE.Vector3(8, 3, 0), t: 0.3, speed: 0.012 });
+        }
+      }
+    }
+
+    function onCanvasClick(event) {
+      if (!camera || !renderer) return;
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children, true);
+
+      if (intersects.length > 0) {
+        // Find ancestor with userData.nodeKey
+        let obj = intersects[0].object;
+        while (obj && (!obj.userData || !obj.userData.nodeKey)) {
+          obj = obj.parent;
+        }
+        if (obj && obj.userData && obj.userData.nodeKey) {
+          selectNodeByKey(obj.userData.nodeKey);
+        }
+      }
+    }
+
+    function selectNodeByKey(key) {
+      const data = NODE_DIRECTORY[key];
+      if (!data) return;
+
+      document.getElementById('inspector-title').innerText = data.title;
+      document.getElementById('inspector-icon').innerText = data.icon;
+      document.getElementById('inspector-node-type').innerText = data.type;
+      document.getElementById('inspector-desc').innerText = data.desc;
+
+      const table = document.getElementById('inspector-specs-table');
+      table.innerHTML = '';
+      data.specs.forEach(pair => {
+        const row = table.insertRow();
+        row.insertCell(0).innerText = pair[0];
+        row.insertCell(1).innerText = pair[1];
+      });
+    }
+
+    function togglePlayPause() {
+      isPlaying = !isPlaying;
+      document.getElementById('play-pause-icon').innerText = isPlaying ? '⏸️' : '▶️';
+      document.getElementById('play-pause-text').innerText = isPlaying ? 'Pause' : 'Play';
+    }
+
+    function stepTick() {
+      updateSimulationStep(0.08);
+    }
+
+    function changeSimSpeed(val) {
+      simSpeed = parseFloat(val) || 1.0;
+    }
+
+    function triggerEmergencyPulse() {
+      if (emergencyRing) {
+        emergencyRing.material.opacity = 0.9;
+        emergencyRing.scale.set(1.0, 1.0, 1.0);
+      }
+      rebuildPackets();
+    }
+
+    function toggleGatewayOutage() {
+      isOutageActive = !isOutageActive;
+      const btn = document.getElementById('btn-toggle-outage');
+      if (isOutageActive) {
+        btn.classList.add('active');
+        btn.innerText = '🔴 Outage Active (Gateway A Down)';
+        if (outageMarker) outageMarker.visible = true;
+      } else {
+        btn.classList.remove('active');
+        btn.innerText = '⚠️ Simulate Gateway A Outage';
+        if (outageMarker) outageMarker.visible = false;
+      }
+      rebuildPackets();
+    }
+
+    function resetCamera() {
+      if (camera && controls) {
+        camera.position.set(0, 26, 42);
+        controls.target.set(0, 0, 0);
+        controls.update();
+      }
+    }
+
+    function toggleAutoRotate() {
+      autoRotate = !autoRotate;
+      document.getElementById('btn-autorotate').innerText = `Auto-Rotate: ${autoRotate ? 'ON' : 'OFF'}`;
+    }
+
+    function onWindowResize() {
+      const container = document.getElementById('three-viewport');
+      if (!container || !camera || !renderer) return;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    function updateSimulationStep(delta) {
+      // 1. Move Packets
+      packets.forEach(p => {
+        p.t += p.speed * simSpeed * delta * 60;
+        if (p.t > 1.0) p.t = 0.0;
+        p.mesh.position.lerpVectors(p.p1, p.p2, p.t);
+        // Add small vertical arc
+        p.mesh.position.y += Math.sin(p.t * Math.PI) * 1.5;
+      });
+
+      // 2. Buffer Slots Animation on Gateway A
+      bufferFillCounter += delta * simSpeed;
+      if (bufferFillCounter > 1.0) {
+        bufferFillCounter = 0;
+        if (nodes.gatewayA && nodes.gatewayA.bufferSlots) {
+          const filledCount = Math.floor(Math.random() * 5) + 1;
+          nodes.gatewayA.bufferSlots.forEach((slot, idx) => {
+            slot.material.color.setHex(idx < filledCount ? 0x10b981 : 0x94a3b8);
+          });
+          document.getElementById('buffer-status-text').innerText = `${filledCount} / 5 Slots Queued`;
+          for (let i = 0; i < 5; i++) {
+            const el = document.getElementById(`bs-${i}`);
+            if (el) {
+              if (i < filledCount) el.classList.add('filled');
+              else el.classList.remove('filled');
+            }
+          }
+        }
+      }
+
+      // 3. Emergency Ring Fade
+      if (emergencyRing && emergencyRing.material.opacity > 0.01) {
+        emergencyRing.material.opacity -= 0.015 * simSpeed;
+        emergencyRing.scale.x += 0.02 * simSpeed;
+        emergencyRing.scale.y += 0.02 * simSpeed;
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (controls) {
+        controls.autoRotate = autoRotate;
+        controls.autoRotateSpeed = 0.6;
+        controls.update();
+      }
+      if (isPlaying) {
+        updateSimulationStep(0.016);
+      }
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+      }
+    }
+
+    // ====================================================================
+    // LIVE JAVA SIMULATION TRIGGER VIA BACKEND
+    // ====================================================================
+    async function executeJavaSim() {
+      const arch = document.getElementById('run-arch-select').value;
+      const patients = document.getElementById('run-patients-select').value;
+      const windowVal = document.getElementById('run-window-select').value;
+      const btn = document.getElementById('btn-trigger-sim');
+      const termBody = document.getElementById('sim-terminal-body');
+      const statusPill = document.getElementById('term-status-pill');
+
+      btn.disabled = true;
+      btn.innerText = '⏳ Executing Java Engine...';
+      statusPill.innerText = 'Running iFogSim2...';
+      statusPill.style.color = '#38bdf8';
+      termBody.innerText = `>>> Submitting command: build_and_run.ps1 -Arch ${arch} -NumPatients ${patients} -WindowSize ${windowVal} ...\n`;
+
+      try {
+        const response = await fetch('/api/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ arch: arch, patients: parseInt(patients), window: parseInt(windowVal) })
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          termBody.innerText += `\n[SUCCESS] Simulation finished in ${result.elapsed_seconds}s (Return Code 0)\n\n`;
+          termBody.innerText += result.stdout_tail || '';
+          statusPill.innerText = `Completed in ${result.elapsed_seconds}s`;
+          statusPill.style.color = '#4ade80';
+
+          // If individual summary was returned, update UI metrics
+          if (result.summary && arch in ARCH_KPI_DATA) {
+            selectSimArch(arch);
+          }
+        } else {
+          termBody.innerText += `\n[FAILED] Error: ${result.message || 'Simulation error'}\n`;
+          termBody.innerText += result.stdout_tail || '';
+          statusPill.innerText = 'Failed';
+          statusPill.style.color = '#f87171';
+        }
+      } catch (err) {
+        termBody.innerText += `\n[SERVER ERROR] Unable to reach backend server: ${err.message}\n`;
+        statusPill.innerText = 'Server Offline';
+        statusPill.style.color = '#f87171';
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '▶ Run Live iFogSim Simulation';
+      }
+    }
+
+    function runFromGuide(arch) {
+      document.getElementById('run-arch-select').value = arch;
+      switchMainTab('sim');
+      executeJavaSim();
+    }
+
+    function toggleTerminal() {
+      const termBody = document.getElementById('sim-terminal-body');
+      termBody.style.display = termBody.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Initialize on window load
+    window.addEventListener('DOMContentLoaded', () => {
+      init3D();
+      selectSimArch('D');
+    });
+  </script>
+</body>
+</html>
