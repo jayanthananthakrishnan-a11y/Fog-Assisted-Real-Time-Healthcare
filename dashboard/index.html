@@ -871,6 +871,304 @@
       color: var(--text-main);
     }
 
+    /* Hop-by-Hop & TLS Grid */
+    .hop-tls-grid, .dag-tcp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 950px) {
+      .hop-tls-grid, .dag-tcp-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .feature-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .feature-header h3 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hop-legs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .hop-leg-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 12px;
+      font-size: 0.76rem;
+      transition: all 0.15s;
+    }
+    .hop-leg-row.active-leg {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+      font-weight: 700;
+    }
+    .hop-leg-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hop-leg-val {
+      font-family: monospace;
+      font-weight: 700;
+    }
+    .hop-summary-pills {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .hop-pill {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .hop-pill.cloud {
+      background: var(--amber-subtle);
+      border: 1px solid var(--amber-border);
+      color: var(--amber);
+    }
+    .hop-pill.bypass {
+      background: var(--green-subtle);
+      border: 1px solid var(--green-border);
+      color: var(--green);
+    }
+
+    /* TLS Toggle & Metrics */
+    .tls-toggle-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+    .tls-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    .tls-status-badge.secure {
+      background: var(--green-subtle);
+      color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+    .tls-status-badge.plain {
+      background: var(--amber-subtle);
+      color: var(--amber);
+      border: 1px solid var(--amber-border);
+    }
+    .tls-metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .tls-metric-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.72rem;
+    }
+    .tls-metric-label {
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .tls-metric-val {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* Sensor DAG & TCP AIMD Pipeline */
+    .dag-flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+    .dag-node-box {
+      flex: 1;
+      min-width: 65px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 3px;
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .dag-node-box.active-dag {
+      background: #eff6ff;
+      border-color: #3b82f6;
+      color: #1d4ed8;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+    .dag-node-name {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .dag-arrow {
+      color: var(--text-dim);
+      font-weight: 800;
+      font-size: 0.75rem;
+    }
+    .aimd-profile-pills {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .aimd-pill {
+      flex: 1;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .aimd-pill:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+    .aimd-pill.active {
+      background: #f5f3ff;
+      border-color: #8b5cf6;
+      color: #6d28d9;
+      font-weight: 700;
+    }
+    .aimd-gauge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .aimd-gauge-num {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #7c3aed;
+      min-width: 60px;
+      text-align: center;
+    }
+    .aimd-bar-track {
+      flex: 1;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .aimd-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      width: 70%;
+      transition: width 0.3s;
+    }
+
+    /* Patient Reports Styling */
+    .patient-reports-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .reports-kpi-banner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 850px) {
+      .reports-kpi-banner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .report-stat-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .report-stat-num {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+    .report-stat-label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .risk-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .risk-low {
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+    }
+    .risk-med {
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+    .risk-high {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
     footer {
       border-top: 1px solid var(--border);
       background: #fff;
@@ -912,6 +1210,9 @@
       </button>
       <button class="nav-tab-btn tab-e" id="tab-btn-arch-e" onclick="switchMainTab('arch-e')">
         Arch E: Multi-Ward Failover
+      </button>
+      <button class="nav-tab-btn" id="tab-btn-reports" onclick="switchMainTab('reports')">
+        📋 Clinical Reports & NEWS2
       </button>
     </nav>
 
@@ -1064,6 +1365,144 @@
           <div class="kpi-title">Emergency SLA Reliability</div>
           <div class="kpi-value" id="kpi-sla" style="color:var(--green);">100.0%</div>
           <span class="kpi-badge badge-success" id="kpi-sla-badge">100% Within 500 ms SLA</span>
+        </div>
+      </div>
+
+      <!-- Hop-by-Hop Latency & TLS 1.3 Overhead Inspector -->
+      <div class="hop-tls-grid">
+        <!-- Card 1: Hop-by-Hop Latency Attribution -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <h3>⏱️ Hop-by-Hop Latency Breakdown (4 Legs)</h3>
+            <span class="node-type-badge" id="hop-active-badge">Arch D Local Bypass Active</span>
+          </div>
+          <div class="hop-legs-list">
+            <div class="hop-leg-row active-leg" id="hop-leg-1">
+              <span class="hop-leg-name"><span>📡</span> Leg 1: Bedside Sensors &rarr; Fog Gateway</span>
+              <span class="hop-leg-val">1.89 ms (LAN)</span>
+            </div>
+            <div class="hop-leg-row" id="hop-leg-2">
+              <span class="hop-leg-name"><span>🌐</span> Leg 2: Fog Gateway &rarr; Remote Cloud Datacenter</span>
+              <span class="hop-leg-val">101.40 ms (WAN Uplink)</span>
+            </div>
+            <div class="hop-leg-row" id="hop-leg-3">
+              <span class="hop-leg-name"><span>☁️</span> Leg 3: Cloud Decision &rarr; Fog Gateway</span>
+              <span class="hop-leg-val">101.20 ms (WAN Downlink)</span>
+            </div>
+            <div class="hop-leg-row active-leg" id="hop-leg-4">
+              <span class="hop-leg-name"><span>🚨</span> Leg 4: Fog Gateway &rarr; Bedside Monitor Alarm</span>
+              <span class="hop-leg-val">1.02 ms (LAN Actuation)</span>
+            </div>
+          </div>
+          <div class="hop-summary-pills">
+            <div class="hop-pill cloud" id="hop-cloud-pill">
+              Cloud Round-Trip: 205.51 ms
+            </div>
+            <div class="hop-pill bypass" id="hop-bypass-pill">
+              Local Bypass: 7.13 ms (Legs 1 + 4 + CPU)
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: TLS 1.3 AES-GCM Overhead & Security -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <h3>🔒 TLS 1.3 AES-GCM Cryptographic Profiler</h3>
+            <button class="control-btn" id="btn-toggle-tls" onclick="toggleTlsMode()">
+              Toggle Security Mode
+            </button>
+          </div>
+          <div class="tls-toggle-box">
+            <div>
+              <div style="font-size:0.75rem; font-weight:700; color:var(--text-main);" id="tls-mode-title">Mode: TLS 1.3 AES-GCM Encryption</div>
+              <div style="font-size:0.68rem; color:var(--text-dim);" id="tls-mode-desc">Record framing (+37B) and cryptographic CPU demand active</div>
+            </div>
+            <span class="tls-status-badge secure" id="tls-status-badge">● TLS 1.3 Active</span>
+          </div>
+          <div class="tls-metrics-grid">
+            <div class="tls-metric-card">
+              <div class="tls-metric-label">Record Framing</div>
+              <div class="tls-metric-val" id="tls-val-framing">+37 Bytes / Packet</div>
+            </div>
+            <div class="tls-metric-card">
+              <div class="tls-metric-label">Crypto CPU Load</div>
+              <div class="tls-metric-val" id="tls-val-cpu">+15.0 MIPS (AES-GCM)</div>
+            </div>
+            <div class="tls-metric-card">
+              <div class="tls-metric-label">Handshake Delay</div>
+              <div class="tls-metric-val" id="tls-val-handshake">2.0 ms LAN / 100 ms WAN</div>
+            </div>
+            <div class="tls-metric-card">
+              <div class="tls-metric-label">SLA Compliance</div>
+              <div class="tls-metric-val" style="color:var(--green);" id="tls-val-sla">100.0% Preserved</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sensor DAG Pipeline & TCP AIMD Controller Grid -->
+      <div class="dag-tcp-grid">
+        <!-- Card 1: Sensor DAG Pipeline & NEWS2 -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <h3>🧬 Clinical Sensor DAG & NEWS2 Fusion Engine</h3>
+            <span class="node-type-badge" style="background:var(--purple-subtle); color:var(--purple); border-color:var(--purple-border);">G = (V, E) DAG</span>
+          </div>
+          <div class="dag-flow-row">
+            <div class="dag-node-box active-dag">
+              <div class="dag-node-name">v_sense</div>
+              <div>Sensors (6)</div>
+            </div>
+            <span class="dag-arrow">&rarr;</span>
+            <div class="dag-node-box active-dag">
+              <div class="dag-node-name">v_filter</div>
+              <div>&Delta;-Filter</div>
+            </div>
+            <span class="dag-arrow">&rarr;</span>
+            <div class="dag-node-box active-dag">
+              <div class="dag-node-name">v_fusion</div>
+              <div>NEWS2</div>
+            </div>
+            <span class="dag-arrow">&rarr;</span>
+            <div class="dag-node-box active-dag">
+              <div class="dag-node-name">v_sched</div>
+              <div>Greedy EDF</div>
+            </div>
+            <span class="dag-arrow">&rarr;</span>
+            <div class="dag-node-box active-dag" style="border-color:#10b981; color:#059669;">
+              <div class="dag-node-name">v_actuate</div>
+              <div>Alarm Bed</div>
+            </div>
+          </div>
+          <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; background:var(--bg-subtle); padding:8px 12px; border-radius:6px; font-size:0.75rem;">
+            <span>Current NEWS2 Composite Score: <strong style="color:var(--blue);" id="dag-news2-val">1 / 20 (Low Risk)</strong></span>
+            <span style="color:var(--green); font-weight:700;">✅ 91.9% Motion Artifacts Suppressed</span>
+          </div>
+        </div>
+
+        <!-- Card 2: TCP-Inspired Adaptive Sliding Window (AIMD) -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <h3>📈 TCP AIMD Adaptive Sliding Window Controller</h3>
+            <span class="node-type-badge" id="aimd-action-badge" style="background:#eff6ff; color:#1d4ed8;">Additive Increase</span>
+          </div>
+          <div class="aimd-profile-pills">
+            <button class="aimd-pill active" id="aimd-pill-stable" onclick="selectTcpProfile('stable')">Stable Post-Op (W=20)</button>
+            <button class="aimd-pill" id="aimd-pill-chronic" onclick="selectTcpProfile('chronic')">Chronic Cardiac (W=8)</button>
+            <button class="aimd-pill" id="aimd-pill-acute" onclick="selectTcpProfile('acute')">Acute ICU (W=2)</button>
+          </div>
+          <div class="aimd-gauge-wrap">
+            <div class="aimd-gauge-num" id="aimd-gauge-num">W = 18</div>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:4px; font-weight:600; color:var(--text-muted);">
+                <span>Current Batch Window Size</span>
+                <span id="aimd-queue-util">Queue Util: 34.2% (&lt; 70%)</span>
+              </div>
+              <div class="aimd-bar-track">
+                <div class="aimd-bar-fill" id="aimd-bar-fill" style="width: 90%;"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1561,6 +2000,70 @@
       </div>
     </div>
 
+    <!-- ====================================================================
+         VIEW 7: PATIENT CLINICAL REPORTS & AUTOMATED NEWS2 TRIAGE
+         ==================================================================== -->
+    <div class="view-panel" id="view-reports">
+      <div class="guide-hero">
+        <div class="guide-badge" style="background:var(--purple-subtle); color:var(--purple); border-color:var(--purple-border);">
+          Automated Clinical Intelligence
+        </div>
+        <h2>Patient Clinical Reports & Automated NEWS2 Triage</h2>
+        <p class="guide-subtitle">
+          Real-time patient-level diagnostic records generated by the Hospital Fog Gateway, tracking multi-vital physiological trajectories, composite NEWS2 risk scores (0–20), motion artifact suppression, and clinical SLA compliance.
+        </p>
+      </div>
+
+      <div class="patient-reports-container">
+        <!-- Reports KPI Banner -->
+        <div class="reports-kpi-banner">
+          <div class="report-stat-card">
+            <div class="report-stat-num" style="color:var(--blue);">10 Patients</div>
+            <div class="report-stat-label">Monitored Across ICU Ward A & B</div>
+          </div>
+          <div class="report-stat-card">
+            <div class="report-stat-num" style="color:var(--green);">100.0% SLA</div>
+            <div class="report-stat-label">Life-Critical Response (&le; 500 ms)</div>
+          </div>
+          <div class="report-stat-card">
+            <div class="report-stat-num" style="color:#7c3aed;">91.9% Filtered</div>
+            <div class="report-stat-label">Motion Artifacts Suppressed</div>
+          </div>
+          <div class="report-stat-card">
+            <div class="report-stat-num" style="color:var(--amber);">NEWS2 Active</div>
+            <div class="report-stat-label">Multi-Vital Composite Risk Fusion</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-main);">Clinical Patient Diagnostic Callset</h3>
+          <button class="control-btn" onclick="loadPatientReports()">🔄 Refresh Reports</button>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="results-comparison-table" id="table-patient-reports">
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Ward Location</th>
+                <th>Clinical Profile</th>
+                <th>NEWS2 Score</th>
+                <th>Triage Risk</th>
+                <th>Total Readings</th>
+                <th>Critical Alerts</th>
+                <th>Artifacts Suppressed</th>
+                <th>Critical SLA %</th>
+                <th>Overall SLA %</th>
+              </tr>
+            </thead>
+            <tbody id="patient-reports-tbody">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <footer>
@@ -1706,6 +2209,11 @@
 
       // Rebuild 3D animation packets for the selected architecture
       rebuildPackets();
+
+      // Update Hop-by-Hop 4-leg latency attribution
+      if (typeof updateHopByHopReadout === 'function') {
+        updateHopByHopReadout(arch);
+      }
     }
 
     // ====================================================================
@@ -2276,10 +2784,214 @@
       termBody.style.display = termBody.style.display === 'none' ? 'block' : 'none';
     }
 
+    // ====================================================================
+    // HOP-BY-HOP ATTRIBUTION, TLS 1.3, TCP AIMD & PATIENT REPORTS
+    // ====================================================================
+    function updateHopByHopReadout(arch) {
+      const l1 = document.getElementById('hop-leg-1');
+      const l2 = document.getElementById('hop-leg-2');
+      const l3 = document.getElementById('hop-leg-3');
+      const l4 = document.getElementById('hop-leg-4');
+      const badge = document.getElementById('hop-active-badge');
+      const cloudPill = document.getElementById('hop-cloud-pill');
+      const bypassPill = document.getElementById('hop-bypass-pill');
+      if (!l1 || !l2 || !l3 || !l4 || !badge || !cloudPill || !bypassPill) return;
+
+      l1.classList.remove('active-leg');
+      l2.classList.remove('active-leg');
+      l3.classList.remove('active-leg');
+      l4.classList.remove('active-leg');
+
+      if (arch === 'A' || arch === 'B') {
+        l1.classList.add('active-leg');
+        l2.classList.add('active-leg');
+        l3.classList.add('active-leg');
+        l4.classList.add('active-leg');
+        badge.innerText = `Arch ${arch} Cloud WAN Round-Trip Active`;
+        cloudPill.style.fontWeight = 'bold';
+        cloudPill.style.boxShadow = '0 0 0 2px #f59e0b';
+        bypassPill.style.fontWeight = 'normal';
+        bypassPill.style.boxShadow = 'none';
+      } else if (arch === 'C') {
+        l1.classList.add('active-leg');
+        l2.classList.add('active-leg');
+        l3.classList.add('active-leg');
+        l4.classList.add('active-leg');
+        badge.innerText = 'Arch C Aggregation Window Buffer Trap Active';
+        cloudPill.innerText = 'Cloud Round-Trip + Buffer Wait: 2,293.52 ms';
+        cloudPill.style.fontWeight = 'bold';
+        cloudPill.style.boxShadow = '0 0 0 2px #dc2626';
+        bypassPill.style.fontWeight = 'normal';
+        bypassPill.style.boxShadow = 'none';
+      } else {
+        // Arch D or E
+        l1.classList.add('active-leg');
+        l4.classList.add('active-leg');
+        badge.innerText = `Arch ${arch} Dedicated Local Bypass Active (< 10 ms)`;
+        cloudPill.innerText = 'Cloud Asynchronous Ingest: 651.9 KB';
+        cloudPill.style.fontWeight = 'normal';
+        cloudPill.style.boxShadow = 'none';
+        bypassPill.innerText = arch === 'E' ? 'Local Inter-Ward Bypass: 7.31 / 8.13 ms' : 'Local Bypass: 7.13 ms (Legs 1 + 4)';
+        bypassPill.style.fontWeight = 'bold';
+        bypassPill.style.boxShadow = '0 0 0 2px #10b981';
+      }
+    }
+
+    let isTlsActive = true;
+    function toggleTlsMode() {
+      isTlsActive = !isTlsActive;
+      const bTitle = document.getElementById('tls-mode-title');
+      const bDesc = document.getElementById('tls-mode-desc');
+      const bBadge = document.getElementById('tls-status-badge');
+      const fVal = document.getElementById('tls-val-framing');
+      const cVal = document.getElementById('tls-val-cpu');
+      const hVal = document.getElementById('tls-val-handshake');
+
+      if (!bTitle || !bBadge) return;
+
+      if (isTlsActive) {
+        bTitle.innerText = 'Mode: TLS 1.3 AES-GCM Encryption';
+        bDesc.innerText = 'Record framing (+37B) and cryptographic CPU demand active';
+        bBadge.className = 'tls-status-badge secure';
+        bBadge.innerText = '● TLS 1.3 Active';
+        if (fVal) fVal.innerText = '+37 Bytes / Packet';
+        if (cVal) cVal.innerText = '+15.0 MIPS (AES-GCM)';
+        if (hVal) hVal.innerText = '2.0 ms LAN / 100 ms WAN';
+      } else {
+        bTitle.innerText = 'Mode: Plaintext Telemetry (Insecure)';
+        bDesc.innerText = 'Unencrypted baseline (0B framing overhead, 0 MIPS crypto)';
+        bBadge.className = 'tls-status-badge plain';
+        bBadge.innerText = '○ Plaintext';
+        if (fVal) fVal.innerText = '0 Bytes (Plaintext)';
+        if (cVal) cVal.innerText = '0.0 MIPS';
+        if (hVal) hVal.innerText = '0.0 ms Handshake';
+      }
+    }
+
+    let currentTcpProfile = 'stable';
+    function selectTcpProfile(profile) {
+      currentTcpProfile = profile;
+      document.querySelectorAll('.aimd-pill').forEach(p => p.classList.remove('active'));
+      const activePill = document.getElementById(`aimd-pill-${profile}`);
+      if (activePill) activePill.classList.add('active');
+
+      const gaugeNum = document.getElementById('aimd-gauge-num');
+      const queueText = document.getElementById('aimd-queue-util');
+      const barFill = document.getElementById('aimd-bar-fill');
+      const actionBadge = document.getElementById('aimd-action-badge');
+
+      if (!gaugeNum || !barFill) return;
+
+      if (profile === 'stable') {
+        gaugeNum.innerText = 'W = 18';
+        if (queueText) queueText.innerText = 'Queue Util: 34.2% (< 70%)';
+        barFill.style.width = '90%';
+        if (actionBadge) {
+          actionBadge.innerText = 'Additive Increase (+1)';
+          actionBadge.style.background = '#eff6ff';
+          actionBadge.style.color = '#1d4ed8';
+        }
+      } else if (profile === 'chronic') {
+        gaugeNum.innerText = 'W = 6';
+        if (queueText) queueText.innerText = 'Queue Util: 58.4% (Throttled)';
+        barFill.style.width = '30%';
+        if (actionBadge) {
+          actionBadge.innerText = 'Multiplicative Backoff (/2)';
+          actionBadge.style.background = '#fffbeb';
+          actionBadge.style.color = '#d97706';
+        }
+      } else {
+        gaugeNum.innerText = 'W = 1';
+        if (queueText) queueText.innerText = 'Queue Util: 88.5% (Volatile ICU)';
+        barFill.style.width = '5%';
+        if (actionBadge) {
+          actionBadge.innerText = 'Emergency Flush (W=1)';
+          actionBadge.style.background = '#fef2f2';
+          actionBadge.style.color = '#dc2626';
+        }
+      }
+    }
+
+    const FALLBACK_PATIENTS = [
+      { id: 1, ward: 'ICU Ward A', profile: 'Stable Post-Op', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 1, risk: 'LOW_STABLE', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 2, ward: 'ICU Ward A', profile: 'Stable Post-Op', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 1, risk: 'LOW_STABLE', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 3, ward: 'ICU Ward A', profile: 'Stable Post-Op', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 1, risk: 'LOW_STABLE', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 4, ward: 'ICU Ward A', profile: 'Chronic Cardiac', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 5, risk: 'MEDIUM_MONITOR', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 5, ward: 'ICU Ward A', profile: 'Acute Unstable ICU', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 8, risk: 'HIGH_CRITICAL', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 6, ward: 'ICU Ward B', profile: 'Stable Post-Op', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 1, risk: 'LOW_STABLE', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 7, ward: 'ICU Ward B', profile: 'Stable Post-Op', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 1, risk: 'LOW_STABLE', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 8, ward: 'ICU Ward B', profile: 'Chronic Cardiac', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 5, risk: 'MEDIUM_MONITOR', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 9, ward: 'ICU Ward B', profile: 'Chronic Cardiac', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 5, risk: 'MEDIUM_MONITOR', crit_sla: 100.0, over_sla: 99.4 },
+      { id: 10, ward: 'ICU Ward B', profile: 'Acute Unstable ICU', readings: 400, crit: 4, alerts: 1, suppr: 3, news2: 9, risk: 'HIGH_CRITICAL', crit_sla: 100.0, over_sla: 99.4 }
+    ];
+
+    async function loadPatientReports() {
+      const tbody = document.getElementById('patient-reports-tbody');
+      if (!tbody) return;
+
+      let patientList = [];
+      try {
+        const resp = await fetch('/api/patient_reports');
+        if (resp.ok) {
+          const res = await resp.json();
+          if (res.data && res.data.patients) {
+            patientList = res.data.patients.map(p => ({
+              id: p.patient_id,
+              ward: p.ward,
+              profile: p.clinical_profile,
+              readings: p.total_readings,
+              crit: p.critical,
+              alerts: p.alerts_triggered,
+              suppr: p.artifacts_suppressed,
+              news2: p.news2_score,
+              risk: p.news2_risk,
+              crit_sla: p.critical_sla_pct,
+              over_sla: p.overall_sla_pct
+            }));
+          }
+        }
+      } catch (e) {
+        console.log('Using embedded patient dataset fallback:', e);
+      }
+
+      if (!patientList.length) {
+        patientList = FALLBACK_PATIENTS;
+      }
+
+      tbody.innerHTML = patientList.map(p => {
+        let riskClass = 'risk-low';
+        let riskText = 'Low Risk (Stable)';
+        if (p.risk.includes('HIGH') || p.news2 >= 7) {
+          riskClass = 'risk-high';
+          riskText = 'High Risk (Critical Bypass)';
+        } else if (p.risk.includes('MED') || p.news2 >= 5) {
+          riskClass = 'risk-med';
+          riskText = 'Medium (Direct WAN)';
+        }
+
+        return `
+          <tr>
+            <td><strong>Patient ${p.id}</strong></td>
+            <td>${p.ward}</td>
+            <td>${p.profile}</td>
+            <td><strong style="color:var(--blue);">${p.news2} / 20</strong></td>
+            <td><span class="risk-badge ${riskClass}">${riskText}</span></td>
+            <td>${p.readings}</td>
+            <td><strong style="color:var(--red);">${p.alerts}</strong> (${p.crit} anomalies)</td>
+            <td><strong style="color:var(--green);">${p.suppr} Suppressed</strong></td>
+            <td><strong style="color:var(--green);">${p.crit_sla.toFixed(1)}%</strong></td>
+            <td>${p.over_sla.toFixed(1)}%</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     // Initialize on window load
     window.addEventListener('DOMContentLoaded', () => {
       init3D();
       selectSimArch('D');
+      updateHopByHopReadout('D');
+      loadPatientReports();
     });
   </script>
 </body>

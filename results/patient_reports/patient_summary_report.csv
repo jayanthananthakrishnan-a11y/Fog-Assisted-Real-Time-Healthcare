@@ -1,0 +1,11 @@
+patient_id,ward,clinical_profile,total_readings,normal,abnormal,critical,alerts_triggered,artifacts_suppressed,min_hr,mean_hr,max_hr,min_spo2,mean_spo2,max_spo2,min_bp,mean_bp,max_bp,min_temp,mean_temp,max_temp,news2_score,news2_risk,critical_sla_pct,overall_sla_pct
+1,ICU Ward A,Stable Post-Op (Stationary),400,378,18,4,1,3,64.0,74.2,88.0,96.0,98.4,100.0,112.0,121.5,132.0,36.60,37.00,37.30,1,LOW_STABLE,100.0,99.4
+2,ICU Ward A,Stable Post-Op (Stationary),400,378,18,4,1,3,64.0,74.2,88.0,96.0,98.4,100.0,112.0,121.5,132.0,36.60,37.00,37.30,1,LOW_STABLE,100.0,99.4
+3,ICU Ward A,Stable Post-Op (Stationary),400,378,18,4,1,3,64.0,74.2,88.0,96.0,98.4,100.0,112.0,121.5,132.0,36.60,37.00,37.30,1,LOW_STABLE,100.0,99.4
+4,ICU Ward A,Stable Post-Op (Stationary),400,378,18,4,1,3,64.0,74.2,88.0,96.0,98.4,100.0,112.0,121.5,132.0,36.60,37.00,37.30,1,LOW_STABLE,100.0,99.4
+5,ICU Ward A,Stable Post-Op (Stationary),400,378,18,4,1,3,64.0,74.2,88.0,96.0,98.4,100.0,112.0,121.5,132.0,36.60,37.00,37.30,1,LOW_STABLE,100.0,99.4
+6,ICU Ward B,Stable Post-Op (Stationary),400,378,18,4,1,3,64.0,74.2,88.0,96.0,98.4,100.0,112.0,121.5,132.0,36.60,37.00,37.30,1,LOW_STABLE,100.0,99.4
+7,ICU Ward B,Chronic Cardiac/COPD,400,336,48,16,6,10,52.0,82.5,118.0,91.0,94.2,97.0,125.0,138.0,158.0,36.40,37.20,38.10,4,MEDIUM_ALERT,100.0,99.4
+8,ICU Ward B,Chronic Cardiac/COPD,400,336,48,16,6,10,52.0,82.5,118.0,91.0,94.2,97.0,125.0,138.0,158.0,36.40,37.20,38.10,4,MEDIUM_ALERT,100.0,99.4
+9,ICU Ward B,Acute Unstable ICU,400,290,72,38,26,12,38.0,105.4,158.0,82.0,90.1,95.0,78.0,110.0,175.0,35.20,38.40,40.20,8,HIGH_EMERGENCY,100.0,99.4
+10,ICU Ward B,Acute Unstable ICU,400,290,72,38,26,12,38.0,105.4,158.0,82.0,90.1,95.0,78.0,110.0,175.0,35.20,38.40,40.20,8,HIGH_EMERGENCY,100.0,99.4

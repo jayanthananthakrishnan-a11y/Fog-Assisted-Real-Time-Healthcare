@@ -218,12 +218,34 @@ if ($Experiment -eq "ALL" -or $Experiment -eq "4") {
     Write-Host " [Exp 4 Complete] Exported: $exp4File"
 }
 
+# ========================================================================
+# EXPERIMENTS 5 - 9 & PATIENT REPORTS (Comprehensive Professor Upgrades)
+# ========================================================================
+if ($Experiment -eq "ALL" -or $Experiment -ge "5") {
+    Write-Host ""
+    Write-Host "========================================================================"
+    Write-Host " >>> RUNNING COMPREHENSIVE SUITE (Exp 5 - 9 & Patient Clinical Reports) <<<"
+    Write-Host "========================================================================"
+    
+    & java -cp $runClasspath experiments.ComprehensiveExperimentRunner
+    if ($LASTEXITCODE -ne 0) {
+        throw "ComprehensiveExperimentRunner failed with exit code: $LASTEXITCODE"
+    }
+}
+
 Write-Host ""
 Write-Host "========================================================================"
-Write-Host " ALL PHASE 4 EXPERIMENTS COMPLETED SUCCESSFULLY!                        "
+Write-Host " ALL RESEARCH EXPERIMENTS COMPLETED SUCCESSFULLY!                       "
 Write-Host " Output Files:                                                          "
 Write-Host "   - results/csv/exp1_architecture_comparison.csv                       "
 Write-Host "   - results/csv/exp2_scalability.csv                                   "
 Write-Host "   - results/csv/exp3_aggregation_window.csv                            "
 Write-Host "   - results/csv/exp4_network_stress.csv                                "
+Write-Host "   - results/csv/exp5_multi_ward_failover.csv                           "
+Write-Host "   - results/csv/exp6_adaptive_tcp_window.csv                           "
+Write-Host "   - results/csv/exp7_tls_overhead.csv                                  "
+Write-Host "   - results/csv/exp8_fog_node_scaling.csv                              "
+Write-Host "   - results/csv/exp9_fault_tolerance_strategies.csv                    "
+Write-Host "   - results/patient_reports/patient_summary_report.csv                 "
+Write-Host "   - results/patient_reports/patient_summary_report.json                "
 Write-Host "========================================================================"

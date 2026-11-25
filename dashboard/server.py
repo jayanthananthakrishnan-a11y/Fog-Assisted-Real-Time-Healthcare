@@ -71,6 +71,51 @@ def load_csv_metrics():
             for row in reader:
                 metrics_data["exp5_failover"].append(row)
 
+    # 4. Load Exp 6 Adaptive TCP Window summary
+    exp6_file = os.path.join(CSV_DIR, 'exp6_adaptive_tcp_window.csv')
+    if os.path.exists(exp6_file):
+        metrics_data["exp6_samples"] = []
+        with open(exp6_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            count = 0
+            for row in reader:
+                if count < 50:
+                    metrics_data["exp6_samples"].append(row)
+                    count += 1
+
+    # 5. Load Exp 7 TLS 1.3 Overhead data
+    exp7_file = os.path.join(CSV_DIR, 'exp7_tls_overhead.csv')
+    if os.path.exists(exp7_file):
+        metrics_data["exp7_tls"] = []
+        with open(exp7_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                metrics_data["exp7_tls"].append(row)
+
+    # 6. Load Exp 8 Fog Node Scaling data
+    exp8_file = os.path.join(CSV_DIR, 'exp8_fog_node_scaling.csv')
+    if os.path.exists(exp8_file):
+        metrics_data["exp8_scaling"] = []
+        with open(exp8_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                metrics_data["exp8_scaling"].append(row)
+
+    # 7. Load Exp 9 Fault Tolerance Strategies data
+    exp9_file = os.path.join(CSV_DIR, 'exp9_fault_tolerance_strategies.csv')
+    if os.path.exists(exp9_file):
+        metrics_data["exp9_fault_tolerance"] = []
+        with open(exp9_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                metrics_data["exp9_fault_tolerance"].append(row)
+
+    # 8. Load Patient Clinical Reports
+    report_file = os.path.join(BASE_DIR, 'results', 'patient_reports', 'patient_summary_report.json')
+    if os.path.exists(report_file):
+        with open(report_file, 'r', encoding='utf-8') as f:
+            metrics_data["patient_reports"] = json.load(f)
+
     return metrics_data
 
 class DashboardHandler(BaseHTTPRequestHandler):
@@ -116,6 +161,17 @@ class DashboardHandler(BaseHTTPRequestHandler):
             try:
                 data = load_csv_metrics()
                 self._send_json({"status": "success", "data": data})
+            except Exception as e:
+                self._send_json({"status": "error", "message": str(e)}, status=500)
+
+        elif path == '/api/patient_reports':
+            try:
+                report_file = os.path.join(BASE_DIR, 'results', 'patient_reports', 'patient_summary_report.json')
+                if os.path.exists(report_file):
+                    with open(report_file, 'r', encoding='utf-8') as f:
+                        self._send_json({"status": "success", "data": json.load(f)})
+                else:
+                    self._send_json({"status": "error", "message": "Patient summary report not found."}, status=404)
             except Exception as e:
                 self._send_json({"status": "error", "message": str(e)}, status=500)
 

@@ -45,6 +45,18 @@ public class SimulationConfig {
     public static final long ANALYTICS_RESULT_NW_SIZE = 200; // Bytes (downlink result to actuator)
     public static final long ANALYTICS_RESULT_CPU_LENGTH = 100; // MIPS to process on actuator
 
+    // --- Security & TLS 1.3 Overhead Parameters ---
+    public static boolean tlsEnabled = false; // Enabled via CLI flag -TlsEnabled or argument
+    public static final int TLS_RECORD_OVERHEAD_BYTES = 37; // AES-GCM framing overhead
+    public static final long TLS_CRYPTO_CPU_LENGTH = 15; // MIPS crypto processing cost per tuple
+    public static final double TLS_HANDSHAKE_LAN_LATENCY = 2.0; // LAN session handshake delay (ms)
+    public static final double TLS_HANDSHAKE_WAN_LATENCY = 100.0; // WAN session setup/reconnect delay (ms)
+
+    // --- Per-Tier Clinical SLA Deadlines ---
+    public static final double SLA_CRITICAL_MS = 500.0;  // Life-critical emergency SLA (500 ms)
+    public static final double SLA_ABNORMAL_MS = 2000.0; // Urgent clinical review SLA (2,000 ms)
+    public static final double SLA_NORMAL_MS = 10000.0;  // Routine longitudinal vitals SLA (10,000 ms)
+
     // --- Baseline Reference Constants (for Bandwidth Saving calculations) ---
     public static final long BASELINE_CLOUD_TRAFFIC_BYTES = 2000000L; // 2,000,000 Bytes (Architecture A)
     public static final long BASELINE_TOTAL_TRAFFIC_BYTES = 5600000L; // 5,600,000 Bytes (Architecture A)
@@ -157,17 +169,27 @@ public class SimulationConfig {
     public static void parseArgs(String[] args) {
         if (args != null && args.length > 0) {
             try {
-                if (args.length >= 1 && !args[0].isEmpty()) {
+                for (String arg : args) {
+                    if (arg.equalsIgnoreCase("-TlsEnabled") || arg.equalsIgnoreCase("tls")) {
+                        tlsEnabled = true;
+                    }
+                }
+                if (args.length >= 1 && !args[0].isEmpty() && !args[0].startsWith("-")) {
                     setNumPatients(Integer.parseInt(args[0]));
                 }
-                if (args.length >= 2 && !args[1].isEmpty()) {
+                if (args.length >= 2 && !args[1].isEmpty() && !args[1].startsWith("-")) {
                     setWindowSize(Integer.parseInt(args[1]));
                 }
-                if (args.length >= 3 && !args[2].isEmpty()) {
+                if (args.length >= 3 && !args[2].isEmpty() && !args[2].startsWith("-")) {
                     setWanLatency(Double.parseDouble(args[2]));
                 }
-                if (args.length >= 4 && !args[3].isEmpty()) {
+                if (args.length >= 4 && !args[3].isEmpty() && !args[3].startsWith("-")) {
                     setWanBandwidth(Double.parseDouble(args[3]));
+                }
+                if (args.length >= 5 && !args[4].isEmpty()) {
+                    if (args[4].equalsIgnoreCase("true") || args[4].equalsIgnoreCase("tls") || args[4].equalsIgnoreCase("-TlsEnabled")) {
+                        tlsEnabled = true;
+                    }
                 }
             } catch (Exception e) {
                 System.err.println("[Config] Error parsing CLI arguments: " + e.getMessage());

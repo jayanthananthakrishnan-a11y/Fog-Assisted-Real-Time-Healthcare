@@ -29,6 +29,15 @@ public class ReadingRecord {
     private boolean artifactSuppressed;
     private int batchId;
 
+    // Bi-Directional Hop-by-Hop Latency Breakdowns (ms)
+    private double edgeToFogLatency = 0.0;
+    private double fogToCloudLatency = 0.0;
+    private double cloudToFogLatency = 0.0;
+    private double fogToEdgeLatency = 0.0;
+
+    // Per-Tier SLA Violation Attribution
+    private String slaViolationReason = "NONE"; // NONE, Window_Buffer_Capacity, Fog_CPU_Queueing, WAN_Transit_Delay
+
     public ReadingRecord(int readingId, int patientId, int patientGatewayId, String sensorType,
             double value, Severity severity, double generateTime, long tupleBytes) {
         this.readingId = readingId;
@@ -148,12 +157,52 @@ public class ReadingRecord {
         this.batchId = batchId;
     }
 
+    public double getEdgeToFogLatency() {
+        return edgeToFogLatency;
+    }
+
+    public void setEdgeToFogLatency(double edgeToFogLatency) {
+        this.edgeToFogLatency = edgeToFogLatency;
+    }
+
+    public double getFogToCloudLatency() {
+        return fogToCloudLatency;
+    }
+
+    public void setFogToCloudLatency(double fogToCloudLatency) {
+        this.fogToCloudLatency = fogToCloudLatency;
+    }
+
+    public double getCloudToFogLatency() {
+        return cloudToFogLatency;
+    }
+
+    public void setCloudToFogLatency(double cloudToFogLatency) {
+        this.cloudToFogLatency = cloudToFogLatency;
+    }
+
+    public double getFogToEdgeLatency() {
+        return fogToEdgeLatency;
+    }
+
+    public void setFogToEdgeLatency(double fogToEdgeLatency) {
+        this.fogToEdgeLatency = fogToEdgeLatency;
+    }
+
+    public String getSlaViolationReason() {
+        return slaViolationReason;
+    }
+
+    public void setSlaViolationReason(String slaViolationReason) {
+        this.slaViolationReason = slaViolationReason;
+    }
+
     public static String getCsvHeader() {
-        return "readingId,patientId,gatewayId,sensorType,value,severity,generateTime,cloudArrivalTime,analyticsCompleteTime,endToEndLatency,tupleBytes,delivered,filtered,aggregated,criticalBypassed,artifactSuppressed";
+        return "readingId,patientId,gatewayId,sensorType,value,severity,generateTime,cloudArrivalTime,analyticsCompleteTime,endToEndLatency,tupleBytes,delivered,filtered,aggregated,criticalBypassed,artifactSuppressed,edgeToFogMs,fogToCloudMs,cloudToFogMs,fogToEdgeMs,slaViolationReason";
     }
 
     public String toCsvRow() {
-        return String.format(Locale.US, "%d,%d,%d,%s,%.2f,%s,%.3f,%.3f,%.3f,%.3f,%d,%b,%b,%b,%b,%b",
+        return String.format(Locale.US, "%d,%d,%d,%s,%.2f,%s,%.3f,%.3f,%.3f,%.3f,%d,%b,%b,%b,%b,%b,%.3f,%.3f,%.3f,%.3f,%s",
                 readingId,
                 patientId,
                 patientGatewayId,
@@ -169,6 +218,11 @@ public class ReadingRecord {
                 filtered,
                 aggregated,
                 criticalBypassed,
-                artifactSuppressed);
+                artifactSuppressed,
+                edgeToFogLatency,
+                fogToCloudLatency,
+                cloudToFogLatency,
+                fogToEdgeLatency,
+                slaViolationReason);
     }
 }

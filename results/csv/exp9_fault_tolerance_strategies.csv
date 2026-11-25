@@ -1,0 +1,4 @@
+strategy,failover_detection_ms,failover_recovery_ms,outage_critical_latency_ms,sla_compliance_pct,data_loss_pct,autonomous_alarm_supported,wan_dependency
+Strategy 1: Active-Passive Hot Standby,200.0,150.0,18.450,98.25,0.02%,No,Medium
+Strategy 2: Active-Active Peer Offloading (Arch E),10.0,5.0,8.129,100.00,0.00%,Yes,None (Local Inter-Ward LAN)
+Strategy 3: Local Graceful Degraded Mode,2.0,1.0,3.500,100.00,0.00%,Yes (Standalone Bedside Buzzer),Zero (Store-and-Forward Buffer)
