@@ -16,7 +16,7 @@ To ensure an equitable, highly coordinated defense during the 15-minute presenta
 - **Presentation Ownership:**
   - Motivation: High-velocity physiological telemetry (HR, $\text{SpO}_2$, TEMP, BP, RESP, HRV), WAN latency, and backhaul congestion.
   - Research Gap: The clinical hazard of uniform edge window aggregation (The Latency Cliff).
-  - Literature Review: Taxonomy of the 10 verified papers (Gupta, Mahmud, Rahmani, Gia, Kraemer, Mutlag, Verma, Tuli, Pace, Aazam).
+  - Literature Review: Synthesis of the Top 3 verified Q1 papers (Mahmud et al. 2022 on iFogSim2, Rahmani et al. 2018 on UT-GATE, and Pace et al. 2019 on BodyEdge) and how our priority framework solves the FIFO Aggregation Latency Cliff.
   - System Topology: Physical 3-tier hierarchy (bedside sensors, hospital ward fog gateways, centralized cloud datacenter).
   - Multi-Ward Failover (Architecture E): Two-gateway clustering over 1.0 ms inter-ward hospital LAN.
 - **Primary Viva Topics:**

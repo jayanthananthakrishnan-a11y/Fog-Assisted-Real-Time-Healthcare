@@ -222,53 +222,69 @@ def generate_docx_report():
     # --- SECTION II: RELATED WORK ---
     add_sec_heading("II. RELATED WORK")
     doc.add_paragraph(
-        "Table I provides a taxonomic comparison of our architecture against prominent literature in edge and fog healthcare monitoring."
+        "The deployment of edge and fog computing architectures in clinical healthcare IoT has been investigated across three seminal Q1 benchmark frameworks:"
     )
 
-    p_t1 = doc.add_paragraph()
-    p_t1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_t1 = p_t1.add_run("TABLE I: TAXONOMIC COMPARISON OF RELATED LITERATURE")
-    r_t1.bold = True
-    r_t1.font.size = Pt(9.5)
+    # Subsection A: Mahmud et al. (2022)
+    p_rw1 = doc.add_paragraph()
+    r_rw1_h = p_rw1.add_run("A. Discrete-Event Fog Simulation Baselines (iFogSim2)\n")
+    r_rw1_h.bold = True
+    r_rw1_h.font.size = Pt(10.0)
+    p_rw1.add_run(
+        "Mahmud et al. (2022) [1] developed iFogSim2, an extended discrete-event simulation toolkit for modeling resource management, "
+        "microservices, dynamic device clustering, and user mobility across edge and fog computing environments (Journal of Systems and Software, "
+        "vol. 190, p. 111351, 2022, "
+    )
+    r_doi1 = p_rw1.add_run("https://doi.org/10.1016/j.jss.2022.111351")
+    r_doi1.font.color.rgb = RGBColor(0x02, 0x84, 0xC7)
+    r_doi1.underline = True
+    p_rw1.add_run(
+        "). While iFogSim2 serves as our core foundational simulation platform—providing hierarchical FogDevice representations, dataflow vertices, "
+        "and inter-gateway clustering primitives—it relies on canonical microservice models that process uniform telemetry streams. Crucially, "
+        "iFogSim2 lacks clinical priority classes, hard deadline preemption, stateful delta-compression, and adaptive multi-modal windowing, motivating "
+        "our priority-aware clinical routing engine."
+    )
 
-    headers_rel = ["Publication", "Environment", "Vital Modalities", "Delta-Filtering", "Window Agg.", "Priority Bypass", "NEWS2 Fusion", "Inter-Ward Failover", "Strict SLA"]
-    rows_rel = [
-        ["Gupta et al. (2017)", "iFogSim", "Generic / EEG", "No", "No", "No", "No", "No", "No"],
-        ["Mahmud et al. (2022)", "iFogSim2", "Generic Microservices", "No", "No", "No", "No", "No", "No"],
-        ["Rahmani et al. (2018)", "UT-GATE Lab", "ECG, Temp", "Basic Threshold", "No", "Partial", "No", "No", "No"],
-        ["Gia et al. (2015)", "Hardware Testbed", "ECG (QRS)", "Feature Extraction", "No", "No", "No", "No", "No"],
-        ["Kraemer et al. (2017)", "Survey / Review", "Multi-Parameter", "Conceptual", "No", "Conceptual", "No", "No", "No"],
-        ["Mutlag et al. (2019)", "Survey / Taxonomy", "Multi-Parameter", "No", "No", "Conceptual", "No", "No", "No"],
-        ["Verma & Sood (2018)", "Simulation", "Multi-Vital", "Rule-based", "No", "No", "No", "No", "No"],
-        ["Tuli et al. (2020)", "FogBus / iFogSim", "Cardiovascular", "No", "No", "No", "No", "No", "Partial"],
-        ["Pace et al. (2019)", "BodyCloud", "Generic BSN", "Threshold", "Yes (W)", "No", "No", "No", "No"],
-        ["Aazam & Huh (2014)", "FiCloud Testbed", "Generic IoT", "Trimming", "No", "No", "No", "No", "No"],
-        ["Our Framework (Topic 19)", "iFogSim2", "HR, SpO2, TEMP, BP, RESP, HRV", "Stateful (Δ_thresh)", "Adaptive (AIMD)", "Dedicated Local", "Yes (0–20)", "1.0 ms LAN (Arch E)", "Strict (<= 500 ms)"]
-    ]
-    t_rw = doc.add_table(rows=len(rows_rel)+1, cols=len(headers_rel))
-    t_rw.alignment = WD_TABLE_ALIGNMENT.CENTER
-    set_table_borders(t_rw)
-    for j, h in enumerate(headers_rel):
-        cell = t_rw.cell(0, j)
-        set_cell_background(cell, "EAECEF")
-        set_cell_margins(cell, top=80, bottom=80, left=60, right=60)
-        p = cell.paragraphs[0]
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        r = p.add_run(h)
-        r.bold = True
-        r.font.size = Pt(8.0)
-    for i, row in enumerate(rows_rel):
-        bg = "E8F5E9" if i == len(rows_rel) - 1 else ("F9FAFC" if i % 2 == 1 else "FFFFFF")
-        for j, val in enumerate(row):
-            cell = t_rw.cell(i+1, j)
-            set_cell_background(cell, bg)
-            set_cell_margins(cell, top=60, bottom=60, left=60, right=60)
-            p = cell.paragraphs[0]
-            p.alignment = WD_ALIGN_PARAGRAPH.CENTER if j > 2 else WD_ALIGN_PARAGRAPH.LEFT
-            r = p.add_run(val)
-            r.font.size = Pt(7.5)
-            if i == len(rows_rel) - 1:
-                r.bold = True
+    # Subsection B: Rahmani et al. (2018)
+    p_rw2 = doc.add_paragraph()
+    r_rw2_h = p_rw2.add_run("B. Smart e-Health Gateways and Edge Analytics (UT-GATE)\n")
+    r_rw2_h.bold = True
+    r_rw2_h.font.size = Pt(10.0)
+    p_rw2.add_run(
+        "Rahmani et al. (2018) [2] pioneered the UT-GATE smart e-Health gateway architecture (Future Generation Computer Systems, vol. 78, "
+        "pp. 641–658, 2018, "
+    )
+    r_doi2 = p_rw2.add_run("https://doi.org/10.1016/j.future.2017.02.014")
+    r_doi2.font.color.rgb = RGBColor(0x02, 0x84, 0xC7)
+    r_doi2.underline = True
+    p_rw2.add_run(
+        "), deploying localized computing intelligence at the edge of healthcare IoT. UT-GATE demonstrated the efficacy of edge-based Early Warning "
+        "Score (EWS) processing, protocol bridging, and local notifications, achieving over 90% bandwidth compression and providing fail-soft local "
+        "persistence during wide-area network outages. However, UT-GATE was architected around a single-gateway topology, leaving patient monitoring "
+        "vulnerable to gateway crashes and queue saturation. Furthermore, it employed static threshold-based filtering without multi-sensor artifact "
+        "suppression, adaptive AIMD sliding-window scaling, or strict deadline-driven dispatching."
+    )
+
+    # Subsection C: Pace et al. (2019)
+    p_rw3 = doc.add_paragraph()
+    r_rw3_h = p_rw3.add_run("C. Industrial Healthcare Edge Architectures (BodyEdge)\n")
+    r_rw3_h.bold = True
+    r_rw3_h.font.size = Pt(10.0)
+    p_rw3.add_run(
+        "Pace et al. (2019) [3] introduced BodyEdge (BE-GTW), a multi-tiered edge architecture designed for Healthcare Industry 4.0 applications "
+        "(IEEE Transactions on Industrial Informatics, vol. 15, no. 1, pp. 481–489, 2019, "
+    )
+    r_doi3 = p_rw3.add_run("https://doi.org/10.1109/TII.2018.2843169")
+    r_doi3.font.color.rgb = RGBColor(0x02, 0x84, 0xC7)
+    r_doi3.underline = True
+    p_rw3.add_run(
+        "). BodyEdge demonstrated the benefits of localized cardiac and heart rate variability (HRV) feature extraction, achieving responsive edge "
+        "latencies and reducing backhaul transmission energy. Nevertheless, BodyEdge focused primarily on isolated Body Sensor Networks (BSNs) and "
+        "did not address composite multi-vital risk scoring (such as the 6-parameter NEWS2 index), cross-sensor motion artifact elimination, or "
+        "Greedy Earliest-Deadline-First (EDF) queue scheduling. In contrast, our framework builds upon these seminal works by coupling composite "
+        "NEWS2 artifact suppression with a strict preemptive scheduler, empirical TLS 1.3 cryptographic profiling, and 1.0 ms inter-ward failover "
+        "across adjacent hospital ICUs."
+    )
 
     # --- SECTION III: SYSTEM ARCHITECTURE & METHODOLOGY ---
     add_sec_heading("III. SYSTEM ARCHITECTURE AND METHODOLOGY")
@@ -659,16 +675,9 @@ def generate_docx_report():
     # --- REFERENCES ---
     add_sec_heading("IX. REFERENCES")
     refs = [
-        "[1] H. Gupta, A. V. Dastjerdi, S. Ghosh, and R. Buyya, 'iFogSim: A toolkit for modeling and simulation of resource management techniques in IoT, Edge and Fog computing environments,' Software: Practice and Experience, vol. 47, no. 9, pp. 1275–1296, 2017.",
-        "[2] R. Mahmud, Faheem, and R. Buyya, 'iFogSim2: An Extended iFogSim Simulator for Mobility, Clustering, and Microservice Management in Edge and Fog Computing Environments,' Journal of Systems and Software, vol. 190, p. 111351, 2022.",
-        "[3] A. M. Rahmani, T. N. Gia, B. Negash, A. Anzanpour, I. Azimi, M. Jiang, and P. Liljeberg, 'Exploiting smart e-Health gateways at the edge of healthcare IoT: A fog computing approach,' Future Generation Computer Systems, vol. 78, pp. 641–658, 2018.",
-        "[4] T. N. Gia, M. Jiang, A. M. Rahmani, T. Westerlund, P. Liljeberg, and H. Tenhunen, 'Fog Computing in Healthcare Internet of Things: A Case Study on ECG Feature Extraction,' in Proc. IEEE CIT/IUCC/DASC/PICOM, 2015, pp. 356–363.",
-        "[5] F. A. Kraemer, A. E. Braten, N. Tamkittikhun, and D. Palma, 'Fog Computing in Healthcare—A Review and Discussion,' IEEE Access, vol. 5, pp. 9206–9222, 2017.",
-        "[6] A. A. Mutlag, M. K. Abd Ghani, N. Arunkumar, M. A. Mohammed, and O. Geman, 'Enabling technologies for fog computing in healthcare IoT systems: Future research directions,' IEEE Access, vol. 7, pp. 81888–81922, 2019.",
-        "[7] P. Verma and S. K. Sood, 'Fog Assisted-IoT Enabled Patient Health Monitoring in Smart Homes,' IEEE Internet of Things Journal, vol. 5, no. 3, pp. 1388–1396, 2018.",
-        "[8] S. Tuli, N. Basumatary, S. S. Gill, M. Kahani, R. C. Arya, G. S. Wander, and R. Buyya, 'HealthFog: An ensemble deep learning based Smart Healthcare System for Automatic Diagnosis of Heart Diseases in Integrated IoT and Fog Computing Environments,' Future Generation Computer Systems, vol. 104, pp. 187–200, 2020.",
-        "[9] P. Pace, G. Aloi, R. Gravina, G. Caliciuri, G. Fortino, and A. Liotta, 'An edge-based architecture to support efficient applications for healthcare IoT,' IEEE Access, vol. 7, pp. 43147–43159, 2019.",
-        "[10] M. Aazam and E.-N. Huh, 'Fog computing and smart gateway based communication for cloud of things,' in Proc. IEEE FiCloud, 2014, pp. 464–470."
+        "[1] R. Mahmud, Faheem, and R. Buyya, 'iFogSim2: An Extended iFogSim Simulator for Mobility, Clustering, and Microservice Management in Edge and Fog Computing Environments,' Journal of Systems and Software, vol. 190, p. 111351, 2022. https://doi.org/10.1016/j.jss.2022.111351",
+        "[2] A. M. Rahmani, T. N. Gia, B. Negash, A. Anzanpour, I. Azimi, M. Jiang, and P. Liljeberg, 'Exploiting smart e-Health gateways at the edge of healthcare Internet-of-Things: A fog computing approach,' Future Generation Computer Systems, vol. 78, pp. 641–658, 2018. https://doi.org/10.1016/j.future.2017.02.014",
+        "[3] P. Pace, G. Aloi, R. Gravina, G. Caliciuri, G. Fortino, and A. Liotta, 'An Edge-Based Architecture to Support Efficient Applications for Healthcare Industry 4.0,' IEEE Transactions on Industrial Informatics, vol. 15, no. 1, pp. 481–489, Jan. 2019. https://doi.org/10.1109/TII.2018.2843169"
     ]
     for r in refs:
         p_ref = doc.add_paragraph()
@@ -823,32 +832,118 @@ def generate_pptx_presentation():
         p.space_before = PptxPt(10)
     set_notes(s2, "Hospital ICUs continuously monitor vital signs. In traditional Cloud-Only systems, all raw readings cross the WAN. This exposes patients to WAN jitter, wastes massive bandwidth on stationary data, and induces alarm fatigue from single-sensor motion artifacts.")
 
-    # Slide 3: The Aggregation Latency Cliff
+    # Slide 3: Related Work & Top 3 Q1 Benchmarks
     s3 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s3, "The Research Gap: The 'Latency Cliff' in Edge Aggregation", "2. RESEARCH GAP")
-    card_rg = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
-    card_rg.fill.solid()
-    card_rg.fill.fore_color.rgb = BG_CARD
-    card_rg.line.color.rgb = BORDER_CARD
-    tf_rg = card_rg.text_frame
-    p = tf_rg.paragraphs[0]
-    p.text = "Why Standard Edge Filtering (Architecture C) is Clinically Lethal"
-    p.font.size = PptxPt(18)
+    add_slide_header(s3, "Related Work: Top 3 Q1 Benchmarks & Literature Gap", "2. RELATED WORK & RESEARCH GAP")
+
+    card_q1_w = PptxInches(3.72)
+    card_q1_h = PptxInches(3.5)
+    card_y = PptxInches(1.5)
+
+    # Card 1: Mahmud et al. (2022)
+    c1 = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), card_y, card_q1_w, card_q1_h)
+    c1.fill.solid()
+    c1.fill.fore_color.rgb = BG_CARD
+    c1.line.color.rgb = BORDER_CARD
+    tf1 = c1.text_frame
+    p = tf1.paragraphs[0]
+    p.text = "1. Mahmud et al. (2022)"
+    p.font.size = PptxPt(16)
     p.font.bold = True
     p.font.color.rgb = NAVY
+    p_doi1 = tf1.add_paragraph()
+    p_doi1.text = "JSS (Q1) • doi.org/10.1016/j.jss.2022.111351"
+    p_doi1.font.size = PptxPt(9.5)
+    p_doi1.font.bold = True
+    p_doi1.font.color.rgb = BLUE
     for b in [
-        "Conventional Edge Approach: Edge gateways batch readings into sliding/tumbling windows (size W) before WAN transmission.",
-        "The Fatal Flaw: A First-In-First-Out (FIFO) buffer treats all tuples equally. An acute cardiac arrest tuple waits for (W - 1) routine readings to fill the window.",
-        "Empirical Latency Cliff: At W = 5, critical alert delay surges from 208 ms to 2,293.5 ms; at W = 20, delay exceeds 10.55 seconds!",
-        "Clinical Consequence: Critical SLA (<= 500 ms) compliance collapses from 100% to 27.88% (W=5) and 4.62% (W=20).",
-        "The Solution: Data-plane bifurcation that decouples emergency alert delivery from aggregation window buffers."
+        "iFogSim2 Simulation Core: Discrete-event modeling of hierarchical edge devices & dynamic clustering.",
+        "Baseline Model: Microservice execution on uniform streams.",
+        "Research Gap: Lacks clinical priority classes, hard deadline preemption, and adaptive multi-modal windowing."
     ]:
-        p = tf_rg.add_paragraph()
+        p = tf1.add_paragraph()
         p.text = f"• {b}"
-        p.font.size = PptxPt(14)
+        p.font.size = PptxPt(11)
         p.font.color.rgb = DARK
-        p.space_before = PptxPt(12)
-    set_notes(s3, "This slide illustrates our core insight: naive edge aggregation creates a latency cliff. When critical alerts are placed in FIFO windows, they stall for seconds until the window fills. At window size 20, delay reaches 10.55 seconds and SLA compliance drops to 4.62%.")
+        p.space_before = PptxPt(6)
+
+    # Card 2: Rahmani et al. (2018)
+    c2 = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(4.8), card_y, card_q1_w, card_q1_h)
+    c2.fill.solid()
+    c2.fill.fore_color.rgb = BG_CARD
+    c2.line.color.rgb = BORDER_CARD
+    tf2 = c2.text_frame
+    p = tf2.paragraphs[0]
+    p.text = "2. Rahmani et al. (2018)"
+    p.font.size = PptxPt(16)
+    p.font.bold = True
+    p.font.color.rgb = NAVY
+    p_doi2 = tf2.add_paragraph()
+    p_doi2.text = "FGCS (Q1) • doi.org/10.1016/j.future.2017.02.014"
+    p_doi2.font.size = PptxPt(9.5)
+    p_doi2.font.bold = True
+    p_doi2.font.color.rgb = BLUE
+    for b in [
+        "UT-GATE Smart Gateway: Edge intelligence for local Early Warning Score (EWS) processing.",
+        "Bandwidth Compression: Cuts >90% WAN traffic with offline local alerts.",
+        "Research Gap: Single-gateway failure point; lacks dynamic AIMD windowing and cross-sensor artifact suppression."
+    ]:
+        p = tf2.add_paragraph()
+        p.text = f"• {b}"
+        p.font.size = PptxPt(11)
+        p.font.color.rgb = DARK
+        p.space_before = PptxPt(6)
+
+    # Card 3: Pace et al. (2019)
+    c3 = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(8.8), card_y, card_q1_w, card_q1_h)
+    c3.fill.solid()
+    c3.fill.fore_color.rgb = BG_CARD
+    c3.line.color.rgb = BORDER_CARD
+    tf3 = c3.text_frame
+    p = tf3.paragraphs[0]
+    p.text = "3. Pace et al. (2019)"
+    p.font.size = PptxPt(16)
+    p.font.bold = True
+    p.font.color.rgb = NAVY
+    p_doi3 = tf3.add_paragraph()
+    p_doi3.text = "IEEE TII (Q1) • doi.org/10.1109/TII.2018.2843169"
+    p_doi3.font.size = PptxPt(9.5)
+    p_doi3.font.bold = True
+    p_doi3.font.color.rgb = BLUE
+    for b in [
+        "BodyEdge (BE-GTW): Multi-tier edge architecture for Healthcare Industry 4.0 applications.",
+        "Edge Responsiveness: Localized cardiac and HRV feature extraction.",
+        "Our Contrast: Lacks composite NEWS2 fusion, Greedy EDF priority scheduling, TLS 1.3 profiling, & 1.0 ms failover."
+    ]:
+        p = tf3.add_paragraph()
+        p.text = f"• {b}"
+        p.font.size = PptxPt(11)
+        p.font.color.rgb = DARK
+        p.space_before = PptxPt(6)
+
+    # Bottom Banner: The Shared Fatal Latency Cliff Gap
+    c_gap = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(5.2), PptxInches(11.72), PptxInches(1.8))
+    c_gap.fill.solid()
+    c_gap.fill.fore_color.rgb = PptxRGBColor(254, 242, 242)
+    c_gap.line.color.rgb = PptxRGBColor(248, 113, 113)
+    tf_gap = c_gap.text_frame
+    p_gap_t = tf_gap.paragraphs[0]
+    p_gap_t.text = "The Unifying Research Gap: The FIFO Aggregation 'Latency Cliff'"
+    p_gap_t.font.size = PptxPt(15)
+    p_gap_t.font.bold = True
+    p_gap_t.font.color.rgb = RED
+    for b in [
+        "Prior edge frameworks batch readings into uniform FIFO windows (W) to conserve WAN bandwidth.",
+        "Fatal Consequence: Emergency cardiac alarms stall behind routine vitals: delay explodes to 2,293 ms (W=5) and 10.55 s (W=20), crashing SLA compliance from 100% down to 4.62%!",
+        "Our Solution: Decouple emergency bypass from batch windows, enforcing Greedy EDF scheduling + NEWS2 fusion."
+    ]:
+        p = tf_gap.add_paragraph()
+        p.text = f"• {b}"
+        p.font.size = PptxPt(11.5)
+        p.font.color.rgb = DARK
+        p.space_before = PptxPt(4)
+
+    set_notes(s3, "On Slide 3, we ground our work in three seminal Q1 publications: Mahmud et al. in JSS 2022 for iFogSim2, Rahmani et al. in FGCS 2018 for UT-GATE, and Pace et al. in IEEE TII 2019 for BodyEdge. While these works proved edge bandwidth savings, all suffer from the fatal FIFO Latency Cliff where emergency alarms stall inside batch windows, crashing SLA compliance to 4.62%. Our decoupled priority architecture directly solves this gap.")
 
     # Slide 4: Proposed Architecture D
     s4 = prs.slides.add_slide(blank_layout)

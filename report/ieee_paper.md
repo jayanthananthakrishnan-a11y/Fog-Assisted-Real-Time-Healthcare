@@ -40,21 +40,16 @@ Nevertheless, a critical research gap persists in contemporary edge healthcare l
 ---
 
 ## II. Related Work
-Table 1 provides a comprehensive taxonomic comparison of our architecture against prominent literature in edge and fog healthcare monitoring.
+The deployment of edge and fog computing architectures in clinical healthcare IoT has been investigated across three seminal Q1 benchmark frameworks:
 
-| Publication | Environment | Vital Modalities | Delta-Filtering | Window Agg. | Priority Bypass | NEWS2 Fusion | Inter-Ward Failover | Strict SLA |
-| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Gupta et al. (2017) | iFogSim | Generic / EEG | No | No | No | No | No | No |
-| Mahmud et al. (2022) | iFogSim2 | Generic Microservices | No | No | No | No | No | No |
-| Rahmani et al. (2018) | UT-GATE Lab | ECG, Temp | Basic Threshold | No | Partial | No | No | No |
-| Gia et al. (2015) | Hardware Testbed | ECG (QRS) | Feature Extraction | No | No | No | No | No |
-| Kraemer et al. (2017) | Survey / Review | Multi-Parameter | Conceptual | No | Conceptual | No | No | No |
-| Mutlag et al. (2019) | Survey / Taxonomy | Multi-Parameter | No | No | Conceptual | No | No | No |
-| Verma & Sood (2018) | Simulation | Multi-Vital | Rule-based | No | No | No | No | No |
-| Tuli et al. (2020) | FogBus / iFogSim | Cardiovascular | No | No | No | No | No | Partial |
-| Pace et al. (2019) | BodyCloud | Generic BSN | Threshold | Yes ($W$) | No | No | No | No |
-| Aazam & Huh (2014) | FiCloud Testbed | Generic IoT | Trimming | No | No | No | No | No |
-| **Our Framework (Topic 19)** | **iFogSim2** | **HR, $\text{SpO}_2$, TEMP, BP, RESP, HRV** | **Stateful ($\Delta_{\text{thresh}}$)** | **Adaptive (AIMD)** | **Dedicated Local** | **Yes (0–20)** | **1.0 ms LAN (Arch E)** | **Strict ($\le$ 500 ms)** |
+### A. Discrete-Event Fog Simulation Baselines (iFogSim2)
+Mahmud et al. (2022) [[1]](https://doi.org/10.1016/j.jss.2022.111351) developed *iFogSim2*, an extended discrete-event simulation toolkit for modeling resource management, microservices, dynamic device clustering, and user mobility across edge and fog computing environments (*Journal of Systems and Software*, vol. 190, p. 111351, 2022). While iFogSim2 serves as our core foundational simulation platform—providing hierarchical `FogDevice` representations, dataflow vertices, and inter-gateway clustering primitives—it relies on canonical microservice models that process uniform telemetry streams. Crucially, iFogSim2 lacks clinical priority classes, hard deadline preemption, stateful delta-compression, and adaptive multi-modal windowing, motivating our priority-aware clinical routing engine.
+
+### B. Smart e-Health Gateways and Edge Analytics (UT-GATE)
+Rahmani et al. (2018) [[2]](https://doi.org/10.1016/j.future.2017.02.014) pioneered the *UT-GATE* smart e-Health gateway architecture (*Future Generation Computer Systems*, vol. 78, pp. 641–658, 2018), deploying localized computing intelligence at the edge of healthcare IoT. UT-GATE demonstrated the efficacy of edge-based Early Warning Score (EWS) processing, protocol bridging, and local notifications, achieving over 90% bandwidth compression and providing fail-soft local persistence during wide-area network outages. However, UT-GATE was architected around a single-gateway topology, leaving patient monitoring vulnerable to gateway crashes and queue saturation. Furthermore, it employed static threshold-based filtering without multi-sensor artifact suppression, adaptive AIMD sliding-window scaling, or strict deadline-driven dispatching.
+
+### C. Industrial Healthcare Edge Architectures (BodyEdge)
+Pace et al. (2019) [[3]](https://doi.org/10.1109/TII.2018.2843169) introduced *BodyEdge* (`BE-GTW`), a multi-tiered edge architecture designed for Healthcare Industry 4.0 applications (*IEEE Transactions on Industrial Informatics*, vol. 15, no. 1, pp. 481–489, 2019). BodyEdge demonstrated the benefits of localized cardiac and heart rate variability (HRV) feature extraction, achieving responsive edge latencies and reducing backhaul transmission energy. Nevertheless, BodyEdge focused primarily on isolated Body Sensor Networks (BSNs) and did not address composite multi-vital risk scoring (such as the 6-parameter NEWS2 index), cross-sensor motion artifact elimination, or Greedy Earliest-Deadline-First (EDF) queue scheduling. In contrast, our framework builds upon these seminal works by coupling composite NEWS2 artifact suppression with a strict preemptive scheduler, empirical TLS 1.3 cryptographic profiling, and 1.0 ms inter-ward failover across adjacent hospital ICUs.
 
 ---
 
@@ -194,13 +189,6 @@ In this paper, we resolved the tension between WAN bandwidth conservation, clini
 ---
 
 ## References
-1. H. Gupta et al., "iFogSim: A toolkit for modeling and simulation of resource management techniques in IoT, Edge and Fog computing environments," *Softw. Pract. Exp.*, vol. 47, no. 9, pp. 1275–1296, 2017.
-2. R. Mahmud et al., "iFogSim2: An Extended iFogSim Simulator for Mobility, Clustering, and Microservice Management in Edge and Fog Computing Environments," *J. Syst. Softw.*, vol. 190, p. 111351, 2022.
-3. A. M. Rahmani et al., "Exploiting smart e-Health gateways at the edge of healthcare IoT: A fog computing approach," *Future Gener. Comput. Syst.*, vol. 78, pp. 641–658, 2018.
-4. T. N. Gia et al., "Fog Computing in Healthcare Internet of Things: A Case Study on ECG Feature Extraction," in *Proc. IEEE CIT/IUCC/DASC/PICOM*, 2015, pp. 356–363.
-5. F. A. Kraemer et al., "Fog Computing in Healthcare—A Review and Discussion," *IEEE Access*, vol. 5, pp. 9206–9222, 2017.
-6. A. A. Mutlag et al., "Enabling technologies for fog computing in healthcare IoT systems: Future research directions," *IEEE Access*, vol. 7, pp. 81888–81922, 2019.
-7. P. Verma and S. K. Sood, "Fog Assisted-IoT Enabled Patient Health Monitoring in Smart Homes," *IEEE Internet Things J.*, vol. 5, no. 3, pp. 1388–1396, 2018.
-8. S. Tuli et al., "HealthFog: An ensemble deep learning based Smart Healthcare System for Automatic Diagnosis of Heart Diseases in Integrated IoT and Fog Computing Environments," *Future Gener. Comput. Syst.*, vol. 104, pp. 187–200, 2020.
-9. P. Pace et al., "An edge-based architecture to support efficient applications for healthcare IoT," *IEEE Access*, vol. 7, pp. 43147–43159, 2019.
-10. M. Aazam and E.-N. Huh, "Fog computing and smart gateway based communication for cloud of things," in *Proc. IEEE FiCloud*, 2014, pp. 464–470.
+1. R. Mahmud, Faheem, and R. Buyya, "iFogSim2: An Extended iFogSim Simulator for Mobility, Clustering, and Microservice Management in Edge and Fog Computing Environments," *Journal of Systems and Software*, vol. 190, p. 111351, 2022. [https://doi.org/10.1016/j.jss.2022.111351](https://doi.org/10.1016/j.jss.2022.111351)
+2. A. M. Rahmani, T. N. Gia, B. Negash, A. Anzanpour, I. Azimi, M. Jiang, and P. Liljeberg, "Exploiting smart e-Health gateways at the edge of healthcare Internet-of-Things: A fog computing approach," *Future Generation Computer Systems*, vol. 78, pp. 641–658, 2018. [https://doi.org/10.1016/j.future.2017.02.014](https://doi.org/10.1016/j.future.2017.02.014)
+3. P. Pace, G. Aloi, R. Gravina, G. Caliciuri, G. Fortino, and A. Liotta, "An Edge-Based Architecture to Support Efficient Applications for Healthcare Industry 4.0," *IEEE Transactions on Industrial Informatics*, vol. 15, no. 1, pp. 481–489, Jan. 2019. [https://doi.org/10.1109/TII.2018.2843169](https://doi.org/10.1109/TII.2018.2843169)

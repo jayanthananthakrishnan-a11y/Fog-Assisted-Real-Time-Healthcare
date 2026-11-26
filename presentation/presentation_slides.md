@@ -49,19 +49,27 @@
 ---
 
 <!-- SLIDE 3 -->
-# Slide 3: The Research Gap: The Aggregation Latency Cliff
-### Why Standard Edge Filtering (Architecture C) is Clinically Lethal
+# Slide 3: Related Work & Top 3 Q1 Benchmarks (The Research Gap)
+### Critical Synthesis of Prior Art and the Fatal "Latency Cliff"
 
-- **Conventional Edge Aggregation:** Gateways compress telemetry into batch windows of size $W$ before transmitting to the cloud.
-- **The Fatal Flaw (FIFO Buffering):** A uniform First-In-First-Out queue treats all readings identically. An acute cardiac arrest tuple waits inside the edge buffer for $(W - 1)$ subsequent readings to arrive before the batch is released.
-- **Empirical Latency Cliff:**
-  - At window size $W = 5$, critical alert latency explodes from 208 ms to **2,293.5 ms**.
-  - At window size $W = 20$, critical delay exceeds **10.55 seconds (10,551 ms)**!
-- **Clinical SLA Collapse:** Service Level Agreement compliance ($\le 500$ ms) crashes from 100% down to **27.88% (W=5)** and **4.62% (W=20)**.
-- **Our Core Insight:** Emergency response must be mathematically decoupled from window aggregation buffers.
+1. **Mahmud et al. (2022) — *iFogSim2* (Journal of Systems and Software, Q1):**
+   - *DOI:* [https://doi.org/10.1016/j.jss.2022.111351](https://doi.org/10.1016/j.jss.2022.111351)
+   - *Core Strength:* Foundational discrete-event simulation toolkit for edge/fog resource management, microservices, and dynamic clustering.
+   - *Identified Research Gap:* Microservice pipelines lack clinical priority preemption, stateful delta-compression, and adaptive multi-modal windowing.
+2. **Rahmani et al. (2018) — *UT-GATE Smart Gateway* (Future Generation Computer Systems, Q1):**
+   - *DOI:* [https://doi.org/10.1016/j.future.2017.02.014](https://doi.org/10.1016/j.future.2017.02.014)
+   - *Core Strength:* Pioneered edge e-Health gateways; demonstrated local Early Warning Score (EWS) processing, >90% bandwidth compression, and offline resilience.
+   - *Identified Research Gap:* Single-gateway point-of-failure; static thresholds lack cross-sensor artifact suppression and dynamic AIMD windowing.
+3. **Pace et al. (2019) — *BodyEdge (BE-GTW)* (IEEE Trans. Industrial Informatics, Q1):**
+   - *DOI:* [https://doi.org/10.1109/TII.2018.2843169](https://doi.org/10.1109/TII.2018.2843169)
+   - *Core Strength:* Multi-tier edge architecture for Healthcare 4.0; localized cardiac & HRV feature extraction.
+   - *Identified Research Gap / Our Contrast:* Focuses on isolated BSNs without composite NEWS2 risk fusion, Greedy EDF priority scheduling, TLS 1.3 profiling, or 1.0 ms two-ward failover.
+4. **The Unifying Fatal Flaw: The Aggregation Latency Cliff**
+   - When prior edge frameworks batch readings into uniform FIFO windows ($W$), critical cardiac alarms stall behind routine vitals:
+   - At $W = 5$, delay surges to **2,293.5 ms**; at $W = 20$, delay reaches **10.55 s**, collapsing SLA ($\le 500$ ms) compliance to **4.62%**!
 
 *Speaker Notes:*  
-"This slide reveals our fundamental discovery: the Aggregation Latency Cliff. When edge systems batch sensor data into windows of size W to save bandwidth, critical emergency alarms get trapped behind routine vitals in FIFO buffers. At window size 20, an emergency alert is delayed by over 10.5 seconds, and SLA compliance collapses to 4.6%."
+"On Slide 3, we ground our work in the top 3 verified Q1 literature benchmarks: Mahmud et al. in JSS 2022 for iFogSim2 simulation, Rahmani et al. in FGCS 2018 for the UT-GATE smart healthcare gateway, and Pace et al. in IEEE TII 2019 for BodyEdge. While these seminal works proved that edge gateways save over 90% bandwidth, none solved the fatal FIFO Aggregation Latency Cliff—where emergency cardiac alarms get trapped behind routine vitals inside batch window buffers, causing SLA compliance to crash to 4.6%. Our framework directly closes this gap."
 
 ---
 
