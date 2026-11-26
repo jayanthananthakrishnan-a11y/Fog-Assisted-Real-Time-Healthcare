@@ -3,7 +3,7 @@
 **Topic 19:** Fog-Assisted Real-Time Healthcare / Smart-City Monitoring System (iFogSim2)  
 **Evaluation:** 15-Mark University Research Project (Team of 3 Undergraduates)  
 **Institution:** Department of Computer Science & Engineering, IIIT Sri City  
-**Authors:** Jayanth Ananthakrishnan, Mirthunvinayak S, Vinod Kumar  
+**Authors:** Jayanth A, Mirthun V, Vinod K  
 **Date:** November 2026  
 
 ---
@@ -12,7 +12,7 @@
 
 To ensure an equitable, highly coordinated defense during the 15-minute presentation and subsequent oral examination, each team member is assigned clear thematic ownership:
 
-### Member 1: Jayanth Ananthakrishnan (Slides 1–5: Problem, Taxonomy & Multi-Ward Topology)
+### Member 1: Jayanth A (Slides 1–4: Problem, Latency Cliff Gap & Multi-Ward Topology)
 - **Presentation Ownership:**
   - Motivation: High-velocity physiological telemetry (HR, $\text{SpO}_2$, TEMP, BP, RESP, HRV), WAN latency, and backhaul congestion.
   - Research Gap: The clinical hazard of uniform edge window aggregation (The Latency Cliff).
@@ -25,7 +25,7 @@ To ensure an equitable, highly coordinated defense during the 15-minute presenta
   - How physical link properties (propagation delay, bandwidth, MIPS) are modeled in iFogSim2.
   - Inter-ward failover mechanics and autonomous LAN actuation.
 
-### Member 2: Mirthunvinayak S (Slides 6–8: Sensor DAG, NEWS2 Fusion, Greedy EDF & AIMD Window)
+### Member 2: Mirthun V (Slides 5–7: Sensor DAG, NEWS2 Fusion, Greedy EDF & AIMD Window)
 - **Presentation Ownership:**
   - Sensor DAG Formulation: Modeling vertices and edges across the telemetry pipeline.
   - NEWS2 Composite Risk Fusion: Standardized 0–20 risk scoring across multi-vital parameters.
@@ -39,7 +39,7 @@ To ensure an equitable, highly coordinated defense during the 15-minute presenta
   - Preemption logic and why Greedy EDF prevents deadline inversion.
   - TCP AIMD convergence properties on clinical time-series.
 
-### Member 3: Vinod Kumar (Slides 9–20: Empirical Results, Scalability, Security Roadmap & Conclusion)
+### Member 3: Vinod K (Slides 8–19: Empirical Results, Scalability, Security Roadmap & Conclusion)
 - **Presentation Ownership:**
   - Simulation Rigor: Deterministic seeding (`seed = 42L`), buffer flush at $t=100{,}500\text{ ms}$, and 100.00% tuple accounting.
   - Empirical Results: Experiments 1–4 (Baseline, Scalability to 200 sensors, Window Sensitivity, WAN Stress).

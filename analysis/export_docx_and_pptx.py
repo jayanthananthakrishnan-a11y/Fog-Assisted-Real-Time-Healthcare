@@ -123,7 +123,7 @@ def generate_docx_report():
     # Authors
     p_auth = doc.add_paragraph()
     p_auth.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_auth = p_auth.add_run("Jayanth Ananthakrishnan, Mirthunvinayak S, and Vinod Kumar\n")
+    r_auth = p_auth.add_run("Jayanth A, Mirthun V, and Vinod K\n")
     r_auth.font.bold = True
     r_auth.font.size = Pt(11)
     r_aff = p_auth.add_run(
@@ -213,81 +213,23 @@ def generate_docx_report():
         "trigger false alarms, inducing acute ICU alarm fatigue."
     )
     doc.add_paragraph(
-        "While fog computing positions computing power near the bedside, naive edge filtering introduces a lethal Aggregation Latency Cliff: "
-        "emergency tuples are trapped in FIFO batch queues behind routine readings. Our framework resolves this challenge by decoupling data planes, "
-        "introducing composite NEWS2 multi-vital risk fusion, Greedy Earliest-Deadline-First priority scheduling, TCP-inspired adaptive sliding windows, "
-        "and multi-ward inter-gateway failover."
+        "To mitigate these drawbacks, Fog Computing situates computation, storage, and networking resources at the edge of the local network "
+        "(hospital ward gateways or bedside micro-servers) [1]–[3]. Seminal frameworks—including the discrete-event simulator iFogSim2 by Mahmud et al. [1], "
+        "the smart e-Health gateway architecture UT-GATE by Rahmani et al. [2], and the BodyEdge Healthcare 4.0 architecture by Pace et al. [3]—demonstrated "
+        "that localized filtering and edge processing can cut cloud-bound WAN traffic by over 70% to 90%."
     )
-
-    # --- SECTION II: RELATED WORK ---
-    add_sec_heading("II. RELATED WORK")
     doc.add_paragraph(
-        "The deployment of edge and fog computing architectures in clinical healthcare IoT has been investigated across three seminal Q1 benchmark frameworks:"
-    )
-
-    # Subsection A: Mahmud et al. (2022)
-    p_rw1 = doc.add_paragraph()
-    r_rw1_h = p_rw1.add_run("A. Discrete-Event Fog Simulation Baselines (iFogSim2)\n")
-    r_rw1_h.bold = True
-    r_rw1_h.font.size = Pt(10.0)
-    p_rw1.add_run(
-        "Mahmud et al. (2022) [1] developed iFogSim2, an extended discrete-event simulation toolkit for modeling resource management, "
-        "microservices, dynamic device clustering, and user mobility across edge and fog computing environments (Journal of Systems and Software, "
-        "vol. 190, p. 111351, 2022, "
-    )
-    r_doi1 = p_rw1.add_run("https://doi.org/10.1016/j.jss.2022.111351")
-    r_doi1.font.color.rgb = RGBColor(0x02, 0x84, 0xC7)
-    r_doi1.underline = True
-    p_rw1.add_run(
-        "). While iFogSim2 serves as our core foundational simulation platform—providing hierarchical FogDevice representations, dataflow vertices, "
-        "and inter-gateway clustering primitives—it relies on canonical microservice models that process uniform telemetry streams. Crucially, "
-        "iFogSim2 lacks clinical priority classes, hard deadline preemption, stateful delta-compression, and adaptive multi-modal windowing, motivating "
-        "our priority-aware clinical routing engine."
-    )
-
-    # Subsection B: Rahmani et al. (2018)
-    p_rw2 = doc.add_paragraph()
-    r_rw2_h = p_rw2.add_run("B. Smart e-Health Gateways and Edge Analytics (UT-GATE)\n")
-    r_rw2_h.bold = True
-    r_rw2_h.font.size = Pt(10.0)
-    p_rw2.add_run(
-        "Rahmani et al. (2018) [2] pioneered the UT-GATE smart e-Health gateway architecture (Future Generation Computer Systems, vol. 78, "
-        "pp. 641–658, 2018, "
-    )
-    r_doi2 = p_rw2.add_run("https://doi.org/10.1016/j.future.2017.02.014")
-    r_doi2.font.color.rgb = RGBColor(0x02, 0x84, 0xC7)
-    r_doi2.underline = True
-    p_rw2.add_run(
-        "), deploying localized computing intelligence at the edge of healthcare IoT. UT-GATE demonstrated the efficacy of edge-based Early Warning "
-        "Score (EWS) processing, protocol bridging, and local notifications, achieving over 90% bandwidth compression and providing fail-soft local "
-        "persistence during wide-area network outages. However, UT-GATE was architected around a single-gateway topology, leaving patient monitoring "
-        "vulnerable to gateway crashes and queue saturation. Furthermore, it employed static threshold-based filtering without multi-sensor artifact "
-        "suppression, adaptive AIMD sliding-window scaling, or strict deadline-driven dispatching."
-    )
-
-    # Subsection C: Pace et al. (2019)
-    p_rw3 = doc.add_paragraph()
-    r_rw3_h = p_rw3.add_run("C. Industrial Healthcare Edge Architectures (BodyEdge)\n")
-    r_rw3_h.bold = True
-    r_rw3_h.font.size = Pt(10.0)
-    p_rw3.add_run(
-        "Pace et al. (2019) [3] introduced BodyEdge (BE-GTW), a multi-tiered edge architecture designed for Healthcare Industry 4.0 applications "
-        "(IEEE Transactions on Industrial Informatics, vol. 15, no. 1, pp. 481–489, 2019, "
-    )
-    r_doi3 = p_rw3.add_run("https://doi.org/10.1109/TII.2018.2843169")
-    r_doi3.font.color.rgb = RGBColor(0x02, 0x84, 0xC7)
-    r_doi3.underline = True
-    p_rw3.add_run(
-        "). BodyEdge demonstrated the benefits of localized cardiac and heart rate variability (HRV) feature extraction, achieving responsive edge "
-        "latencies and reducing backhaul transmission energy. Nevertheless, BodyEdge focused primarily on isolated Body Sensor Networks (BSNs) and "
-        "did not address composite multi-vital risk scoring (such as the 6-parameter NEWS2 index), cross-sensor motion artifact elimination, or "
-        "Greedy Earliest-Deadline-First (EDF) queue scheduling. In contrast, our framework builds upon these seminal works by coupling composite "
-        "NEWS2 artifact suppression with a strict preemptive scheduler, empirical TLS 1.3 cryptographic profiling, and 1.0 ms inter-ward failover "
-        "across adjacent hospital ICUs."
+        "Nevertheless, a critical research gap persists in contemporary edge healthcare literature: conventional edge aggregation architectures "
+        "batch incoming telemetry tuples into sliding or tumbling batch windows (W) before WAN transmission [2], [3]. While effective for stationary signals, "
+        "uniform FIFO window buffering introduces a devastating clinical side-effect: The Aggregation Latency Cliff. When an acute cardiac arrest "
+        "occurs, the critical tuple is enqueued behind routine readings inside the edge buffer, remaining stalled until the entire window fills. "
+        "Under typical telemetry sampling rates, this introduces multi-second delays, directly violating medical SLAs. Our framework resolves this "
+        "challenge by decoupling data planes, introducing composite NEWS2 multi-vital risk fusion, Greedy Earliest-Deadline-First priority scheduling, "
+        "TCP-inspired adaptive sliding windows, and multi-ward inter-gateway failover."
     )
 
     # --- SECTION III: SYSTEM ARCHITECTURE & METHODOLOGY ---
-    add_sec_heading("III. SYSTEM ARCHITECTURE AND METHODOLOGY")
+    add_sec_heading("II. SYSTEM ARCHITECTURE AND METHODOLOGY")
     doc.add_paragraph(
         "We formulate a hierarchical, three-tier cyber-physical topology consisting of: (1) Patient IoT Sensor Tier, (2) Hospital Ward Fog "
         "Gateway Tier, and (3) Cloud Datacenter Tier. Monitored beds connect to an 8-core hospital fog gateway (8,000 MIPS, 8,000 MB RAM) "
@@ -377,7 +319,7 @@ def generate_docx_report():
                 r.bold = True
 
     # --- SECTION IV: EXPERIMENTAL SETUP ---
-    add_sec_heading("IV. EXPERIMENTAL SETUP IN IFOGSIM2")
+    add_subsec_heading("A. Experimental Setup in iFogSim2")
     doc.add_paragraph(
         "All simulation modules are implemented in Java 17 within iFogSim2. Simulations execute with deterministic random seeding (seed = 42L) "
         "for 100 seconds (100,000 ms), with sensors emitting 1 reading/sec. An explicit end-of-simulation buffer drain at 100,500 ms ensures "
@@ -385,10 +327,10 @@ def generate_docx_report():
     )
 
     # --- SECTION V: RESULTS AND DISCUSSION ---
-    add_sec_heading("V. RESULTS AND DISCUSSION")
+    add_sec_heading("III. EXPERIMENTAL RESULTS AND DISCUSSION")
 
     # Exp 1
-    add_subsec_heading("A. Experiment 1: Cross-Architecture Baseline Comparison (N=10, W=5)")
+    add_subsec_heading("B. Experiment 1: Cross-Architecture Baseline Comparison (N=10, W=5)")
     doc.add_paragraph(
         "Table III summarizes the baseline performance across all four architectures. Architecture A (Cloud-Only) exhibits uniform latency "
         "(207.71 ms) and 1,953.13 KB of cloud traffic. Architecture B introduces a +3.72 ms gateway penalty with zero bandwidth conservation. "
@@ -445,7 +387,7 @@ def generate_docx_report():
             r_c.font.italic = True
 
     # Exp 2: Scalability
-    add_subsec_heading("B. Experiment 2: Patient and Sensor Scalability (N=10 to 50 Patients, 40 to 200 Sensors)")
+    add_subsec_heading("C. Experiment 2: Patient and Sensor Scalability (N=10 to 50 Patients, 40 to 200 Sensors)")
     doc.add_paragraph(
         "As sensor population scales from 40 to 200 sensors, Architecture D maintains perfect scale-invariance: critical alert latency remains "
         "pegged at 7.125 ms. Concurrently, it saves 6.55 MB of WAN backhaul traffic (67.01%) at 200 sensors compared to Cloud-Only baseline."
@@ -605,7 +547,7 @@ def generate_docx_report():
         r_c11.font.italic = True
 
     # Patient Reports
-    add_subsec_heading("I. Automated Patient Clinical Reporting")
+    add_subsec_heading("J. Automated Patient Clinical Reporting")
     doc.add_paragraph(
         "The automated clinical report generator produces structured diagnostic summaries for each monitored patient (exported to "
         "results/patient_reports/patient_summary_report.csv and .json). Each report records patient clinical risk tier, composite NEWS2 score, "
@@ -640,7 +582,7 @@ def generate_docx_report():
         r_c12.font.italic = True
 
     # --- SECTION VI: FUTURE SECURITY ROADMAP ---
-    add_sec_heading("VI. FUTURE SECURITY ROADMAP")
+    add_sec_heading("IV. FUTURE SECURITY ROADMAP")
     doc.add_paragraph(
         "To address advanced clinical threat vectors in distributed IoMT environments, we formulate a concrete Three-Pillar Security Roadmap:\n\n"
         "1. Pillar 1: End-to-End Cryptographic Integrity & Non-Repudiation: Embedded Ed25519 digital signatures on biosensors. Each 500-byte "
@@ -655,7 +597,7 @@ def generate_docx_report():
     )
 
     # --- SECTION VII: SCOPE & LIMITATIONS ---
-    add_sec_heading("VII. LIMITATIONS AND ENGINEERING SCOPE")
+    add_subsec_heading("D. Limitations and Engineering Scope")
     doc.add_paragraph(
         "We explicitly state our simulation scope: (1) Workload Modeling: Modeled via bounded Gaussian random walks calibrated against human "
         "physiological ranges; future work will ingest raw MIMIC-III waveforms; (2) Battery Life: Mains-powered bedside bridges were assumed; "
@@ -663,7 +605,7 @@ def generate_docx_report():
     )
 
     # --- SECTION VIII: CONCLUSION ---
-    add_sec_heading("VIII. CONCLUSION")
+    add_sec_heading("V. CONCLUSION")
     doc.add_paragraph(
         "In this paper, we addressed the critical tension between WAN bandwidth conservation, clinical emergency responsiveness, and edge "
         "fault-tolerance in IoT healthcare telemetry. Our proposed priority-aware fog framework (Architectures D and E) delivers critical alerts "
@@ -673,7 +615,7 @@ def generate_docx_report():
     )
 
     # --- REFERENCES ---
-    add_sec_heading("IX. REFERENCES")
+    add_sec_heading("REFERENCES")
     refs = [
         "[1] R. Mahmud, Faheem, and R. Buyya, 'iFogSim2: An Extended iFogSim Simulator for Mobility, Clustering, and Microservice Management in Edge and Fog Computing Environments,' Journal of Systems and Software, vol. 190, p. 111351, 2022. https://doi.org/10.1016/j.jss.2022.111351",
         "[2] A. M. Rahmani, T. N. Gia, B. Negash, A. Anzanpour, I. Azimi, M. Jiang, and P. Liljeberg, 'Exploiting smart e-Health gateways at the edge of healthcare Internet-of-Things: A fog computing approach,' Future Generation Computer Systems, vol. 78, pp. 641–658, 2018. https://doi.org/10.1016/j.future.2017.02.014",
@@ -779,176 +721,65 @@ def generate_pptx_presentation():
     tf_ca = card_auth.text_frame
     tf_ca.vertical_anchor = MSO_ANCHOR.MIDDLE
     p_ca = tf_ca.paragraphs[0]
-    p_ca.text = "Course: Cloud Computing | Department of Computer Science & Engineering | IIIT Sri City\nAuthors: Jayanth Ananthakrishnan, Mirthunvinayak S, Vinod Kumar\nEmails: {jayanth.a22, mirthunvinayak.s22, vinod.k22}@iiits.in"
+    p_ca.text = "Course: Cloud Computing | Department of Computer Science & Engineering | IIIT Sri City\nAuthors: Jayanth A, Mirthun V, Vinod K\nEmails: {jayanth.a22, mirthunvinayak.s22, vinod.k22}@iiits.in"
     p_ca.font.size = PptxPt(13)
     p_ca.font.color.rgb = PptxRGBColor(220, 230, 242)
     set_notes(s1, "Good morning, Professor and committee members. Today our team presents Topic 19: Fog-Assisted Real-Time Healthcare Monitoring System in iFogSim2. We will demonstrate how our priority-aware framework cuts critical emergency alert delay by 96.6% while saving two-thirds of cloud bandwidth and guaranteeing 100% SLA compliance.")
 
-    # Slide 2: Problem Statement
+    # Slide 2: Problem Statement & Latency Cliff Gap
     s2 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s2, "The Problem: Why Cloud-Only Patient Telemetry Fails", "1. CLINICAL MOTIVATION")
-    card_p1 = s2.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(5.6), PptxInches(5.0))
+    add_slide_header(s2, "Clinical Motivation & The Research Gap: The Latency Cliff", "1. MOTIVATION & RESEARCH GAP")
+    card_p1 = s2.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(5.6), PptxInches(5.1))
     card_p1.fill.solid()
     card_p1.fill.fore_color.rgb = BG_CARD
     card_p1.line.color.rgb = BORDER_CARD
     tf_p1 = card_p1.text_frame
     p = tf_p1.paragraphs[0]
-    p.text = "1. Unbounded WAN Latency & Jitter"
-    p.font.size = PptxPt(18)
+    p.text = "1. Unbounded WAN Latency & Ingress"
+    p.font.size = PptxPt(17)
     p.font.bold = True
     p.font.color.rgb = RED
     for b in [
-        "Every vital sign traverses public WAN backhauls to distant hyperscale clouds.",
-        "Round-trip times exceed 200 ms under nominal conditions and surge past 1,000 ms during congestion.",
-        "Clinical Emergency SLA: Acute cardiac arrest and hypoxia require action in <= 500 ms.",
-        "Delayed alerts over WAN directly endanger patient survival in critical ICU wards."
+        "Public WAN RTTs exceed 200 ms under nominal conditions and surge past 1,000 ms.",
+        "Clinical Emergency SLA: Acute cardiac arrest & hypoxia require intervention in <= 500 ms.",
+        "A 50-bed ward captures 6+ continuous vitals at 1 Hz (> 25 million tuples/day).",
+        "Over 85% of captured readings represent redundant, stationary resting measurements.",
+        "Single-sensor motion artifacts trigger false alarms, creating dangerous alarm fatigue."
     ]:
         p = tf_p1.add_paragraph()
         p.text = f"• {b}"
-        p.font.size = PptxPt(13)
+        p.font.size = PptxPt(12)
         p.font.color.rgb = DARK
-        p.space_before = PptxPt(10)
+        p.space_before = PptxPt(8)
 
-    card_p2 = s2.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(6.8), PptxInches(1.6), PptxInches(5.6), PptxInches(5.0))
+    card_p2 = s2.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(6.8), PptxInches(1.6), PptxInches(5.7), PptxInches(5.1))
     card_p2.fill.solid()
-    card_p2.fill.fore_color.rgb = BG_CARD
-    card_p2.line.color.rgb = BORDER_CARD
+    card_p2.fill.fore_color.rgb = PptxRGBColor(254, 242, 242)
+    card_p2.line.color.rgb = PptxRGBColor(248, 113, 113)
     tf_p2 = card_p2.text_frame
     p = tf_p2.paragraphs[0]
-    p.text = "2. Excessive WAN Ingress & Alarm Fatigue"
-    p.font.size = PptxPt(18)
+    p.text = "2. The Fatal 'Aggregation Latency Cliff'"
+    p.font.size = PptxPt(17)
     p.font.bold = True
-    p.font.color.rgb = BLUE
+    p.font.color.rgb = NAVY
     for b in [
-        "ICUs monitor 6+ vitals (HR, SpO2, TEMP, BP, RESP, HRV) at 1 sample/sec.",
-        "A 50-bed ward generates > 25 million biometric readings every day.",
-        "85.5% of readings are clinically stationary (resting heart rate fluctuating by < 1 bpm).",
-        "Single-sensor motion artifacts trigger false alarms, creating dangerous clinical alarm fatigue."
+        "Conventional Edge Approach: Gateways batch readings into FIFO windows (W) to save bandwidth.",
+        "The Fatal Flaw: Emergency tuples stall inside batch buffers until all (W-1) tuples arrive.",
+        "Empirical Latency Cliff: Delay explodes to 2,293.5 ms at W=5 and 10.55 s at W=20!",
+        "Clinical SLA Collapse: Critical SLA (<= 500 ms) crashes from 100% to 27.88% (W=5) and 4.62% (W=20).",
+        "Our Solution: Decouple emergency bypass from batch windows; enforce Greedy EDF scheduling."
     ]:
         p = tf_p2.add_paragraph()
         p.text = f"• {b}"
-        p.font.size = PptxPt(13)
+        p.font.size = PptxPt(12)
         p.font.color.rgb = DARK
-        p.space_before = PptxPt(10)
-    set_notes(s2, "Hospital ICUs continuously monitor vital signs. In traditional Cloud-Only systems, all raw readings cross the WAN. This exposes patients to WAN jitter, wastes massive bandwidth on stationary data, and induces alarm fatigue from single-sensor motion artifacts.")
+        p.space_before = PptxPt(8)
+    set_notes(s2, "Slide 2 presents our clinical motivation and core research gap: Cloud-Only streaming exposes patients to WAN jitter, while conventional edge batching creates a lethal FIFO Latency Cliff where emergency alarms stall for seconds. At window size 20, delay reaches 10.55 seconds and SLA compliance drops to 4.62%. Our decoupled priority architecture directly solves this gap.")
 
-    # Slide 3: Related Work & Top 3 Q1 Benchmarks
+    # Slide 3: Proposed Architecture D
     s3 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s3, "Related Work: Top 3 Q1 Benchmarks & Literature Gap", "2. RELATED WORK & RESEARCH GAP")
-
-    card_q1_w = PptxInches(3.72)
-    card_q1_h = PptxInches(3.5)
-    card_y = PptxInches(1.5)
-
-    # Card 1: Mahmud et al. (2022)
-    c1 = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), card_y, card_q1_w, card_q1_h)
-    c1.fill.solid()
-    c1.fill.fore_color.rgb = BG_CARD
-    c1.line.color.rgb = BORDER_CARD
-    tf1 = c1.text_frame
-    p = tf1.paragraphs[0]
-    p.text = "1. Mahmud et al. (2022)"
-    p.font.size = PptxPt(16)
-    p.font.bold = True
-    p.font.color.rgb = NAVY
-    p_doi1 = tf1.add_paragraph()
-    p_doi1.text = "JSS (Q1) • doi.org/10.1016/j.jss.2022.111351"
-    p_doi1.font.size = PptxPt(9.5)
-    p_doi1.font.bold = True
-    p_doi1.font.color.rgb = BLUE
-    for b in [
-        "iFogSim2 Simulation Core: Discrete-event modeling of hierarchical edge devices & dynamic clustering.",
-        "Baseline Model: Microservice execution on uniform streams.",
-        "Research Gap: Lacks clinical priority classes, hard deadline preemption, and adaptive multi-modal windowing."
-    ]:
-        p = tf1.add_paragraph()
-        p.text = f"• {b}"
-        p.font.size = PptxPt(11)
-        p.font.color.rgb = DARK
-        p.space_before = PptxPt(6)
-
-    # Card 2: Rahmani et al. (2018)
-    c2 = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(4.8), card_y, card_q1_w, card_q1_h)
-    c2.fill.solid()
-    c2.fill.fore_color.rgb = BG_CARD
-    c2.line.color.rgb = BORDER_CARD
-    tf2 = c2.text_frame
-    p = tf2.paragraphs[0]
-    p.text = "2. Rahmani et al. (2018)"
-    p.font.size = PptxPt(16)
-    p.font.bold = True
-    p.font.color.rgb = NAVY
-    p_doi2 = tf2.add_paragraph()
-    p_doi2.text = "FGCS (Q1) • doi.org/10.1016/j.future.2017.02.014"
-    p_doi2.font.size = PptxPt(9.5)
-    p_doi2.font.bold = True
-    p_doi2.font.color.rgb = BLUE
-    for b in [
-        "UT-GATE Smart Gateway: Edge intelligence for local Early Warning Score (EWS) processing.",
-        "Bandwidth Compression: Cuts >90% WAN traffic with offline local alerts.",
-        "Research Gap: Single-gateway failure point; lacks dynamic AIMD windowing and cross-sensor artifact suppression."
-    ]:
-        p = tf2.add_paragraph()
-        p.text = f"• {b}"
-        p.font.size = PptxPt(11)
-        p.font.color.rgb = DARK
-        p.space_before = PptxPt(6)
-
-    # Card 3: Pace et al. (2019)
-    c3 = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(8.8), card_y, card_q1_w, card_q1_h)
-    c3.fill.solid()
-    c3.fill.fore_color.rgb = BG_CARD
-    c3.line.color.rgb = BORDER_CARD
-    tf3 = c3.text_frame
-    p = tf3.paragraphs[0]
-    p.text = "3. Pace et al. (2019)"
-    p.font.size = PptxPt(16)
-    p.font.bold = True
-    p.font.color.rgb = NAVY
-    p_doi3 = tf3.add_paragraph()
-    p_doi3.text = "IEEE TII (Q1) • doi.org/10.1109/TII.2018.2843169"
-    p_doi3.font.size = PptxPt(9.5)
-    p_doi3.font.bold = True
-    p_doi3.font.color.rgb = BLUE
-    for b in [
-        "BodyEdge (BE-GTW): Multi-tier edge architecture for Healthcare Industry 4.0 applications.",
-        "Edge Responsiveness: Localized cardiac and HRV feature extraction.",
-        "Our Contrast: Lacks composite NEWS2 fusion, Greedy EDF priority scheduling, TLS 1.3 profiling, & 1.0 ms failover."
-    ]:
-        p = tf3.add_paragraph()
-        p.text = f"• {b}"
-        p.font.size = PptxPt(11)
-        p.font.color.rgb = DARK
-        p.space_before = PptxPt(6)
-
-    # Bottom Banner: The Shared Fatal Latency Cliff Gap
-    c_gap = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(5.2), PptxInches(11.72), PptxInches(1.8))
-    c_gap.fill.solid()
-    c_gap.fill.fore_color.rgb = PptxRGBColor(254, 242, 242)
-    c_gap.line.color.rgb = PptxRGBColor(248, 113, 113)
-    tf_gap = c_gap.text_frame
-    p_gap_t = tf_gap.paragraphs[0]
-    p_gap_t.text = "The Unifying Research Gap: The FIFO Aggregation 'Latency Cliff'"
-    p_gap_t.font.size = PptxPt(15)
-    p_gap_t.font.bold = True
-    p_gap_t.font.color.rgb = RED
-    for b in [
-        "Prior edge frameworks batch readings into uniform FIFO windows (W) to conserve WAN bandwidth.",
-        "Fatal Consequence: Emergency cardiac alarms stall behind routine vitals: delay explodes to 2,293 ms (W=5) and 10.55 s (W=20), crashing SLA compliance from 100% down to 4.62%!",
-        "Our Solution: Decouple emergency bypass from batch windows, enforcing Greedy EDF scheduling + NEWS2 fusion."
-    ]:
-        p = tf_gap.add_paragraph()
-        p.text = f"• {b}"
-        p.font.size = PptxPt(11.5)
-        p.font.color.rgb = DARK
-        p.space_before = PptxPt(4)
-
-    set_notes(s3, "On Slide 3, we ground our work in three seminal Q1 publications: Mahmud et al. in JSS 2022 for iFogSim2, Rahmani et al. in FGCS 2018 for UT-GATE, and Pace et al. in IEEE TII 2019 for BodyEdge. While these works proved edge bandwidth savings, all suffer from the fatal FIFO Latency Cliff where emergency alarms stall inside batch windows, crashing SLA compliance to 4.62%. Our decoupled priority architecture directly solves this gap.")
-
-    # Slide 4: Proposed Architecture D
-    s4 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s4, "Proposed Architecture: Priority-Aware Fog (Arch D)", "3. PROPOSED ARCHITECTURE")
-    card_sol = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    add_slide_header(s3, "Proposed Architecture: Priority-Aware Fog (Arch D)", "3. PROPOSED ARCHITECTURE")
+    card_sol = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_sol.fill.solid()
     card_sol.fill.fore_color.rgb = BG_CARD
     card_sol.line.color.rgb = BORDER_CARD
@@ -969,12 +800,12 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s4, "Here is our solution: Architecture D. We split the data plane into three severity tiers. Critical alarms bypass the WAN entirely and trigger local bedside alarms in 7.13 ms over LAN, while normal data is delta-filtered and compressed.")
+    set_notes(s3, "Here is our solution: Architecture D. We split the data plane into three severity tiers. Critical alarms bypass the WAN entirely and trigger local bedside alarms in 7.13 ms over LAN, while normal data is delta-filtered and compressed.")
 
-    # Slide 5: Architecture E (Multi-Ward Failover)
-    s5 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s5, "Architecture E: Multi-Ward Load Balancing & Failover", "4. FAULT-TOLERANCE")
-    card_e = s5.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 4: Architecture E (Multi-Ward Failover)
+    s4 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s4, "Architecture E: Multi-Ward Load Balancing & Failover", "4. FAULT-TOLERANCE")
+    card_e = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_e.fill.solid()
     card_e.fill.fore_color.rgb = BG_CARD
     card_e.line.color.rgb = BORDER_CARD
@@ -995,12 +826,12 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s5, "Architecture E extends our model to multi-ward hospitals. Two adjacent wards are connected via a 1.0 ms inter-ward LAN. If Ward A's gateway crashes, Ward B seamlessly assumes the workload in 1.0 ms, preserving 100% SLA compliance.")
+    set_notes(s4, "Architecture E extends our model to multi-ward hospitals. Two adjacent wards are connected via a 1.0 ms inter-ward LAN. If Ward A's gateway crashes, Ward B seamlessly assumes the workload in 1.0 ms, preserving 100% SLA compliance.")
 
-    # Slide 6: Sensor DAG & NEWS2
-    s6 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s6, "Sensor DAG Modeling & NEWS2 Composite Risk Fusion", "5. CLINICAL FUSION")
-    card_dag = s6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 5: Sensor DAG & NEWS2
+    s5 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s5, "Sensor DAG Modeling & NEWS2 Composite Risk Fusion", "5. CLINICAL FUSION")
+    card_dag = s5.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_dag.fill.solid()
     card_dag.fill.fore_color.rgb = BG_CARD
     card_dag.line.color.rgb = BORDER_CARD
@@ -1021,12 +852,12 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s6, "We formalized the entire pipeline as a clinical DAG. At the fusion vertex, we compute the standardized NEWS2 score from 0 to 20 across all six vitals. This distinguishes multi-organ decompensation from isolated sensor motion artifacts.")
+    set_notes(s5, "We formalized the entire pipeline as a clinical DAG. At the fusion vertex, we compute the standardized NEWS2 score from 0 to 20 across all six vitals. This distinguishes multi-organ decompensation from isolated sensor motion artifacts.")
 
-    # Slide 7: Greedy EDF & TCP AIMD
-    s7 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s7, "Greedy EDF Scheduling & TCP Adaptive Windows (AIMD)", "6. SCHEDULING & CONGESTION")
-    card_sched = s7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 6: Greedy EDF & TCP AIMD
+    s6 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s6, "Greedy EDF Scheduling & TCP Adaptive Windows (AIMD)", "6. SCHEDULING & CONGESTION")
+    card_sched = s6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_sched.fill.solid()
     card_sched.fill.fore_color.rgb = BG_CARD
     card_sched.line.color.rgb = BORDER_CARD
@@ -1047,12 +878,12 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s7, "To manage queuing, we implemented Greedy Earliest-Deadline-First scheduling with strict preemption across three deadline tiers. For window size, we adapted TCP AIMD congestion control across three distinct patient clinical profiles.")
+    set_notes(s6, "To manage queuing, we implemented Greedy Earliest-Deadline-First scheduling with strict preemption across three deadline tiers. For window size, we adapted TCP AIMD congestion control across three distinct patient clinical profiles.")
 
-    # Slide 8: Complexity & Edge Profile
-    s8 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s8, "Algorithmic Complexity & Empirical Edge Resource Profile", "7. SYSTEM EFFICIENCY")
-    card_res = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 7: Complexity & Edge Profile
+    s7 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s7, "Algorithmic Complexity & Empirical Edge Resource Profile", "7. SYSTEM EFFICIENCY")
+    card_res = s7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_res.fill.solid()
     card_res.fill.fore_color.rgb = BG_CARD
     card_res.line.color.rgb = BORDER_CARD
@@ -1074,12 +905,12 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s8, "Our algorithms are computationally ultra-lightweight. The entire priority processing suite consumes only 15.5 MIPS—less than 0.2% of our 8,000 MIPS gateway server—and requires under 13 MB of RAM for 100 beds.")
+    set_notes(s7, "Our algorithms are computationally ultra-lightweight. The entire priority processing suite consumes only 15.5 MIPS—less than 0.2% of our 8,000 MIPS gateway server—and requires under 13 MB of RAM for 100 beds.")
 
-    # Slide 9: Simulation Setup
-    s9 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s9, "Simulation Setup & Reproducibility in iFogSim2", "8. EXPERIMENTAL RIGOR")
-    card_sim = s9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 8: Simulation Setup
+    s8 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s8, "Simulation Setup & Reproducibility in iFogSim2", "8. EXPERIMENTAL RIGOR")
+    card_sim = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_sim.fill.solid()
     card_sim.fill.fore_color.rgb = BG_CARD
     card_sim.line.color.rgb = BORDER_CARD
@@ -1100,37 +931,37 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s9, "To ensure scientific rigor, all experiments were conducted in iFogSim2 with a fixed seed of 42. Exactly identical vital sign sequences were evaluated across all architectures, with 100% mathematical tuple accounting.")
+    set_notes(s8, "To ensure scientific rigor, all experiments were conducted in iFogSim2 with a fixed seed of 42. Exactly identical vital sign sequences were evaluated across all architectures, with 100% mathematical tuple accounting.")
 
-    # Slide 10: Exp 1 Baseline (Figs 1 & 2)
-    s10 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s10, "Experiment 1: Baseline Architecture Comparison", "9. RESULTS: BASELINE")
+    # Slide 9: Exp 1 Baseline (Figs 1 & 2)
+    s9 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s9, "Experiment 1: Baseline Architecture Comparison", "9. RESULTS: BASELINE")
     f1_p = os.path.join(GRAPHS_DIR, 'fig1_arch_latency_by_severity.png')
     f2_p = os.path.join(GRAPHS_DIR, 'fig2_arch_traffic_comparison.png')
     if os.path.exists(f1_p):
-        s10.shapes.add_picture(f1_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(5.6))
+        s9.shapes.add_picture(f1_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(5.6))
     if os.path.exists(f2_p):
-        s10.shapes.add_picture(f2_p, PptxInches(6.8), PptxInches(1.6), width=PptxInches(5.6))
-    set_notes(s10, "Experiment 1 baseline: Architecture A shows uniform 208 ms latency. Architecture C saves 77% bandwidth, but critical delay surges to 2,293 ms. Architecture D delivers critical alerts in 7.13 ms (96.6% faster) while saving 66.6% bandwidth.")
+        s9.shapes.add_picture(f2_p, PptxInches(6.8), PptxInches(1.6), width=PptxInches(5.6))
+    set_notes(s9, "Experiment 1 baseline: Architecture A shows uniform 208 ms latency. Architecture C saves 77% bandwidth, but critical delay surges to 2,293 ms. Architecture D delivers critical alerts in 7.13 ms (96.6% faster) while saving 66.6% bandwidth.")
 
-    # Slide 11: Exp 2 Scalability (Figs 3 & 4)
-    s11 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s11, "Experiment 2: Patient & Sensor Scalability (10 to 50 Patients)", "10. RESULTS: SCALABILITY")
+    # Slide 10: Exp 2 Scalability (Figs 3 & 4)
+    s10 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s10, "Experiment 2: Patient & Sensor Scalability (10 to 50 Patients)", "10. RESULTS: SCALABILITY")
     f3_p = os.path.join(GRAPHS_DIR, 'fig3_scalability_latency.png')
     f4_p = os.path.join(GRAPHS_DIR, 'fig4_scalability_cloud_traffic.png')
     if os.path.exists(f3_p):
-        s11.shapes.add_picture(f3_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(5.6))
+        s10.shapes.add_picture(f3_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(5.6))
     if os.path.exists(f4_p):
-        s11.shapes.add_picture(f4_p, PptxInches(6.8), PptxInches(1.6), width=PptxInches(5.6))
-    set_notes(s11, "Experiment 2 sweeps scale from 10 to 50 patients (40 to 200 sensors). In Architecture D, critical alert latency is completely scale-invariant: flat at 7.125 ms. Meanwhile, it saves 6.55 MB of WAN traffic at 200 sensors.")
+        s10.shapes.add_picture(f4_p, PptxInches(6.8), PptxInches(1.6), width=PptxInches(5.6))
+    set_notes(s10, "Experiment 2 sweeps scale from 10 to 50 patients (40 to 200 sensors). In Architecture D, critical alert latency is completely scale-invariant: flat at 7.125 ms. Meanwhile, it saves 6.55 MB of WAN traffic at 200 sensors.")
 
-    # Slide 12: Exp 3 Aggregation Window (Fig 5)
-    s12 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s12, "Experiment 3: Aggregation Window Sensitivity & The Latency Cliff", "11. RESULTS: LATENCY CLIFF")
+    # Slide 11: Exp 3 Aggregation Window (Fig 5)
+    s11 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s11, "Experiment 3: Aggregation Window Sensitivity & The Latency Cliff", "11. RESULTS: LATENCY CLIFF")
     f5_p = os.path.join(GRAPHS_DIR, 'fig5_window_pareto_tradeoff.png')
     if os.path.exists(f5_p):
-        s12.shapes.add_picture(f5_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(6.5))
-    tb_w = s12.shapes.add_textbox(PptxInches(7.6), PptxInches(1.6), PptxInches(4.9), PptxInches(5.0))
+        s11.shapes.add_picture(f5_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(6.5))
+    tb_w = s11.shapes.add_textbox(PptxInches(7.6), PptxInches(1.6), PptxInches(4.9), PptxInches(5.0))
     tf_w = tb_w.text_frame
     tf_w.word_wrap = True
     p = tf_w.paragraphs[0]
@@ -1149,23 +980,23 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(13)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(8)
-    set_notes(s12, "Experiment 3 quantifies the latency cliff. In Architecture C, expanding window size pushes critical delay past 10 seconds. In Architecture D, our local bypass decouples safety from window size, staying flat at 7.13 ms.")
+    set_notes(s11, "Experiment 3 quantifies the latency cliff. In Architecture C, expanding window size pushes critical delay past 10 seconds. In Architecture D, our local bypass decouples safety from window size, staying flat at 7.13 ms.")
 
-    # Slide 13: Exp 4 WAN Stress (Figs 6 & 7)
-    s13 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s13, "Experiment 4: WAN Stress & Network Fault-Tolerance", "12. RESULTS: NETWORK STRESS")
+    # Slide 12: Exp 4 WAN Stress (Figs 6 & 7)
+    s12 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s12, "Experiment 4: WAN Stress & Network Fault-Tolerance", "12. RESULTS: NETWORK STRESS")
     f6_p = os.path.join(GRAPHS_DIR, 'fig6_network_stress_reliability.png')
     f7_p = os.path.join(GRAPHS_DIR, 'fig7_network_stress_latency.png')
     if os.path.exists(f6_p):
-        s13.shapes.add_picture(f6_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(5.6))
+        s12.shapes.add_picture(f6_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(5.6))
     if os.path.exists(f7_p):
-        s13.shapes.add_picture(f7_p, PptxInches(6.8), PptxInches(1.6), width=PptxInches(5.6))
-    set_notes(s13, "Experiment 4 stress-tests WAN links down to 100 Kbps and 600 ms delay. Architectures A and C suffer complete failure (0% SLA). Architecture D maintains 100% SLA compliance at 7.13 ms because alarms stay on the local LAN.")
+        s12.shapes.add_picture(f7_p, PptxInches(6.8), PptxInches(1.6), width=PptxInches(5.6))
+    set_notes(s12, "Experiment 4 stress-tests WAN links down to 100 Kbps and 600 ms delay. Architectures A and C suffer complete failure (0% SLA). Architecture D maintains 100% SLA compliance at 7.13 ms because alarms stay on the local LAN.")
 
-    # Slide 14: Exp 5 Multi-Ward Failover
-    s14 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s14, "Experiment 5: Multi-Ward Inter-Gateway Failover (Arch E)", "13. RESULTS: FAILOVER")
-    card_f = s14.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 13: Exp 5 Multi-Ward Failover
+    s13 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s13, "Experiment 5: Multi-Ward Inter-Gateway Failover (Arch E)", "13. RESULTS: FAILOVER")
+    card_f = s13.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_f.fill.solid()
     card_f.fill.fore_color.rgb = BG_CARD
     card_f.line.color.rgb = BORDER_CARD
@@ -1187,14 +1018,14 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s14, "Experiment 5 tests our multi-ward failover during a 20-second gateway crash. While Architecture D degrades to 68% SLA, Architecture E achieves 100% failover success in 1.0 ms across the inter-ward LAN.")
+    set_notes(s13, "Experiment 5 tests our multi-ward failover during a 20-second gateway crash. While Architecture D degrades to 68% SLA, Architecture E achieves 100% failover success in 1.0 ms across the inter-ward LAN.")
 
-    # Slide 15: Exp 6 Adaptive TCP Window (Fig 8)
-    s15 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s15, "Experiment 6: Adaptive Sliding Window Dynamics (AIMD)", "14. RESULTS: AIMD WINDOW")
+    # Slide 14: Exp 6 Adaptive TCP Window (Fig 8)
+    s14 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s14, "Experiment 6: Adaptive Sliding Window Dynamics (AIMD)", "14. RESULTS: AIMD WINDOW")
     if os.path.exists(f8_p):
-        s15.shapes.add_picture(f8_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(6.5))
-    tb_aimd = s15.shapes.add_textbox(PptxInches(7.6), PptxInches(1.6), PptxInches(4.9), PptxInches(5.0))
+        s14.shapes.add_picture(f8_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(6.5))
+    tb_aimd = s14.shapes.add_textbox(PptxInches(7.6), PptxInches(1.6), PptxInches(4.9), PptxInches(5.0))
     tf_aimd = tb_aimd.text_frame
     tf_aimd.word_wrap = True
     p = tf_aimd.paragraphs[0]
@@ -1213,21 +1044,21 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(13)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(8)
-    set_notes(s15, "Experiment 6 evaluates our TCP AIMD window controller across 6,480 samples. Stable patients expand to W=20, cardiac patients back off to W=4-8, and ICU patients collapse to W=1 for instant alerts.")
+    set_notes(s14, "Experiment 6 evaluates our TCP AIMD window controller across 6,480 samples. Stable patients expand to W=20, cardiac patients back off to W=4-8, and ICU patients collapse to W=1 for instant alerts.")
 
-    # Slide 16: Exp 7 Hop-by-Hop & TLS (Figs 9 & 10)
-    s16 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s16, "Experiment 7: Hop-by-Hop Latency & TLS 1.3 Overhead", "15. RESULTS: TLS & LATENCY")
+    # Slide 15: Exp 7 Hop-by-Hop & TLS (Figs 9 & 10)
+    s15 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s15, "Experiment 7: Hop-by-Hop Latency & TLS 1.3 Overhead", "15. RESULTS: TLS & LATENCY")
     if os.path.exists(f9_p):
-        s16.shapes.add_picture(f9_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(5.6))
+        s15.shapes.add_picture(f9_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(5.6))
     if os.path.exists(f10_p):
-        s16.shapes.add_picture(f10_p, PptxInches(6.8), PptxInches(1.6), width=PptxInches(5.6))
-    set_notes(s16, "Experiment 7 profiles hop-by-hop latency and TLS 1.3 overhead. TLS 1.3 adds +37 bytes and +15 MIPS crypto CPU, but latency remains safely within 500 ms SLA. Furthermore, cross-sensor validation cuts false alarms by 91.9%.")
+        s15.shapes.add_picture(f10_p, PptxInches(6.8), PptxInches(1.6), width=PptxInches(5.6))
+    set_notes(s15, "Experiment 7 profiles hop-by-hop latency and TLS 1.3 overhead. TLS 1.3 adds +37 bytes and +15 MIPS crypto CPU, but latency remains safely within 500 ms SLA. Furthermore, cross-sensor validation cuts false alarms by 91.9%.")
 
-    # Slide 17: Exp 8 Cluster Scaling (Fig 10)
-    s17 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s17, "Experiment 8: Fog Cluster Scalability (1 to 16 Gateways)", "16. RESULTS: CLUSTER SCALING")
-    card_sc = s17.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 16: Exp 8 Cluster Scaling (Fig 10)
+    s16 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s16, "Experiment 8: Fog Cluster Scalability (1 to 16 Gateways)", "16. RESULTS: CLUSTER SCALING")
+    card_sc = s16.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_sc.fill.solid()
     card_sc.fill.fore_color.rgb = BG_CARD
     card_sc.line.color.rgb = BORDER_CARD
@@ -1248,14 +1079,14 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s17, "Experiment 8 scales the fog tier to 16 gateways serving 500 patients. At 16 nodes, CPU load is 28.4%, memory is under 17 MB, and emergency latency is rock-solid at 7.15 ms.")
+    set_notes(s16, "Experiment 8 scales the fog tier to 16 gateways serving 500 patients. At 16 nodes, CPU load is 28.4%, memory is under 17 MB, and emergency latency is rock-solid at 7.15 ms.")
 
-    # Slide 18: Exp 9 Fault-Tolerance Strategies (Fig 11)
-    s18 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s18, "Experiment 9: Comparative Fault-Tolerance Benchmark", "17. RESULTS: FAULT TOLERANCE")
+    # Slide 17: Exp 9 Fault-Tolerance Strategies (Fig 11)
+    s17 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s17, "Experiment 9: Comparative Fault-Tolerance Benchmark", "17. RESULTS: FAULT TOLERANCE")
     if os.path.exists(f11_p):
-        s18.shapes.add_picture(f11_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(6.5))
-    tb_ft = s18.shapes.add_textbox(PptxInches(7.6), PptxInches(1.6), PptxInches(4.9), PptxInches(5.0))
+        s17.shapes.add_picture(f11_p, PptxInches(0.8), PptxInches(1.6), width=PptxInches(6.5))
+    tb_ft = s17.shapes.add_textbox(PptxInches(7.6), PptxInches(1.6), PptxInches(4.9), PptxInches(5.0))
     tf_ft = tb_ft.text_frame
     tf_ft.word_wrap = True
     p = tf_ft.paragraphs[0]
@@ -1274,12 +1105,12 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(13)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(8)
-    set_notes(s18, "Experiment 9 compares three fault-tolerance strategies. Active-Active Peer Offloading (Strategy 2) achieves sub-15 ms failover and zero data loss without requiring idle standby hardware.")
+    set_notes(s17, "Experiment 9 compares three fault-tolerance strategies. Active-Active Peer Offloading (Strategy 2) achieves sub-15 ms failover and zero data loss without requiring idle standby hardware.")
 
-    # Slide 19: Future Security Roadmap
-    s19 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s19, "Future Security Roadmap: Ed25519, PQC & Blockchain", "18. SECURITY ROADMAP")
-    card_sec = s19.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 18: Future Security Roadmap
+    s18 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s18, "Future Security Roadmap: Ed25519, PQC & Blockchain", "18. SECURITY ROADMAP")
+    card_sec = s18.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_sec.fill.solid()
     card_sec.fill.fore_color.rgb = BG_CARD
     card_sec.line.color.rgb = BORDER_CARD
@@ -1300,12 +1131,12 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(12)
-    set_notes(s19, "In response to faculty feedback, we structured a complete Future Security Roadmap: Ed25519 signatures for provenance, NIST ML-KEM-768 for post-quantum key exchange, and permissioned blockchain for HIPAA-compliant EHR audit logging.")
+    set_notes(s18, "In response to faculty feedback, we structured a complete Future Security Roadmap: Ed25519 signatures for provenance, NIST ML-KEM-768 for post-quantum key exchange, and permissioned blockchain for HIPAA-compliant EHR audit logging.")
 
-    # Slide 20: Conclusion
-    s20 = prs.slides.add_slide(blank_layout)
-    add_slide_header(s20, "Conclusion: Summary of Project Contributions", "19. CONCLUSION")
-    card_con = s20.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
+    # Slide 19: Conclusion
+    s19 = prs.slides.add_slide(blank_layout)
+    add_slide_header(s19, "Conclusion: Summary of Project Contributions", "19. CONCLUSION")
+    card_con = s19.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, PptxInches(0.8), PptxInches(1.6), PptxInches(11.7), PptxInches(5.0))
     card_con.fill.solid()
     card_con.fill.fore_color.rgb = PptxRGBColor(232, 245, 233)
     card_con.line.color.rgb = GREEN
@@ -1327,7 +1158,7 @@ def generate_pptx_presentation():
         p.font.size = PptxPt(14)
         p.font.color.rgb = DARK
         p.space_before = PptxPt(14)
-    set_notes(s20, "To conclude: our priority-aware framework cuts critical latency by 96.6%, saves over 66% bandwidth, reduces false alarms by 91.9%, and guarantees 100% SLA compliance during outages. All artifacts are fully reproducible. Thank you!")
+    set_notes(s19, "To conclude: our priority-aware framework cuts critical latency by 96.6%, saves over 66% bandwidth, reduces false alarms by 91.9%, and guarantees 100% SLA compliance during outages. All artifacts are fully reproducible. Thank you!")
 
     pptx_path = os.path.join(PRESENTATION_DIR, 'Topic19_Healthcare_Fog_Presentation.pptx')
     prs.save(pptx_path)

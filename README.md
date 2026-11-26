@@ -2,7 +2,7 @@
 
 **Topic 19 — Cloud & Fog Computing Research Project**  
 **Repository:** [https://github.com/jayanthananthakrishnan-a11y/Fog-Assisted-Real-Time-Healthcare.git](https://github.com/jayanthananthakrishnan-a11y/Fog-Assisted-Real-Time-Healthcare.git)  
-**Authors:** Jayanth Ananthakrishnan, Mirthunvinayak28, Vinod24256  
+**Authors:** Jayanth A, Mirthun V, Vinod K  
 **Simulator Platform:** iFogSim2 / CloudSim 7 / Java 21+  
 
 ---
@@ -203,18 +203,8 @@ powershell -ExecutionPolicy Bypass -File .\dashboard\start_dashboard.ps1
 
 ---
 
-## 8. Foundational Literature & Top 3 Q1 Benchmarks
+## References
 
-Our priority-aware fog framework is grounded in and benchmarked against three seminal Q1 publications:
-
-1. **Mahmud et al. (2022)** — *"iFogSim2: An Extended iFogSim Simulator for Mobility, Clustering, and Microservice Management in Edge and Fog Computing Environments,"* *Journal of Systems and Software*, vol. 190, p. 111351, 2022.  
-   🔗 DOI: [https://doi.org/10.1016/j.jss.2022.111351](https://doi.org/10.1016/j.jss.2022.111351)  
-   *Role:* Foundational discrete-event simulation and hierarchical clustering baseline; lacks clinical deadline preemption and adaptive multi-modal windowing.
-
-2. **Rahmani et al. (2018)** — *"Exploiting smart e-Health gateways at the edge of healthcare Internet-of-Things: A fog computing approach,"* *Future Generation Computer Systems*, vol. 78, pp. 641–658, 2018.  
-   🔗 DOI: [https://doi.org/10.1016/j.future.2017.02.014](https://doi.org/10.1016/j.future.2017.02.014)  
-   *Role:* Smart e-Health gateway (UT-GATE) with local Early Warning Score (EWS) processing and >90% bandwidth compression; vulnerable to single-gateway outage and lacks dynamic AIMD windowing.
-
-3. **Pace et al. (2019)** — *"An Edge-Based Architecture to Support Efficient Applications for Healthcare Industry 4.0,"* *IEEE Transactions on Industrial Informatics*, vol. 15, no. 1, pp. 481–489, Jan. 2019.  
-   🔗 DOI: [https://doi.org/10.1109/TII.2018.2843169](https://doi.org/10.1109/TII.2018.2843169)  
-   *Role:* BodyEdge (`BE-GTW`) localized cardiac/HRV preprocessing; contrasted with our multi-vital NEWS2 artifact suppression, Greedy EDF priority scheduling, TLS 1.3 overhead profiling, and 1.0 ms two-ward failover.
+1. **R. Mahmud, Faheem, and R. Buyya**, "iFogSim2: An Extended iFogSim Simulator for Mobility, Clustering, and Microservice Management in Edge and Fog Computing Environments," *Journal of Systems and Software*, vol. 190, p. 111351, 2022. [https://doi.org/10.1016/j.jss.2022.111351](https://doi.org/10.1016/j.jss.2022.111351)
+2. **A. M. Rahmani, T. N. Gia, B. Negash, A. Anzanpour, I. Azimi, M. Jiang, and P. Liljeberg**, "Exploiting smart e-Health gateways at the edge of healthcare Internet-of-Things: A fog computing approach," *Future Generation Computer Systems*, vol. 78, pp. 641–658, 2018. [https://doi.org/10.1016/j.future.2017.02.014](https://doi.org/10.1016/j.future.2017.02.014)
+3. **P. Pace, G. Aloi, R. Gravina, G. Caliciuri, G. Fortino, and A. Liotta**, "An Edge-Based Architecture to Support Efficient Applications for Healthcare Industry 4.0," *IEEE Transactions on Industrial Informatics*, vol. 15, no. 1, pp. 481–489, Jan. 2019. [https://doi.org/10.1109/TII.2018.2843169](https://doi.org/10.1109/TII.2018.2843169)

@@ -1,6 +1,6 @@
 # A Priority-Aware Fog-Assisted Framework for Real-Time Clinical Monitoring in Healthcare IoT
 
-**Jayanth Ananthakrishnan\*, Mirthunvinayak S\*, and Vinod Kumar\***  
+**Jayanth A\*, Mirthun V\*, and Vinod K\***  
 *Department of Computer Science and Engineering, Indian Institute of Information Technology (IIIT) Sri City, Chittoor, Andhra Pradesh, India*  
 *Emails: {jayanth.a22, mirthunvinayak.s22, vinod.k22}@iiits.in*  
 *Topic 19: Fog-Assisted Real-Time Healthcare / Smart-City Monitoring System (iFogSim2)*
@@ -24,9 +24,9 @@ Historically, Internet of Medical Things (IoMT) systems have adopted a **Cloud-O
 2. **Bandwidth and Ingress Explosion:** Up to 85% of physiological readings captured from stable patients represent redundant, clinically stationary measurements. Streaming uncompressed raw telemetry continuously saturates WAN backhauls and incurs massive cloud storage ingestion overhead.
 3. **Sensor Motion Artifacts and Alarm Fatigue:** Single-sensor transient voltage spikes or patient movement artifacts frequently trigger spurious clinical threshold crossings. In conventional cloud pipelines, every false threshold crossing generates panic alarms, contributing to severe clinical alarm fatigue.
 
-To mitigate these drawbacks, **Fog Computing** has emerged as an intermediate tier that situates computation, storage, and networking resources at the edge of the local network. By performing data cleaning, duplicate suppression, and windowed aggregation at the fog tier, WAN traffic can be cut by more than 70%.
+To mitigate these drawbacks, **Fog Computing** has emerged as an intermediate tier that situates computation, storage, and networking resources at the edge of the local network, such as hospital ward gateways or bedside micro-servers [[1]](https://doi.org/10.1016/j.jss.2022.111351)–[[3]](https://doi.org/10.1109/TII.2018.2843169). Seminal literature frameworks—including the discrete-event simulator iFogSim2 by Mahmud et al. [[1]](https://doi.org/10.1016/j.jss.2022.111351), the smart e-Health gateway architecture UT-GATE by Rahmani et al. [[2]](https://doi.org/10.1016/j.future.2017.02.014), and the BodyEdge Healthcare 4.0 architecture by Pace et al. [[3]](https://doi.org/10.1109/TII.2018.2843169)—have demonstrated that localized filtering and edge processing can cut cloud-bound WAN traffic by over 70% to 90%.
 
-Nevertheless, a critical research gap persists in contemporary edge healthcare literature. Conventional edge aggregation architectures aggregate incoming telemetry tuples into sliding or tumbling batch windows ($W$) before WAN transmission. While effective for stationary signals, uniform FIFO window buffering introduces a devastating clinical side-effect: **The Aggregation Latency Cliff**. When an acute cardiac arrest or oxygen desaturation event occurs, the critical tuple is enqueued behind routine readings inside the edge buffer, remaining stalled until the entire window fills. Under typical telemetry sampling rates, this introduces multi-second delays, directly violating medical SLAs. Furthermore, edge nodes themselves are subject to hardware failures and queue saturation, demanding robust multi-ward failover strategies.
+Nevertheless, a critical research gap persists across existing edge healthcare literature: conventional edge aggregation architectures aggregate incoming telemetry tuples into sliding or tumbling batch windows ($W$) before WAN transmission [[2]](https://doi.org/10.1016/j.future.2017.02.014), [[3]](https://doi.org/10.1109/TII.2018.2843169). While effective for stationary signals, uniform FIFO window buffering introduces a devastating clinical side-effect: **The Aggregation Latency Cliff**. When an acute cardiac arrest or oxygen desaturation event occurs, the critical tuple is enqueued behind routine readings inside the edge buffer, remaining stalled until the entire window fills. Under typical telemetry sampling rates, this introduces multi-second delays, directly violating medical SLAs. Furthermore, edge nodes themselves are subject to hardware failures and queue saturation, demanding robust multi-ward failover strategies.
 
 ### Research Contributions
 1. **Decoupled Multi-Tier Architecture (Architectures A–E):** We design and implement five comparative healthcare paradigms: Cloud-Only Baseline (A), Fog Forwarding (B), Naive Fog Filtering and Aggregation (C), Priority-Aware Fog (D), and Multi-Ward Two-Gateway Failover (E).
@@ -39,21 +39,7 @@ Nevertheless, a critical research gap persists in contemporary edge healthcare l
 
 ---
 
-## II. Related Work
-The deployment of edge and fog computing architectures in clinical healthcare IoT has been investigated across three seminal Q1 benchmark frameworks:
-
-### A. Discrete-Event Fog Simulation Baselines (iFogSim2)
-Mahmud et al. (2022) [[1]](https://doi.org/10.1016/j.jss.2022.111351) developed *iFogSim2*, an extended discrete-event simulation toolkit for modeling resource management, microservices, dynamic device clustering, and user mobility across edge and fog computing environments (*Journal of Systems and Software*, vol. 190, p. 111351, 2022). While iFogSim2 serves as our core foundational simulation platform—providing hierarchical `FogDevice` representations, dataflow vertices, and inter-gateway clustering primitives—it relies on canonical microservice models that process uniform telemetry streams. Crucially, iFogSim2 lacks clinical priority classes, hard deadline preemption, stateful delta-compression, and adaptive multi-modal windowing, motivating our priority-aware clinical routing engine.
-
-### B. Smart e-Health Gateways and Edge Analytics (UT-GATE)
-Rahmani et al. (2018) [[2]](https://doi.org/10.1016/j.future.2017.02.014) pioneered the *UT-GATE* smart e-Health gateway architecture (*Future Generation Computer Systems*, vol. 78, pp. 641–658, 2018), deploying localized computing intelligence at the edge of healthcare IoT. UT-GATE demonstrated the efficacy of edge-based Early Warning Score (EWS) processing, protocol bridging, and local notifications, achieving over 90% bandwidth compression and providing fail-soft local persistence during wide-area network outages. However, UT-GATE was architected around a single-gateway topology, leaving patient monitoring vulnerable to gateway crashes and queue saturation. Furthermore, it employed static threshold-based filtering without multi-sensor artifact suppression, adaptive AIMD sliding-window scaling, or strict deadline-driven dispatching.
-
-### C. Industrial Healthcare Edge Architectures (BodyEdge)
-Pace et al. (2019) [[3]](https://doi.org/10.1109/TII.2018.2843169) introduced *BodyEdge* (`BE-GTW`), a multi-tiered edge architecture designed for Healthcare Industry 4.0 applications (*IEEE Transactions on Industrial Informatics*, vol. 15, no. 1, pp. 481–489, 2019). BodyEdge demonstrated the benefits of localized cardiac and heart rate variability (HRV) feature extraction, achieving responsive edge latencies and reducing backhaul transmission energy. Nevertheless, BodyEdge focused primarily on isolated Body Sensor Networks (BSNs) and did not address composite multi-vital risk scoring (such as the 6-parameter NEWS2 index), cross-sensor motion artifact elimination, or Greedy Earliest-Deadline-First (EDF) queue scheduling. In contrast, our framework builds upon these seminal works by coupling composite NEWS2 artifact suppression with a strict preemptive scheduler, empirical TLS 1.3 cryptographic profiling, and 1.0 ms inter-ward failover across adjacent hospital ICUs.
-
----
-
-## III. System Architecture and Methodology
+## II. System Architecture and Methodology
 
 ### A. Physical Topology and Network Modeling
 The physical cyber-physical topology consists of three interconnected tiers:
@@ -107,7 +93,7 @@ Evaluated across three patient profiles:
 
 ---
 
-## IV. Experimental Results and Discussion
+## III. Experimental Results and Discussion
 
 ### A. Experiments 1 & 2: Cross-Architecture Baseline & Scalability
 - **Architecture A (Cloud-Only):** Uniform latency of 207.71 ms across all severities. 1,953.1 KB cloud bandwidth (0% savings).
@@ -164,7 +150,7 @@ The automated clinical report generator generates per-patient diagnostic summari
 
 ---
 
-## V. Future Security Roadmap
+## IV. Future Security Roadmap
 
 ### Pillar 1: End-to-End Cryptographic Integrity & Non-Repudiation
 Embedded Ed25519 digital signatures on sensor nodes:
@@ -183,7 +169,7 @@ Immutable, HIPAA-compliant audit logging for clinical accountability.
 
 ---
 
-## VI. Conclusion
+## V. Conclusion
 In this paper, we resolved the tension between WAN bandwidth conservation, clinical emergency responsiveness, and edge fault-tolerance in IoT healthcare telemetry. Our proposed priority-aware fog framework (Architectures D and E) delivers critical alerts in **7.13 ms** (a 96.57% latency reduction over Cloud-Only), conserves **66.62% to 79.64%** cloud bandwidth via AIMD adaptive sliding windows, suppresses **91.9% of spurious motion artifacts**, preserves **100.00% SLA compliance** during primary gateway failure via 1.0 ms inter-ward failover, and scales linearly to 500 patients across 16 fog gateways.
 
 ---
