@@ -6,6 +6,7 @@ PHASE 5: Statistical Analysis & Publication-Quality IEEE Graph Generation
 
 import os
 import sys
+import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -848,6 +849,118 @@ def plot_fig11_fault_tolerance_comparison():
     plt.close()
     print(f"[Figure Saved] {out_png}")
 
+# ========================================================================
+# FIGURE 12: Priority Scheduler Comparison & Multi-Objective Optimality
+# ========================================================================
+def plot_fig12_scheduler_and_optimality():
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.0, 4.4), dpi=300)
+
+    # Subplot 1: Scheduling Policy Comparison (Exp 10)
+    exp10_path = os.path.join(CSV_DIR, 'exp10_priority_scheduler_comparison.csv')
+    if os.path.exists(exp10_path):
+        df10 = pd.read_csv(exp10_path)
+        labels = ['FIFO\n(Arch C)', 'Static\nPriority', 'WFQ\n(Fair)', 'Preempt EDF\n(Ours)']
+        crit_p99 = df10['critical_p99_lat_ms'].values
+        sla_pct = df10['sla_compliance_pct'].values
+
+        x = np.arange(len(labels))
+        width = 0.35
+
+        ax1.bar(x - width/2, crit_p99, width, label='Critical p99 Latency (ms)', color='#d95f02', edgecolor='black', linewidth=0.6)
+        ax1.set_yscale('log')
+        ax1.set_ylabel('Critical p99 Tail Latency (ms) [Log]', fontsize=9.5, fontweight='bold', color='#d95f02')
+        ax1.tick_params(axis='y', labelcolor='#d95f02')
+        ax1.set_xticks(x)
+        ax1.set_xticklabels(labels, fontsize=8.5, fontweight='semibold')
+        ax1.set_title('(a) Scheduler Latency & Starvation Risk', fontsize=10, fontweight='bold', pad=8)
+        ax1.grid(True, linestyle='--', alpha=0.5)
+
+        ax1_twin = ax1.twinx()
+        ax1_twin.plot(x + width/2, sla_pct, color='#1b9e77', marker='s', linewidth=2.0, label='SLA Compliance (%)')
+        ax1_twin.set_ylabel('SLA Compliance (%)', fontsize=9.5, fontweight='bold', color='#1b9e77')
+        ax1_twin.tick_params(axis='y', labelcolor='#1b9e77')
+        ax1_twin.set_ylim(0, 110)
+
+    # Subplot 2: Multi-Objective Architecture Composite Utility (Exp 11)
+    exp11_path = os.path.join(CSV_DIR, 'exp11_architecture_optimality_matrix.csv')
+    if os.path.exists(exp11_path):
+        df11 = pd.read_csv(exp11_path)
+        archs = ['Arch A\n(Cloud)', 'Arch B\n(Forward)', 'Arch C\n(Filter)', 'Arch D\n(Priority)', 'Arch E\n(Failover)']
+        scores = df11['composite_utility_score'].values
+        colors = ['#4682b4', '#64748b', '#ef4444', '#10b981', '#7c3aed']
+
+        bars = ax2.bar(archs, scores, width=0.48, color=colors, edgecolor='black', linewidth=0.6)
+        ax2.set_ylabel('Composite Utility Score (0 - 100)', fontsize=9.5, fontweight='bold')
+        ax2.set_title('(b) Multi-Objective Architecture Optimality', fontsize=10, fontweight='bold', pad=8)
+        ax2.set_ylim(0, 115)
+        ax2.grid(True, linestyle='--', alpha=0.5)
+
+        for bar, val in zip(bars, scores):
+            ax2.text(bar.get_x() + bar.get_width()/2, val + 1.5, f'{val:.1f}', ha='center', va='bottom', fontsize=9, fontweight='bold')
+
+    plt.suptitle('Figure 12: Priority Scheduling Trade-offs & Multi-Objective Architecture Optimality', fontsize=11, fontweight='bold', y=0.98)
+    plt.tight_layout()
+
+    out_png = os.path.join(GRAPHS_DIR, 'fig12_scheduler_and_optimality.png')
+    out_pdf = os.path.join(GRAPHS_DIR, 'fig12_scheduler_and_optimality.pdf')
+    plt.savefig(out_png, dpi=300, bbox_inches='tight')
+    plt.savefig(out_pdf, bbox_inches='tight')
+    plt.close()
+    print(f"[Figure Saved] {out_png}")
+
+# ========================================================================
+# FIGURE 0: PhysioNet ICU Correlation Heatmap & Window Comparison
+# ========================================================================
+def plot_fig0_physionet_profile():
+    profile_path = os.path.join(BASE_DIR, 'data', 'processed_icu', 'dataset_statistical_profile.json')
+    window_path = os.path.join(CSV_DIR, 'exp6_window_architecture_comparison.csv')
+    if not os.path.exists(profile_path) or not os.path.exists(window_path):
+        return
+
+    with open(profile_path, 'r', encoding='utf-8') as f:
+        stat_data = json.load(f)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.2, 4.4), dpi=300)
+
+    # 1. Pearson Correlation Heatmap
+    p_corr = pd.DataFrame(stat_data['pearson_correlation_matrix'])
+    short_labels = ['HR', 'SpO2', 'TEMP', 'BP', 'RESP', 'HRV']
+    p_corr.index = short_labels
+    p_corr.columns = short_labels
+
+    sns.heatmap(p_corr, annot=True, fmt='.2f', cmap='coolwarm', vmin=-1.0, vmax=1.0, ax=ax1, cbar=True,
+                annot_kws={'fontsize': 8.5, 'fontweight': 'bold'}, linewidths=0.5)
+    ax1.set_title('(a) PhysioNet ICU Vital Sign Correlation Matrix', fontsize=10, fontweight='bold', pad=8)
+
+    # 2. Window Strategy vs SLA Compliance
+    df_win = pd.read_csv(window_path)
+    win_labels = ['Tumble\nW=5', 'Tumble\nW=10', 'Tumble\nW=20', 'Sliding\nW=10', 'Session\nEvent', 'Hetero\nFixed', 'AIMD\n(Ours)']
+    sla_vals = df_win['sla_compliance_pct'].values
+    bw_vals = df_win['cloud_bandwidth_savings_pct'].values
+
+    x = np.arange(len(win_labels))
+    width = 0.35
+
+    ax2.bar(x - width/2, sla_vals, width, label='SLA Compliance (%)', color='#1b9e77', edgecolor='black', linewidth=0.6)
+    ax2.bar(x + width/2, bw_vals, width, label='Cloud BW Savings (%)', color='#2b5c8f', edgecolor='black', linewidth=0.6)
+    ax2.set_ylabel('Percentage (%)', fontsize=9.5, fontweight='bold')
+    ax2.set_title('(b) Windowing Strategy vs. SLA & Bandwidth', fontsize=10, fontweight='bold', pad=8)
+    ax2.set_xticks(x)
+    ax2.set_xticklabels(win_labels, fontsize=8, fontweight='semibold')
+    ax2.set_ylim(0, 115)
+    ax2.legend(loc='lower left', fontsize=8, framealpha=0.9)
+    ax2.grid(True, linestyle='--', alpha=0.5)
+
+    plt.suptitle('Figure 0: Empirical PhysioNet ICU Physiological Coupling & Window Optimization', fontsize=11, fontweight='bold', y=0.98)
+    plt.tight_layout()
+
+    out_png = os.path.join(GRAPHS_DIR, 'fig0_physionet_profile.png')
+    out_pdf = os.path.join(GRAPHS_DIR, 'fig0_physionet_profile.pdf')
+    plt.savefig(out_png, dpi=300, bbox_inches='tight')
+    plt.savefig(out_pdf, bbox_inches='tight')
+    plt.close()
+    print(f"[Figure Saved] {out_png}")
+
 def main():
     print("========================================================================")
     print(" Starting Phase 5 Analysis & IEEE Publication Graph Generation          ")
@@ -855,6 +968,7 @@ def main():
     df1, df2, df3, df4 = load_data()
     print(f"[Data Loaded] Exp 1 ({len(df1)} rows), Exp 2 ({len(df2)} rows), Exp 3 ({len(df3)} rows), Exp 4 ({len(df4)} rows)")
 
+    plot_fig0_physionet_profile()
     plot_fig1_latency_by_severity(df1)
     plot_fig2_network_traffic(df1)
     plot_fig3_scalability_latency(df2)
@@ -863,16 +977,17 @@ def main():
     plot_fig6_network_stress_reliability(df4)
     plot_fig7_network_stress_latency(df4)
 
-    # Figures 8 through 11 (Professor Feedback Enhancements)
+    # Figures 8 through 12 (Professor Feedback & Systems Benchmarking)
     plot_fig8_adaptive_tcp_window()
     plot_fig9_sla_violations_and_fpr()
     plot_fig10_fog_node_scaling_and_tls()
     plot_fig11_fault_tolerance_comparison()
+    plot_fig12_scheduler_and_optimality()
 
     generate_summary_tables(df1, df2, df3, df4)
 
     print("========================================================================")
-    print(" Phase 5 Analysis Completed Successfully! All 11 Figures & Tables Saved.  ")
+    print(" Phase 5 Analysis Completed Successfully! All Figures & Tables Saved.   ")
     print("========================================================================")
 
 if __name__ == '__main__':

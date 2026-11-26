@@ -1,0 +1,6 @@
+architecture,time_complexity,space_complexity,critical_latency_ms,cloud_bw_savings_pct,sla_availability_pct,energy_joules,fault_recovery_ms,latency_score,bw_score,sla_score,energy_score,fault_score,composite_utility_score
+Arch A (Cloud-Only),O(1),O(1),207.71,0.00,99.85,4218.4,15000.00,92.0,0.0,99.8,10.4,0.0,54.11
+Arch B (Fog Forwarding),O(1),O(N),211.43,0.00,99.82,4432.1,15000.00,91.8,0.0,99.8,2.5,0.0,52.86
+Arch C (Naive Filtering),O(1),O(N*W),2293.52,77.22,27.88,1824.5,15000.00,8.5,96.5,3.8,99.1,0.0,37.69
+Arch D (Priority Fog),O(log K),O(N + K),7.13,66.62,99.72,1912.8,163.63,100.0,83.3,99.6,95.8,46.9,90.63
+Arch E (Multi-Ward Failover),O(log K),O(N + K),7.31,79.64,99.88,1945.2,1.00,100.0,99.6,99.8,94.6,92.8,98.34

@@ -1,11 +1,11 @@
-architecture,security_mode,packet_size_bytes,crypto_cpu_mips,handshake_rtt_ms,edge_to_fog_ms,fog_to_cloud_ms,cloud_to_fog_ms,fog_to_edge_ms,critical_latency_ms,normal_latency_ms,cloud_traffic_kb,total_traffic_kb,sla_compliance_pct
-Arch A (Cloud-Only),PLAINTEXT,500,0,0.0,2.00,100.00,100.00,1.00,207.950,207.950,1953.13,3515.63,100.00
-Arch A (Cloud-Only),TLS_1.3_AES_GCM,537,15,100.0,2.40,102.50,102.50,1.30,217.150,217.150,2097.66,3949.22,100.00
-Arch B (Fog Forwarding),PLAINTEXT,500,0,0.0,2.00,100.00,100.00,1.00,211.670,211.670,1953.13,2929.69,100.00
-Arch B (Fog Forwarding),TLS_1.3_AES_GCM,537,15,2.0,2.40,102.50,102.50,1.30,221.570,221.570,2097.66,3146.48,100.00
-Arch C (Naive Filtering),PLAINTEXT,500,0,0.0,2.00,100.00,100.00,1.00,2293.520,3182.280,445.00,2050.00,27.88
-Arch C (Naive Filtering),TLS_1.3_AES_GCM,537,15,2.0,2.40,102.50,102.50,1.30,2300.320,3190.780,469.50,2185.00,27.88
-Arch D (Priority Fog),PLAINTEXT,500,0,0.0,2.00,100.00,100.00,1.00,7.130,3182.280,651.90,3018.30,100.00
-Arch D (Priority Fog),TLS_1.3_AES_GCM,537,15,2.0,2.40,102.50,102.50,1.30,8.630,3190.480,701.20,3245.00,100.00
-Arch E (Multi-Ward Failover),PLAINTEXT,500,0,0.0,2.00,100.00,100.00,1.00,7.310,4081.840,588.50,2881.10,100.00
-Arch E (Multi-Ward Failover),TLS_1.3_AES_GCM,537,15,2.0,2.40,102.50,102.50,1.30,8.910,4091.340,632.50,3120.00,100.00
+architecture,security_mode,packet_size_bytes,crypto_cpu_mips,handshake_rtt_ms,edge_to_fog_ms,fog_to_cloud_ms,cloud_to_fog_ms,fog_to_edge_ms,critical_latency_ms,normal_latency_ms,cloud_traffic_kb,total_traffic_kb,packet_delivery_ratio_pct,sla_compliance_pct,system_availability_pct
+Arch A (Cloud-Only),PLAINTEXT,500,0,0.0,1.89,101.40,101.20,1.02,210.460,210.460,1953.13,3515.63,99.25,99.30,99.850
+Arch A (Cloud-Only),TLS_1.3_AES_GCM,537,15,102.4,2.24,104.05,103.75,1.30,219.790,219.790,2097.66,3775.78,99.12,99.15,99.850
+Arch B (Fog Forwarding),PLAINTEXT,500,0,0.0,1.89,101.40,101.20,1.02,214.180,214.180,1953.13,4101.56,99.22,99.20,99.820
+Arch B (Fog Forwarding),TLS_1.3_AES_GCM,537,15,2.1,2.24,104.05,103.75,1.30,224.210,224.210,2097.66,4405.08,99.10,99.05,99.820
+Arch C (Naive Filtering),PLAINTEXT,500,0,0.0,1.89,101.40,101.20,1.02,2293.520,3182.280,445.00,2050.00,99.52,27.88,99.880
+Arch C (Naive Filtering),TLS_1.3_AES_GCM,537,15,2.1,2.24,104.05,103.75,1.30,2300.320,3190.780,469.50,2185.00,99.45,27.88,99.880
+Arch D (Priority Fog),PLAINTEXT,500,0,0.0,1.89,101.40,101.20,1.02,7.040,3182.280,651.90,3018.30,99.81,99.72,99.900
+Arch D (Priority Fog),TLS_1.3_AES_GCM,537,15,2.1,2.24,104.05,103.75,1.30,8.450,3190.480,701.20,3245.00,99.72,99.55,99.900
+Arch E (Multi-Ward Failover),PLAINTEXT,500,0,0.0,1.89,101.40,101.20,1.02,7.220,4081.840,588.50,2881.10,99.92,99.88,99.960
+Arch E (Multi-Ward Failover),TLS_1.3_AES_GCM,537,15,2.1,2.24,104.05,103.75,1.30,8.700,4091.340,632.50,3120.00,99.85,99.78,99.960

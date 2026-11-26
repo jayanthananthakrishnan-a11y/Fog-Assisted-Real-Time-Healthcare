@@ -20,10 +20,12 @@ src/multi_ward/FaultToleranceBenchmark.java
 src/multi_ward/HealthcareMultiWardFailover.java
 src/multi_ward/MultiWardFogDevice.java
 src/priority_aware/AdaptiveTcpWindowController.java
+src/priority_aware/ArchitectureOptimalityBenchmark.java
 src/priority_aware/GreedyPriorityScheduler.java
 src/priority_aware/HealthcareDagModel.java
 src/priority_aware/HealthcarePriorityFog.java
 src/priority_aware/PatientReportGenerator.java
 src/priority_aware/PriorityFogDevice.java
 src/priority_aware/PriorityProcessorEngine.java
+src/priority_aware/PrioritySchedulerBenchmark.java
 src/priority_aware/TlsOverheadBenchmark.java

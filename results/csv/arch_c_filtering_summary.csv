@@ -5,6 +5,7 @@ total_sensors,40,count
 total_generated,4000,count
 total_delivered,3407,count
 filtered_at_fog,593,count
+artifacts_suppressed,0,count
 aggregated_batches,701,count
 critical_bypassed,0,count
 cloud_bound_tuples,701,count

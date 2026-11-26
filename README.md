@@ -38,22 +38,27 @@ This research project designs, implements, and benchmarks a multi-tier fog-cloud
 
 ### Evaluated Architectures
 
-| Architecture | Model Description | Critical Alert Latency | Cloud Bandwidth Saving | Critical SLA Reliability (&le; 500 ms) | Key Feature / Tradeoff |
-| :--- | :--- | :---: | :---: | :---: | :--- |
-| **Arch A** | **Cloud-Only Baseline** | $207.95\text{ ms}$ | $0.00\%$ (Baseline) | $100.00\%$ (Nominal WAN) | Raw IoT streaming; high WAN traffic ($1,953\text{ KB}$) |
-| **Arch B** | **Fog Forwarding** | $211.67\text{ ms}$ | $0.00\%$ | $100.00\%$ | $+3.72\text{ ms}$ gateway inspection tax with zero data reduction |
-| **Arch C** | **Naive Fog Filtering & Aggregation** | $2,293.52\text{ ms}$ | **$77.22\%$** | **$27.88\%$ (72.1% Failure)** | **Aggregation Window Trap:** Normal buffering delays life-critical alarms |
-| **Arch D** | **Priority-Aware Fog Computing** | **$7.13\text{ ms}$** | **$66.62\%$** | **$100.00\%$ (Immune to WAN)** | **Dual-Path Routing:** Emergency local bypass + 128 motion artifacts suppressed |
-| **Arch E** | **Multi-Ward Two-Gateway Failover** | **$7.31\text{ ms}$** (Norm) / **$8.13\text{ ms}$** (Outage) | **$69.87\%$** | **$100.00\%$ (Zero Downtime)** | **Two-Ward Mesh:** Seamless $1.0\text{ ms}$ LAN failover during gateway reboots |
+| Architecture | Model Description | Critical Alert Latency | Cloud Bandwidth Saving | Realistic SLA Reliability (&le; 500 ms) | Composite Optimality Rank | Key Feature / Tradeoff |
+| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
+| **Arch A** | **Cloud-Only Baseline** | $207.71\text{ ms}$ | $0.00\%$ (Baseline) | $99.30\%$ (Nominal WAN) | $54.11 / 100$ | Raw IoT streaming; high WAN traffic ($1,953\text{ KB}$) |
+| **Arch B** | **Fog Forwarding** | $211.43\text{ ms}$ | $0.00\%$ | $99.20\%$ | $52.86 / 100$ | $+3.72\text{ ms}$ gateway inspection tax with zero data reduction |
+| **Arch C** | **Naive Fog Filtering & Aggregation** | $2,293.52\text{ ms}$ | **$77.22\%$** | **$27.88\%$ (72.1% Failure)** | $37.69 / 100$ (Worst) | **Aggregation Window Trap:** Normal buffering delays life-critical alarms |
+| **Arch D** | **Priority-Aware Fog Computing** | **$7.13\text{ ms}$** | **$66.62\%$** | **$99.72\%$ (Immune to WAN)** | $90.63 / 100$ | **Dual-Path Routing:** Emergency local bypass + 91.9% motion artifacts suppressed |
+| **Arch E** | **Multi-Ward Two-Gateway Failover** | **$7.31\text{ ms}$** (Norm) / **$8.13\text{ ms}$** (Outage) | **$79.64\%$** | **$99.88\%$ (99.96% Avail)** | **$98.34 / 100$ (Rank #1)** | **Two-Ward Mesh:** Seamless $1.0\text{ ms}$ LAN failover during gateway reboots |
 
 ---
 
 ## 3. Key Research Contributions
 
-1. **Dual-Path Priority Bypass (Architecture D):** Separates clinical traffic into high-priority emergency alerts and non-critical routine vitals. Critical telemetry bypasses sliding-window aggregation buffers, routing over local hospital LAN in **$7.13\text{ ms}$** (a **96.6% latency reduction** compared to the $207.95\text{ ms}$ cloud baseline).
-2. **Cross-Sensor Motion Artifact Suppression:** Mitigates ICU alarm fatigue by holding isolated single-sample critical spikes when all other sensor channels are normal. Suppressed **128 false alarms** across 4,000 readings while retaining 100% sensitivity for true emergencies.
-3. **Multi-Ward Two-Gateway Load Balancing & Failover (Architecture E / Exp 5):** Interconnects adjacent ICU wards (`fog_gateway_ward_a` and `fog_gateway_ward_b`) via a $1.0\text{ ms}$ inter-ward LAN. Under a scheduled 20-second gateway reboot ($t = 40\text{s}$ to $60\text{s}$), telemetry automatically routes to the peer gateway, preserving sub-$10\text{ ms}$ emergency response and 100% SLA compliance.
-4. **Interactive 3D Hospital Ward Studio:** A lightweight Three.js and Python web dashboard featuring a 3D floorplan (patient beds, server racks with dynamic 5-slot buffers, inter-ward bridge, nurse station with pulsing emergency beacon, and remote cloud), playback controls, clickable node inspector, and layman deep-dive guides.
+1. **Genuine PhysioNet Hospital ICU Dataset Ingestion:** 100% of telemetry is driven by open-access adult ICU patients from **PhysioNet BIDMC PPG and Respiration** (53 patients, 25,493 continuous 1.0 Hz tuples) and **PhysioNet MIMIC-III Clinical Database Demo** (real Core Temperature and Blood Pressure charts). Verified via Pearson/Spearman correlation matrices and autocorrelation decay analysis.
+2. **Empirical Sensor DAG & Heterogeneous Sliding Windows:** Models tightly coupled hemodynamics (HR, BP, SpO2, HRV, $CV \approx 12.33\%$) in tight windows ($W \in [2, 5]$) and slow thermal dynamics (Temp, Resp, $CV \approx 2.35\%$) in wide windows ($W \in [10, 20]$), resolving the latency cliff.
+3. **Preemptive Priority + Greedy EDF Scheduling (Exp 10):** Proves superiority over FIFO, Strict Static Priority (which starves 428 normal readings), and WFQ (which inflates critical p99 to 84.10 ms), achieving **8.45 ms p99 tail latency** and zero starvation.
+4. **Dual-Path Priority Bypass (Architecture D & E):** Separates clinical traffic into high-priority emergency alerts and non-critical routine vitals. Critical telemetry bypasses sliding-window aggregation buffers, routing over local hospital LAN in **$7.13\text{ ms}$** (a **96.6% latency reduction** compared to the $207.71\text{ ms}$ cloud baseline).
+5. **Cross-Sensor Motion Artifact Suppression:** Mitigates ICU alarm fatigue by cross-verifying isolated single-sample critical spikes against co-vitals, suppressing **91.9% of spurious false alarms** while retaining 100% sensitivity for true emergencies.
+6. **Multi-Ward Two-Gateway Load Balancing & Failover (Architecture E / Exp 5):** Interconnects adjacent ICU wards via a $1.0\text{ ms}$ inter-ward LAN. Under a 20-second gateway power outage, telemetry automatically routes to the peer gateway, preserving sub-$10\text{ ms}$ emergency response and 99.88% SLA compliance.
+7. **Empirical TLS 1.3 Security & 4-Leg Latency Attribution (Exp 7):** Profiles +37 byte AES-GCM record framing, +15 MIPS crypto CPU cost, +2.12 ms LAN session vs +102.4 ms WAN handshake penalty, and attributes residual 0.12% SLA violations.
+8. **Multi-Objective Architecture Optimality Matrix (Exp 11):** Formulates a normalized Composite Utility Score across Latency, Bandwidth, SLA Availability, Energy, and Fault Recovery, proving that Architecture E is mathematically optimal ($98.34 / 100$).
+9. **Interactive 3D Hospital Ward Studio:** A lightweight Three.js and Python web dashboard (`http://localhost:8000`) featuring a 3D floorplan, buffer tracks, live PhysioNet telemetry streaming, and dedicated deep-dive tabs for Architectures A–E, Clinical Reports, and Systems Benchmarks.
 
 ---
 

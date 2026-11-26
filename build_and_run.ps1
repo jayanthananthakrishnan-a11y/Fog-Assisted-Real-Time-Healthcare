@@ -60,6 +60,7 @@ function Run-Architecture([string]$targetArch) {
         "C" { "fog_filtering.HealthcareFogFiltering" }
         "D" { "priority_aware.HealthcarePriorityFog" }
         "E" { "multi_ward.HealthcareMultiWardFailover" }
+        "COMPREHENSIVE" { "experiments.ComprehensiveExperimentRunner" }
         Default { throw "Unknown Architecture: $targetArch" }
     }
 

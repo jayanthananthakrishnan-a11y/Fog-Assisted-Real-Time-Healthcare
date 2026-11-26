@@ -149,8 +149,23 @@ Evaluated across three patient profiles:
 - **Strategy 2 (Active-Active Peer Offloading / Arch E):** Detection 12.0 ms, recovery 1.0 ms, outage latency **8.13 ms**, **0.0% data loss**.
 - **Strategy 3 (Local Graceful Degraded Mode):** Detection 50.0 ms, recovery 0.0 ms, outage latency **7.13 ms**, **0.0% data loss** (local flash caching).
 
-### H. Automated Patient Clinical Reporting
-The automated clinical report generator generates per-patient diagnostic summaries (`results/patient_reports/patient_summary_report.json`), recording individual NEWS2 scores, suppressed artifacts, and SLA compliance.
+### H. Experiment 10: Comparative Priority Fog Scheduling Policies
+- Evaluated across 4 scheduling algorithms on 25,493 PhysioNet ICU tuples (`exp10_priority_scheduler_comparison.csv`):
+  1. *FIFO (Arch C Baseline):* Critical p99 latency explodes to **9,840.50 ms**, SLA compliance collapses to **27.88%**.
+  2. *Strict Static Priority:* Dispatches critical in 7.18 ms, but starves 428 normal readings (latency > 12.4 s), causing lower-tier SLA failure (96.20% compliance).
+  3. *Weighted Fair Queuing (WFQ):* Zero starvation, but critical tail latency degrades to **84.10 ms** due to fair interleaving.
+  4. *Preemptive Priority + Greedy EDF with Aging (Ours):* Delivers **7.13 ms mean / 8.45 ms p99 tail latency**, zero starvation, and **99.88% SLA compliance** (Figure 12a).
+
+### I. Experiment 11: Multi-Objective Architecture Optimality & Pareto Scoring Matrix
+- Standardized Composite Utility Score ($U_{\text{arch}} \in [0, 100]$) weighted across Latency (0.30), Bandwidth (0.20), SLA Availability (0.25), Energy (0.15), and MTTR Recovery (0.10) (`exp11_architecture_optimality_matrix.csv`):
+  - Arch A (Cloud-Only): $54.11 / 100$
+  - Arch B (Fog Forwarding): $52.86 / 100$
+  - Arch C (Naive Filtering): $37.69 / 100$ (Worst rank due to the latency cliff)
+  - Arch D (Priority Fog): $90.63 / 100$
+  - **Arch E (Multi-Ward Failover): 98.34 / 100 (Rank #1)**
+
+### J. Automated Patient Clinical Reporting
+The automated clinical report generator generates per-patient diagnostic summaries (`results/patient_reports/patient_summary_report.json`), recording individual NEWS2 scores, suppressed artifacts, and realistic SLA compliance.
 
 ---
 

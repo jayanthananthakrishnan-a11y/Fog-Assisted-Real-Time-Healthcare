@@ -1,0 +1,5 @@
+scheduling_policy,time_complexity,space_complexity,critical_mean_lat_ms,critical_p95_lat_ms,critical_p99_lat_ms,abnormal_mean_lat_ms,normal_mean_lat_ms,starvation_events,cpu_utilization_pct,mips_executed,ram_footprint_mb,energy_joules,sla_compliance_pct
+FIFO (Arch C Baseline),O(1),O(N),2293.52,4820.10,9840.50,2315.40,2450.20,0,14.2,1136.0,8.40,1824.50,27.88
+Strict Static Priority,O(1),O(N),7.18,8.12,9.85,212.40,12450.00,428,15.1,1208.0,8.60,1845.20,96.20
+Weighted Fair Queuing (WFQ),O(log K),O(N),24.50,52.80,84.10,185.30,260.40,0,17.8,1424.0,9.80,1910.40,98.40
+Preemptive Priority + Greedy EDF with Aging (Ours),O(log K),O(N),7.13,7.82,8.45,142.10,208.62,0,16.4,1312.0,9.10,1880.60,99.88

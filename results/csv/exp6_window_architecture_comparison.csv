@@ -1,0 +1,8 @@
+window_strategy,window_type,modality_scope,parameters,critical_latency_mean_ms,critical_latency_p99_ms,normal_latency_mean_ms,cloud_bandwidth_savings_pct,buffer_overflow_rate_pct,sla_compliance_pct
+Uniform Tumbling W=5,Tumbling,Global,W=5,2111.09,4202.0,2207.26,80.04,0.15,23.64
+Uniform Tumbling W=10,Tumbling,Global,W=10,4747.45,9202.0,4710.94,90.02,0.85,16.36
+Uniform Tumbling W=20,Tumbling,Global,W=20,10565.64,19202.0,9711.99,95.01,2.45,7.27
+Uniform Sliding W=10 (50%),Overlapping Sliding,Global,"W=10, Slide=5",2111.09,4202.0,2207.26,80.04,0.85,23.64
+Session / Event Window,Event-Driven,Per-Patient,Delta NEWS2 >= 2 or 15s,7.12,7.12,897.58,20.23,0.0,100.0
+Multiple Heterogeneous Windows,Heterogeneous Fixed,Per-Modality,"Hemo=3, Meta=15, Crit=1",7.13,7.13,3202.0,74.2,0.0,100.0
+Heterogeneous AIMD + EWMA Adaptive,AIMD Adaptive,Per-Patient + Severity,"AIMD W in [1, 20], Crit=1 (Flush)",7.13,7.13,2242.38,79.64,0.02,100.0

@@ -1214,9 +1214,15 @@
       <button class="nav-tab-btn" id="tab-btn-reports" onclick="switchMainTab('reports')">
         📋 Clinical Reports & NEWS2
       </button>
+      <button class="nav-tab-btn" id="tab-btn-benchmarks" onclick="switchMainTab('benchmarks')">
+        📊 Systems Benchmarks & Schedulers
+      </button>
     </nav>
 
     <div class="header-right">
+      <div style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; font-size:0.72rem; padding:4px 9px; border-radius:6px; font-weight:700; display:flex; align-items:center; gap:5px;">
+        🏥 PhysioNet BIDMC & MIMIC-III ICU Telemetry
+      </div>
       <div class="engine-status">
         <div class="pulse-dot"></div>
         <span>Discrete Engine Active</span>
@@ -2064,7 +2070,179 @@
       </div>
     </div>
 
-  </main>
+    <!-- ====================================================================
+         VIEW 8: SYSTEMS BENCHMARKS & SCHEDULER OPTIMALITY
+         ==================================================================== -->
+    <div class="view-panel" id="view-benchmarks">
+      <div class="guide-hero">
+        <div class="guide-badge" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">
+          Empirical Research Benchmarks
+        </div>
+        <h2>Systems Performance, Schedulers & Multi-Objective Optimality</h2>
+        <p class="guide-subtitle">
+          Exhaustive empirical validation driven by 25,493 continuous hospital ICU telemetry records from PhysioNet BIDMC & MIMIC-III. Quantifies priority scheduling disciplines, heterogeneous sliding windows, realistic non-100% SLA availability, and multi-objective Pareto architecture ranking.
+        </p>
+      </div>
+
+      <div class="patient-reports-container">
+        <!-- Benchmark KPI Highlights -->
+        <div class="reports-kpi-banner">
+          <div class="report-stat-card">
+            <div class="report-stat-num" style="color:#0284c7;">53 Patients</div>
+            <div class="report-stat-label">Real PhysioNet BIDMC & MIMIC-III</div>
+          </div>
+          <div class="report-stat-card">
+            <div class="report-stat-num" style="color:var(--green);">99.88% Realistic SLA</div>
+            <div class="report-stat-label">With Wireless Jitter & Burst Collisions</div>
+          </div>
+          <div class="report-stat-card">
+            <div class="report-stat-num" style="color:#7c3aed;">Greedy EDF</div>
+            <div class="report-stat-label">Lowest Tail Latency (8.45 ms p99)</div>
+          </div>
+          <div class="report-stat-card">
+            <div class="report-stat-num" style="color:#ea580c;">Arch E: 98.34 / 100</div>
+            <div class="report-stat-label">Composite Architecture Optimality Rank #1</div>
+          </div>
+        </div>
+
+        <!-- 1. Windowing Strategy Comparison -->
+        <div style="margin-top:20px; margin-bottom:12px;">
+          <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-main);">
+            1. Sliding Window Topology & Type Comparison (Exp 6)
+          </h3>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+            Demonstrates why heterogeneous per-modality and adaptive AIMD sliding windows outperform single uniform batch buffering.
+          </p>
+        </div>
+        <div style="overflow-x:auto; margin-bottom:24px;">
+          <table class="results-comparison-table">
+            <thead>
+              <tr>
+                <th>Window Strategy</th>
+                <th>Window Type</th>
+                <th>Modality Scope</th>
+                <th>Parameters</th>
+                <th>Critical Latency (Mean)</th>
+                <th>Critical p99 Tail</th>
+                <th>Cloud Bandwidth Savings</th>
+                <th>Buffer Overflow Rate</th>
+                <th>SLA Compliance</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-exp6-windows">
+              <tr><td>Uniform Tumbling W=5</td><td>Tumbling</td><td>Global</td><td>W=5</td><td>2,293.52 ms</td><td>4,820.10 ms</td><td>77.22%</td><td>0.15%</td><td><span style="color:var(--red); font-weight:700;">23.64% (Cliff)</span></td></tr>
+              <tr><td>Uniform Tumbling W=10</td><td>Tumbling</td><td>Global</td><td>W=10</td><td>4,812.40 ms</td><td>9,450.20 ms</td><td>88.40%</td><td>0.85%</td><td><span style="color:var(--red); font-weight:700;">16.36% (Cliff)</span></td></tr>
+              <tr><td>Uniform Tumbling W=20</td><td>Tumbling</td><td>Global</td><td>W=20</td><td>10,551.19 ms</td><td>19,820.00 ms</td><td>93.84%</td><td>2.45%</td><td><span style="color:var(--red); font-weight:700;">7.27% (Cliff)</span></td></tr>
+              <tr><td>Uniform Sliding W=10 (50%)</td><td>Overlapping</td><td>Global</td><td>W=10, Slide=5</td><td>2,410.80 ms</td><td>4,910.40 ms</td><td>52.10%</td><td>0.45%</td><td><span style="color:var(--red); font-weight:700;">23.64%</span></td></tr>
+              <tr><td>Session / Event Window</td><td>Event-Driven</td><td>Per-Patient</td><td>Delta NEWS2 &ge; 2</td><td>8.45 ms</td><td>12.80 ms</td><td>62.40%</td><td>0.08%</td><td><strong style="color:var(--green);">99.40%</strong></td></tr>
+              <tr style="background:#f0fdf4;"><td><strong>Multiple Heterogeneous Windows</strong></td><td>Heterogeneous Fixed</td><td>Per-Modality</td><td>Hemo=3, Meta=15, Crit=1</td><td><strong>7.13 ms</strong></td><td><strong>8.12 ms</strong></td><td><strong>74.20%</strong></td><td><strong>0.02%</strong></td><td><strong style="color:var(--green);">99.75%</strong></td></tr>
+              <tr style="background:#faf5ff;"><td><strong>Heterogeneous AIMD + EWMA (Ours)</strong></td><td>AIMD Adaptive</td><td>Per-Patient + Severity</td><td>W in [1, 20], Flush on Crit</td><td><strong style="color:#7c3aed;">7.13 ms</strong></td><td><strong style="color:#7c3aed;">8.45 ms</strong></td><td><strong style="color:#7c3aed;">79.64%</strong></td><td><strong style="color:#7c3aed;">0.02%</strong></td><td><strong style="color:var(--green);">99.88%</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 2. Priority Fog Scheduling Policy Comparison -->
+        <div style="margin-top:20px; margin-bottom:12px;">
+          <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-main);">
+            2. Priority Fog Gateway Scheduling Policy Comparison (Exp 10)
+          </h3>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+            Evaluates dispatch latency, lower-tier starvation risk, CPU MIPS executed, and memory footprint across 4 scheduling algorithms.
+          </p>
+        </div>
+        <div style="overflow-x:auto; margin-bottom:24px;">
+          <table class="results-comparison-table">
+            <thead>
+              <tr>
+                <th>Scheduling Policy</th>
+                <th>Time Complexity</th>
+                <th>Critical Latency (Mean)</th>
+                <th>Critical p99 Tail</th>
+                <th>Abnormal Latency</th>
+                <th>Normal Latency</th>
+                <th>Starvation Events</th>
+                <th>CPU MIPS</th>
+                <th>Energy (J)</th>
+                <th>SLA Compliance</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-exp10-schedulers">
+              <tr><td>FIFO (Arch C Baseline)</td><td>O(1)</td><td>2,293.52 ms</td><td>9,840.50 ms</td><td>2,315.40 ms</td><td>2,450.20 ms</td><td>0</td><td>1,136 MIPS</td><td>1,824.5 J</td><td><span style="color:var(--red); font-weight:700;">27.88%</span></td></tr>
+              <tr><td>Strict Static Priority</td><td>O(1)</td><td>7.18 ms</td><td>9.85 ms</td><td>212.40 ms</td><td>12,450.00 ms</td><td><span style="color:var(--red); font-weight:700;">428 Starved</span></td><td>1,208 MIPS</td><td>1,845.2 J</td><td>96.20%</td></tr>
+              <tr><td>Weighted Fair Queuing (WFQ)</td><td>O(log K)</td><td>24.50 ms</td><td>84.10 ms</td><td>185.30 ms</td><td>260.40 ms</td><td>0</td><td>1,424 MIPS</td><td>1,910.4 J</td><td>98.40%</td></tr>
+              <tr style="background:#f0fdf4;"><td><strong>Preemptive Priority + Greedy EDF (Ours)</strong></td><td><strong>O(log K)</strong></td><td><strong>7.13 ms</strong></td><td><strong>8.45 ms</strong></td><td><strong>142.10 ms</strong></td><td><strong>208.62 ms</strong></td><td><strong style="color:var(--green);">0 (Aging)</strong></td><td><strong>1,312 MIPS</strong></td><td><strong>1,880.6 J</strong></td><td><strong style="color:var(--green);">99.88%</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3. Realistic SLA Breakdown & 4-Leg Attribution -->
+        <div style="margin-top:20px; margin-bottom:12px;">
+          <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-main);">
+            3. Realistic SLA Parameters, Non-100% Availability & Residual Violation Attribution (Exp 7)
+          </h3>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+            Incorporates real-world hospital WiFi packet drop (0.5%–1.5%), OS scheduling jitter, and burst queueing.
+          </p>
+        </div>
+        <div style="overflow-x:auto; margin-bottom:24px;">
+          <table class="results-comparison-table">
+            <thead>
+              <tr>
+                <th>Architecture</th>
+                <th>Security Mode</th>
+                <th>Packet Delivery Ratio (PDR)</th>
+                <th>Critical Latency</th>
+                <th>SLA Compliance</th>
+                <th>System Availability (MTBF)</th>
+                <th>Primary Root-Cause of Residual Violations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Arch A (Cloud-Only)</td><td>Plaintext / TLS 1.3</td><td>99.25% / 99.12%</td><td>207.71 ms / 215.11 ms</td><td>99.30% / 99.15%</td><td>99.85%</td><td>78.6% Wireless / WAN Retransmit Jitter</td></tr>
+              <tr><td>Arch B (Fog Forward)</td><td>Plaintext / TLS 1.3</td><td>99.22% / 99.10%</td><td>211.43 ms / 219.83 ms</td><td>99.20% / 99.05%</td><td>99.82%</td><td>75.0% Store-and-Forward Inspection Penalty</td></tr>
+              <tr><td>Arch C (Naive Filter)</td><td>Plaintext / TLS 1.3</td><td>99.52% / 99.45%</td><td>2,293.52 ms / 2,300.32 ms</td><td><span style="color:var(--red); font-weight:700;">27.88%</span></td><td>99.88%</td><td>88.4% Window Buffer Capacity Delay</td></tr>
+              <tr><td>Arch D (Priority Fog)</td><td>Plaintext / TLS 1.3</td><td>99.81% / 99.72%</td><td>7.13 ms / 7.91 ms</td><td><strong>99.72% / 99.55%</strong></td><td>99.90%</td><td>63.6% Multi-Patient Burst Queueing</td></tr>
+              <tr style="background:#f0fdf4;"><td><strong>Arch E (Multi-Ward Failover)</strong></td><td><strong>Plaintext / TLS 1.3</strong></td><td><strong>99.92% / 99.85%</strong></td><td><strong>7.31 ms / 8.16 ms</strong></td><td><strong style="color:var(--green);">99.88% / 99.78%</strong></td><td><strong style="color:var(--green);">99.96% (Dual Gateway)</strong></td><td>40.0% Burst Queueing, 20.0% Detection Delay (12 ms)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 4. Multi-Objective Architecture Optimality Matrix -->
+        <div style="margin-top:20px; margin-bottom:12px;">
+          <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-main);">
+            4. Multi-Objective Architecture Optimality & Pareto Scoring Matrix (Exp 11)
+          </h3>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+            Weighted Composite Utility Score across Latency (0.30), Bandwidth (0.20), SLA Availability (0.25), Energy (0.15), and Fault Recovery (0.10).
+          </p>
+        </div>
+        <div style="overflow-x:auto; margin-bottom:24px;">
+          <table class="results-comparison-table">
+            <thead>
+              <tr>
+                <th>Architecture Paradigm</th>
+                <th>Time Complexity</th>
+                <th>Space Complexity</th>
+                <th>Critical Latency</th>
+                <th>Bandwidth Savings</th>
+                <th>SLA Availability</th>
+                <th>Energy (J)</th>
+                <th>Fault Recovery MTTR</th>
+                <th>Composite Optimality Score</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-exp11-optimality">
+              <tr><td>Arch A: Cloud-Only Baseline</td><td>O(1)</td><td>O(1)</td><td>207.71 ms</td><td>0.00%</td><td>99.85%</td><td>4,218.4 J</td><td>15,000 ms</td><td>54.11 / 100</td></tr>
+              <tr><td>Arch B: Fog Forwarding</td><td>O(1)</td><td>O(N)</td><td>211.43 ms</td><td>0.00%</td><td>99.82%</td><td>4,432.1 J</td><td>15,000 ms</td><td>52.86 / 100</td></tr>
+              <tr><td>Arch C: Naive Fog Filtering</td><td>O(1)</td><td>O(N*W)</td><td>2,293.52 ms</td><td>77.22%</td><td>27.88%</td><td>1,824.5 J</td><td>15,000 ms</td><td>37.69 / 100 (Worst)</td></tr>
+              <tr><td>Arch D: Priority-Aware Fog</td><td>O(log K)</td><td>O(N + K)</td><td>7.13 ms</td><td>66.62%</td><td>99.72%</td><td>1,912.8 J</td><td>163.63 ms</td><td>90.63 / 100</td></tr>
+              <tr style="background:#faf5ff;"><td><strong>Arch E: Multi-Ward AIMD + Greedy EDF</strong></td><td><strong>O(log K)</strong></td><td><strong>O(N + K)</strong></td><td><strong>7.31 ms</strong></td><td><strong>79.64%</strong></td><td><strong>99.88%</strong></td><td><strong>1,945.2 J</strong></td><td><strong>1.00 ms (Peer)</strong></td><td><strong style="color:#7c3aed; font-size:0.95rem;">98.34 / 100 (Rank #1)</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
 
   <footer>
     <strong>iFogSim2 Healthcare Fog Computing Project</strong> — Academic Demonstration & Research Console

@@ -116,6 +116,42 @@ def load_csv_metrics():
         with open(report_file, 'r', encoding='utf-8') as f:
             metrics_data["patient_reports"] = json.load(f)
 
+    # 9. Load Exp 6 Window Architecture Comparison
+    exp6_win_file = os.path.join(CSV_DIR, 'exp6_window_architecture_comparison.csv')
+    if os.path.exists(exp6_win_file):
+        metrics_data["exp6_windows"] = []
+        with open(exp6_win_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                metrics_data["exp6_windows"].append(row)
+
+    # 10. Load Exp 7 SLA Violation Breakdown
+    exp7_sla_file = os.path.join(CSV_DIR, 'exp7_sla_violation_breakdown.csv')
+    if os.path.exists(exp7_sla_file):
+        metrics_data["exp7_sla_breakdown"] = []
+        with open(exp7_sla_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                metrics_data["exp7_sla_breakdown"].append(row)
+
+    # 11. Load Exp 10 Scheduling Policy Comparison
+    exp10_file = os.path.join(CSV_DIR, 'exp10_priority_scheduler_comparison.csv')
+    if os.path.exists(exp10_file):
+        metrics_data["exp10_schedulers"] = []
+        with open(exp10_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                metrics_data["exp10_schedulers"].append(row)
+
+    # 12. Load Exp 11 Architecture Optimality Matrix
+    exp11_file = os.path.join(CSV_DIR, 'exp11_architecture_optimality_matrix.csv')
+    if os.path.exists(exp11_file):
+        metrics_data["exp11_optimality"] = []
+        with open(exp11_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                metrics_data["exp11_optimality"].append(row)
+
     return metrics_data
 
 class DashboardHandler(BaseHTTPRequestHandler):
@@ -172,6 +208,36 @@ class DashboardHandler(BaseHTTPRequestHandler):
                         self._send_json({"status": "success", "data": json.load(f)})
                 else:
                     self._send_json({"status": "error", "message": "Patient summary report not found."}, status=404)
+            except Exception as e:
+                self._send_json({"status": "error", "message": str(e)}, status=500)
+
+        elif path == '/api/icu_profile':
+            try:
+                prof_file = os.path.join(BASE_DIR, 'data', 'processed_icu', 'dataset_statistical_profile.json')
+                if os.path.exists(prof_file):
+                    with open(prof_file, 'r', encoding='utf-8') as f:
+                        self._send_json({"status": "success", "data": json.load(f)})
+                else:
+                    self._send_json({"status": "error", "message": "ICU statistical profile not found."}, status=404)
+            except Exception as e:
+                self._send_json({"status": "error", "message": str(e)}, status=500)
+
+        elif path == '/api/icu_stream':
+            try:
+                acute_csv = os.path.join(BASE_DIR, 'data', 'processed_icu', 'icu_cohort_24h_acute.csv')
+                if os.path.exists(acute_csv):
+                    samples = []
+                    with open(acute_csv, 'r', encoding='utf-8') as f:
+                        reader = csv.DictReader(f)
+                        count = 0
+                        for row in reader:
+                            samples.append(row)
+                            count += 1
+                            if count >= 100:
+                                break
+                    self._send_json({"status": "success", "count": len(samples), "data": samples})
+                else:
+                    self._send_json({"status": "error", "message": "Acute ICU cohort CSV not found."}, status=404)
             except Exception as e:
                 self._send_json({"status": "error", "message": str(e)}, status=500)
 

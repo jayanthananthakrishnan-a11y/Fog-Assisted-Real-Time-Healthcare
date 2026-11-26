@@ -1,0 +1,197 @@
+{
+  "dataset_name": "PhysioNet BIDMC & MIMIC-III Demo Real ICU Telemetry Cohort",
+  "total_acute_records": 25493,
+  "total_ward_records": 7200,
+  "patients_monitored": 53,
+  "sampling_frequency_hz": 1.0,
+  "vital_statistics": {
+    "heart_rate": {
+      "mean": 89.18,
+      "std": 13.33,
+      "min": 44.0,
+      "p25": 81.0,
+      "median": 89.0,
+      "p75": 95.0,
+      "p95": 115.0,
+      "p99": 126.0,
+      "max": 139.0
+    },
+    "spo2": {
+      "mean": 96.65,
+      "std": 3.43,
+      "min": 82.0,
+      "p25": 95.0,
+      "median": 97.0,
+      "p75": 99.0,
+      "p95": 100.0,
+      "p99": 100.0,
+      "max": 100.0
+    },
+    "temperature": {
+      "mean": 36.86,
+      "std": 0.86,
+      "min": 35.0,
+      "p25": 36.16,
+      "median": 36.92,
+      "p75": 37.38,
+      "p95": 38.28,
+      "p99": 39.19,
+      "max": 39.35
+    },
+    "blood_pressure": {
+      "mean": 131.08,
+      "std": 23.66,
+      "min": 72.6,
+      "p25": 114.9,
+      "median": 127.7,
+      "p75": 151.3,
+      "p95": 168.3,
+      "p99": 183.9,
+      "max": 191.6
+    },
+    "respiration": {
+      "mean": 17.4,
+      "std": 3.66,
+      "min": 0.0,
+      "p25": 16.0,
+      "median": 18.0,
+      "p75": 19.0,
+      "p95": 22.0,
+      "p99": 25.0,
+      "max": 34.0
+    },
+    "ecg_hrv": {
+      "mean": 56.37,
+      "std": 7.2,
+      "min": 28.1,
+      "p25": 52.1,
+      "median": 56.8,
+      "p75": 61.2,
+      "p95": 67.64,
+      "p99": 72.4,
+      "max": 82.6
+    }
+  },
+  "autocorrelation_decay_seconds": {
+    "heart_rate": 120,
+    "spo2": 120,
+    "temperature": 120,
+    "blood_pressure": 120,
+    "respiration": 120,
+    "ecg_hrv": 1
+  },
+  "coefficient_of_variation_pct": {
+    "heart_rate": 14.94,
+    "spo2": 3.55,
+    "temperature": 2.35,
+    "blood_pressure": 18.05,
+    "respiration": 21.01,
+    "ecg_hrv": 12.77
+  },
+  "severity_prevalence_pct": {
+    "normal": 49.79,
+    "abnormal": 43.41,
+    "critical": 6.79,
+    "motion_artifacts": 1.33
+  },
+  "pearson_correlation_matrix": {
+    "heart_rate": {
+      "heart_rate": 1.0,
+      "spo2": 0.012,
+      "temperature": -0.1228,
+      "blood_pressure": 0.2209,
+      "respiration": 0.1626,
+      "ecg_hrv": -0.8331
+    },
+    "spo2": {
+      "heart_rate": 0.012,
+      "spo2": 1.0,
+      "temperature": 0.1634,
+      "blood_pressure": -0.0725,
+      "respiration": -0.2908,
+      "ecg_hrv": -0.0137
+    },
+    "temperature": {
+      "heart_rate": -0.1228,
+      "spo2": 0.1634,
+      "temperature": 1.0,
+      "blood_pressure": -0.0254,
+      "respiration": -0.1601,
+      "ecg_hrv": 0.1044
+    },
+    "blood_pressure": {
+      "heart_rate": 0.2209,
+      "spo2": -0.0725,
+      "temperature": -0.0254,
+      "blood_pressure": 1.0,
+      "respiration": 0.071,
+      "ecg_hrv": -0.1848
+    },
+    "respiration": {
+      "heart_rate": 0.1626,
+      "spo2": -0.2908,
+      "temperature": -0.1601,
+      "blood_pressure": 0.071,
+      "respiration": 1.0,
+      "ecg_hrv": -0.1313
+    },
+    "ecg_hrv": {
+      "heart_rate": -0.8331,
+      "spo2": -0.0137,
+      "temperature": 0.1044,
+      "blood_pressure": -0.1848,
+      "respiration": -0.1313,
+      "ecg_hrv": 1.0
+    }
+  },
+  "spearman_correlation_matrix": {
+    "heart_rate": {
+      "heart_rate": 1.0,
+      "spo2": -0.0553,
+      "temperature": -0.1816,
+      "blood_pressure": 0.2362,
+      "respiration": 0.1164,
+      "ecg_hrv": -0.7893
+    },
+    "spo2": {
+      "heart_rate": -0.0553,
+      "spo2": 1.0,
+      "temperature": 0.0376,
+      "blood_pressure": -0.1162,
+      "respiration": -0.2624,
+      "ecg_hrv": 0.0517
+    },
+    "temperature": {
+      "heart_rate": -0.1816,
+      "spo2": 0.0376,
+      "temperature": 1.0,
+      "blood_pressure": -0.0653,
+      "respiration": -0.1632,
+      "ecg_hrv": 0.1425
+    },
+    "blood_pressure": {
+      "heart_rate": 0.2362,
+      "spo2": -0.1162,
+      "temperature": -0.0653,
+      "blood_pressure": 1.0,
+      "respiration": 0.0761,
+      "ecg_hrv": -0.1854
+    },
+    "respiration": {
+      "heart_rate": 0.1164,
+      "spo2": -0.2624,
+      "temperature": -0.1632,
+      "blood_pressure": 0.0761,
+      "respiration": 1.0,
+      "ecg_hrv": -0.0861
+    },
+    "ecg_hrv": {
+      "heart_rate": -0.7893,
+      "spo2": 0.0517,
+      "temperature": 0.1425,
+      "blood_pressure": -0.1854,
+      "respiration": -0.0861,
+      "ecg_hrv": 1.0
+    }
+  }
+}

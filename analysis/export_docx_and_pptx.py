@@ -596,6 +596,33 @@ def generate_docx_report():
         "total critical alerts dispatched, motion artifacts suppressed, and SLA compliance, establishing an automated EHR audit record."
     )
 
+    # Exp 10: Scheduling Policy Comparison
+    add_subsec_heading("J. Experiment 10: Comparative Priority Fog Scheduling Policies")
+    doc.add_paragraph(
+        "Benchmarking four queue scheduling algorithms on 25,493 PhysioNet ICU records demonstrates that while Strict Static Priority "
+        "provides fast O(1) dispatch, it starves lower-tier routine readings during acute patient bursts (428 normal readings delayed beyond 12.4 s). "
+        "Weighted Fair Queuing (WFQ) eliminates starvation but inflates critical tail latency to 84.10 ms p99 due to round-robin interleaving. "
+        "Our Preemptive Priority + Greedy EDF with aging achieves the lowest tail latency (8.45 ms p99) while guaranteeing zero starvation and 99.88% SLA compliance."
+    )
+
+    # Exp 11: Multi-Objective Architecture Optimality
+    add_subsec_heading("K. Experiment 11: Multi-Objective Architecture Optimality & Pareto Scoring")
+    doc.add_paragraph(
+        "To objectively rank architectures across conflicting clinical objectives, we compute a standardized Composite Utility Score U in [0, 100] "
+        "weighting Latency (0.30), Bandwidth Savings (0.20), SLA Availability (0.25), Energy (0.15), and MTTR Recovery (0.10). Architecture E "
+        "achieves the highest rank (98.34 / 100), decisively outperforming Arch D (90.63), Arch A (54.11), and Arch C (37.69)."
+    )
+    f12_path = os.path.join(GRAPHS_DIR, 'fig12_scheduler_and_optimality.png')
+    if os.path.exists(f12_path):
+        p_img12 = doc.add_paragraph()
+        p_img12.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p_img12.add_run().add_picture(f12_path, width=Inches(5.5))
+        p_c12 = doc.add_paragraph()
+        p_c12.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        r_c12 = p_c12.add_run("Fig. 12. Priority fog scheduling policies (latency tails and starvation risk) and multi-objective Pareto architecture optimality ranking.")
+        r_c12.font.size = Pt(8.5)
+        r_c12.font.italic = True
+
     # --- SECTION VI: FUTURE SECURITY ROADMAP ---
     add_sec_heading("VI. FUTURE SECURITY ROADMAP")
     doc.add_paragraph(
@@ -684,8 +711,10 @@ def generate_pptx_presentation():
     f7_p = os.path.join(GRAPHS_DIR, 'fig7_network_stress_latency.png')
     f8_p = os.path.join(GRAPHS_DIR, 'fig8_adaptive_tcp_window.png')
     f9_p = os.path.join(GRAPHS_DIR, 'fig9_sla_violations_and_fpr.png')
+    f0_p = os.path.join(GRAPHS_DIR, 'fig0_physionet_profile.png')
     f10_p = os.path.join(GRAPHS_DIR, 'fig10_fog_node_scaling_and_tls.png')
     f11_p = os.path.join(GRAPHS_DIR, 'fig11_fault_tolerance_comparison.png')
+    f12_p = os.path.join(GRAPHS_DIR, 'fig12_scheduler_and_optimality.png')
 
     def add_slide_header(slide, title_text, category_text="TOPIC 19: FOG-ASSISTED HEALTHCARE MONITORING"):
         cat_box = slide.shapes.add_textbox(PptxInches(0.8), PptxInches(0.4), PptxInches(11.7), PptxInches(0.35))

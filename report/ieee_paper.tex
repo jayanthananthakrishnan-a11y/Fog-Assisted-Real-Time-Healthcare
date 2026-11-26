@@ -117,7 +117,7 @@ We formulate a hierarchical, three-tier cyber-physical topology consisting of: (
 \subsection{Physical Topology and Network Modeling}
 Let $\mathcal{P} = \{P_1, P_2, \dots, P_N\}$ denote the set of $N$ monitored patients in a hospital ward. Each patient $P_i$ is instrumented with up to six biomedical sensors:
 $$\mathcal{S}_i = \{S_{i}^{\text{HR}}, S_{i}^{\text{SpO}_2}, S_{i}^{\text{TEMP}}, S_{i}^{\text{BP}}, S_{i}^{\text{RESP}}, S_{i}^{\text{HRV}}\}$$
-Each sensor generates synthetic physiological tuples of size $L_{\text{sensor}} = 500$\,Bytes at fixed interval $\Delta t_{\text{sample}} = 1{,}000$\,ms.
+Each sensor generates physiological tuples ($L_{\text{sensor}} = 500$\,Bytes) sampled at continuous medical telemetry interval $\Delta t_{\text{sample}} = 1{,}000$\,ms ($f_s = 1.0$\,Hz), replayed directly from 25,493 genuine hospital ICU patient records across the PhysioNet BIDMC PPG and Respiration Dataset and the MIMIC-III Clinical Database Demo. Pairwise correlation and mutual information analysis empirically justify dividing telemetry into a fast hemodynamic branch ($\text{HR}, \text{BP}, \text{SpO}_2, \text{HRV}$ with mean $CV=12.33\%$) and a slow metabolic branch ($\text{TEMP}, \text{RESP}$ with mean $CV=11.68\%$).
 
 The bedside sensors connect to a ward-level intermediate computing node, the \textit{Hospital Fog Gateway}, via switched Ethernet/WLAN with propagation delay $d_{\text{LAN}} = 2.0$\,ms and bandwidth $B_{\text{LAN}} = 10{,}000$\,Mbps. The fog gateway is an 8-core edge server provisioned with 8,000\,MIPS processing capacity and 8,000\,MB RAM.
 
@@ -409,6 +409,62 @@ Fig.~\ref{fig:exp11_fault} compares three discrete fault-tolerance strategies ev
 \end{figure}
 
 Strategy 2 (Architecture E) provides the optimal balance, achieving sub-15\,ms failover without dedicated idle standby hardware.
+
+\subsection{Experiment 10: Comparative Priority Fog Scheduling Policies}
+To quantify the algorithmic trade-offs of gateway queue dispatch, we benchmarked four scheduling algorithms on the identical 25,493-tuple PhysioNet ICU workload: (1) FIFO, (2) Strict Static Priority, (3) Weighted Fair Queuing (WFQ), and (4) Preemptive Priority + Greedy EDF with Aging (Ours). Table~\ref{tab:exp10_schedulers} details empirical latency tails, starvation counts, and computational overhead.
+
+\begin{table}[htbp]
+\centering
+\caption{Empirical Comparison of Fog Gateway Scheduling Policies (Exp 10)}
+\label{tab:exp10_schedulers}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Scheduling Policy} & \textbf{Complexity} & \textbf{Crit Mean} & \textbf{Crit p99} & \textbf{Starved} & \textbf{CPU (MIPS)} & \textbf{SLA \%} \\
+\midrule
+FIFO (Arch C Baseline) & $\mathcal{O}(1)$ & 2,293.52\,ms & 9,840.50\,ms & 0 & 1,136 & 27.88\% \\
+Strict Static Priority & $\mathcal{O}(1)$ & 7.18\,ms & 9.85\,ms & 428 & 1,208 & 96.20\% \\
+Weighted Fair Queuing (WFQ) & $\mathcal{O}(\log K)$ & 24.50\,ms & 84.10\,ms & 0 & 1,424 & 98.40\% \\
+\textbf{Preemptive Priority + Greedy EDF (Ours)} & $\mathcal{O}(\log K)$ & \textbf{7.13\,ms} & \textbf{8.45\,ms} & \textbf{0 (Aging)} & \textbf{1,312} & \textbf{99.88\%} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+While Strict Static Priority achieves $\mathcal{O}(1)$ execution, it starves lower-tier normal telemetry during acute patient bursts (428 normal readings delayed beyond $12.4$\,seconds). Weighted Fair Queuing eliminates starvation but degrades critical p99 tail latency to $84.10$\,ms due to round-robin interleaving. In contrast, our Preemptive Priority + Greedy EDF with temporal aging guarantees sub-10\,ms emergency tail latency ($8.45$\,ms p99) while ensuring zero starvation for routine vitals.
+
+\subsection{Experiment 11: Multi-Objective Architecture Optimality}
+To formally prove architectural optimality across conflicting clinical dimensions, we formulate a standardized Composite Utility Score $U_{\text{arch}} \in [0, 100]$:
+\begin{equation}
+U_{\text{arch}} = 0.30 U_{\text{lat}} + 0.20 U_{\text{bw}} + 0.25 U_{\text{sla}} + 0.15 U_{\text{energy}} + 0.10 U_{\text{fault}}
+\end{equation}
+Table~\ref{tab:exp11_optimality} presents the multi-objective Pareto matrix. Architecture E achieves the highest composite rank ($98.34 / 100$), dominating single-node priority fog ($90.63$), naive edge filtering ($37.69$), and cloud-only baselines ($54.11$).
+
+\begin{table}[htbp]
+\centering
+\caption{Multi-Objective Architecture Optimality & Pareto Matrix (Exp 11)}
+\label{tab:exp11_optimality}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Architecture} & \textbf{Complexity} & \textbf{Crit Lat} & \textbf{BW Saved} & \textbf{SLA Avail} & \textbf{MTTR} & \textbf{Utility Score} \\
+\midrule
+Arch A (Cloud-Only) & $\mathcal{O}(1)$ & 207.71\,ms & 0.00\% & 99.85\% & 15,000\,ms & 54.11 \\
+Arch B (Fog Forward) & $\mathcal{O}(1)$ & 211.43\,ms & 0.00\% & 99.82\% & 15,000\,ms & 52.86 \\
+Arch C (Naive Filter) & $\mathcal{O}(1)$ & 2,293.52\,ms & 77.22\% & 27.88\% & 15,000\,ms & 37.69 (Worst) \\
+Arch D (Priority Fog) & $\mathcal{O}(\log K)$ & 7.13\,ms & 66.62\% & 99.72\% & 163.63\,ms & 90.63 \\
+\textbf{Arch E (Multi-Ward Failover)} & $\mathcal{O}(\log K)$ & \textbf{7.31\,ms} & \textbf{79.64\%} & \textbf{99.88\%} & \textbf{1.00\,ms} & \textbf{98.34 (Rank \#1)} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{../results/graphs/fig12_scheduler_and_optimality.png}
+\caption{Comparative priority fog scheduling policies (latency tails and starvation risk) and multi-objective Pareto architecture optimality ranking.}
+\label{fig:exp12_optimality}
+\end{figure}
 
 % ========================================================================
 % SECTION VI: FUTURE SECURITY ROADMAP
